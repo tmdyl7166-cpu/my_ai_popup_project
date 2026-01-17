@@ -69,6 +69,44 @@
                 </div>
 
                 <!-- 快速操作 -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bolt me-2"></i>快速操作</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary w-100 mb-2" onclick="runAllScripts()">
+                            <i class="fas fa-play me-2"></i>运行所有脚本
+                        </button>
+                        <button class="btn btn-warning w-100 mb-2" onclick="refreshStatus()">
+                            <i class="fas fa-sync me-2"></i>刷新状态
+                        </button>
+                        <button class="btn btn-info w-100" onclick="showSystemInfo()">
+                            <i class="fas fa-info me-2"></i>系统信息
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 健康监控 -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-heartbeat me-2"></i>健康监控</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label class="form-label small">后端服务 (端口8000)</label>
+                            <div id="backend-status" class="badge bg-secondary">检测中...</div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Web监控 (端口8080)</label>
+                            <div id="web-status" class="badge bg-secondary">检测中...</div>
+                        </div>
+                        <div>
+                            <label class="form-label small">健康检查</label>
+                            <div id="health-status" class="badge bg-secondary">检测中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- 主内容区 -->
             <div class="col-md-9">
@@ -221,10 +259,64 @@
             loadScripts();
             loadDeploymentProgress();
             updateSystemResources();
+            
+            // 启动健康监控
+            checkServicesHealth();
+            setInterval(checkServicesHealth, 10000); // 每10秒检测一次
 
             // 定期更新系统资源
             setInterval(updateSystemResources, 5000);
         });
+
+        // 检测服务健康状态
+        async function checkServicesHealth() {
+            // 检测后端服务
+            await checkPort(8000, 'backend-status');
+            // 检测Web服务
+            await checkPort(8080, 'web-status');
+            // 检测健康检查
+            await checkHealth();
+        }
+
+        // 检测端口
+        async function checkPort(port, elementId) {
+            try {
+                const response = await fetch(`http://localhost:${port}/api/health`, {
+                    method: 'GET',
+                    timeout: 2000
+                });
+                if (response.ok) {
+                    document.getElementById(elementId).className = 'badge bg-success';
+                    document.getElementById(elementId).innerHTML = '<i class="fas fa-check"></i> 运行中';
+                } else {
+                    document.getElementById(elementId).className = 'badge bg-warning';
+                    document.getElementById(elementId).innerHTML = '<i class="fas fa-exclamation"></i> 异常';
+                }
+            } catch (error) {
+                document.getElementById(elementId).className = 'badge bg-danger';
+                document.getElementById(elementId).innerHTML = '<i class="fas fa-times"></i> 停止';
+            }
+        }
+
+        // 检测健康检查
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health', {
+                    method: 'GET',
+                    timeout: 2000
+                });
+                if (response.ok) {
+                    document.getElementById('health-status').className = 'badge bg-success';
+                    document.getElementById('health-status').innerHTML = '<i class="fas fa-heart"></i> 健康';
+                } else {
+                    document.getElementById('health-status').className = 'badge bg-warning';
+                    document.getElementById('health-status').innerHTML = '<i class="fas fa-exclamation"></i> 警告';
+                }
+            } catch (error) {
+                document.getElementById('health-status').className = 'badge bg-danger';
+                document.getElementById('health-status').innerHTML = '<i class="fas fa-times"></i> 异常';
+            }
+        }
 
         // 初始化WebSocket连接
         function initWebSocket() {
