@@ -86,29 +86,36 @@ class MainWindow(QMainWindow):
         title_frame = QFrame()
         title_frame.setObjectName("titleFrame")
         title_layout = QHBoxLayout(title_frame)
-        
+
         title_label = QLabel("AI弹窗项目")
         title_font = QFont()
         title_font.setPointSize(16)
         title_font.setBold(True)
         title_label.setFont(title_font)
-        
+
+        # 主题切换按钮
+        self.theme_button = QPushButton("🌙")
+        self.theme_button.setFixedSize(30, 30)
+        self.theme_button.setToolTip("切换主题")
+        self.theme_button.clicked.connect(self.toggle_theme)
+
         # 自然语言输入框
         self.nlu_input = QLineEdit()
         self.nlu_input.setPlaceholderText("输入自然语言命令，例如：'把这张照片的脸换到视频里'")
         self.nlu_input.returnPressed.connect(self.process_nlu_input)
-        
+
         send_button = QPushButton("发送")
         send_button.clicked.connect(self.process_nlu_input)
-        
+
         nlu_layout = QHBoxLayout()
         nlu_layout.addWidget(self.nlu_input)
         nlu_layout.addWidget(send_button)
-        
+
         title_layout.addWidget(title_label)
+        title_layout.addWidget(self.theme_button)
         title_layout.addLayout(nlu_layout)
         title_layout.addStretch()
-        
+
         layout.addWidget(title_frame)
     
     def create_main_content(self, layout):
@@ -896,16 +903,40 @@ class MainWindow(QMainWindow):
         """处理完成"""
         self.status_progress.setVisible(False)
         self.status_label.setText("处理完成")
-        
+
         # 添加到历史记录
         from datetime import datetime
         history_item = f"{datetime.now().strftime('%Y-%m-%d %H:%M')} - 处理完成"
         self.history_list.insertItem(0, history_item)
-        
+
         QMessageBox.information(self, "处理完成", "文件处理已完成，结果已在预览区域显示。")
-        
+
         # 显示预览（模拟）
         self.preview_label.setText("处理结果预览\n[图像/视频预览区域]")
+
+    def toggle_theme(self):
+        """切换主题"""
+        current_theme = self.config['ui']['theme']['current']
+        if current_theme == 'dark':
+            new_theme = 'light'
+            self.theme_button.setText("☀️")
+            # 切换到亮色主题
+            self.config['ui']['theme']['current'] = 'light'
+            self.config['ui']['theme']['colors']['background'] = '#ffffff'
+            self.config['ui']['theme']['colors']['surface'] = '#f8f9fa'
+            self.config['ui']['theme']['colors']['text'] = '#212529'
+        else:
+            new_theme = 'dark'
+            self.theme_button.setText("🌙")
+            # 切换到暗色主题
+            self.config['ui']['theme']['current'] = 'dark'
+            self.config['ui']['theme']['colors']['background'] = '#1a1a1a'
+            self.config['ui']['theme']['colors']['surface'] = '#2d2d2d'
+            self.config['ui']['theme']['colors']['text'] = '#ffffff'
+
+        # 重新应用样式
+        self.apply_styles()
+        self.status_label.setText(f"已切换到{new_theme}主题")
 
 
 def main():
