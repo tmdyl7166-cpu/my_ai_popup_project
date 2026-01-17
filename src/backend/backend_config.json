@@ -1,0 +1,481 @@
+{
+    "meta": {
+        "name": "后端服务配置",
+        "description": "AI弹窗项目后端服务的完整配置，包括API服务器、任务管理、调度器和中间件等功能",
+        "version": "1.0.0",
+        "createdAt": "2024-01-16T00:00:00Z",
+        "lastModified": "2024-01-16T00:00:00Z"
+    },
+    "server": {
+        "framework": "fastapi",
+        "host": "0.0.0.0",
+        "port": 8000,
+        "debug": false,
+        "workers": 1,
+        "reload": false,
+        "accessLog": true,
+        "logLevel": "info",
+        "cors": {
+            "enabled": true,
+            "allowOrigins": ["*"],
+            "allowCredentials": true,
+            "allowMethods": ["*"],
+            "allowHeaders": ["*"]
+        },
+        "ssl": {
+            "enabled": false,
+            "certFile": null,
+            "keyFile": null
+        },
+        "timeout": {
+            "keepAlive": 30,
+            "request": 300,
+            "websocket": 86400
+        }
+    },
+    "api": {
+        "version": "v1",
+        "basePath": "/api/v1",
+        "documentation": {
+            "enabled": true,
+            "path": "/docs",
+            "redocPath": "/redoc",
+            "openapiPath": "/openapi.json"
+        },
+        "rateLimit": {
+            "enabled": true,
+            "requests": 100,
+            "period": 60,
+            "burst": 20,
+            "strategy": "fixed-window"
+        },
+        "authentication": {
+            "enabled": false,
+            "type": "bearer",
+            "secretKey": null,
+            "algorithm": "HS256",
+            "tokenExpiry": 3600
+        },
+        "validation": {
+            "strict": true,
+            "coerceTypes": false,
+            "validateResponse": true
+        },
+        "endpoints": {
+            "tasks": {
+                "create": "/tasks",
+                "get": "/tasks/{task_id}",
+                "list": "/tasks",
+                "cancel": "/tasks/{task_id}",
+                "pause": "/tasks/{task_id}/pause",
+                "resume": "/tasks/{task_id}/resume"
+            },
+            "processing": {
+                "image": "/process/image",
+                "video": "/process/video",
+                "batch": "/process/batch",
+                "realtime": "/process/realtime"
+            },
+            "system": {
+                "health": "/health",
+                "stats": "/stats",
+                "metrics": "/metrics",
+                "config": "/config"
+            },
+            "websocket": {
+                "tasks": "/ws/tasks",
+                "processing": "/ws/processing",
+                "system": "/ws/system"
+            }
+        }
+    },
+    "taskManager": {
+        "enabled": true,
+        "maxConcurrentTasks": 4,
+        "queueSize": 1000,
+        "taskTimeout": 3600,
+        "cleanupInterval": 300,
+        "maxTaskAge": 86400,
+        "priorities": {
+            "low": 1,
+            "normal": 2,
+            "high": 3,
+            "urgent": 4
+        },
+        "retryPolicy": {
+            "enabled": true,
+            "maxRetries": 3,
+            "backoff": "exponential",
+            "baseDelay": 1.0,
+            "maxDelay": 60.0
+        },
+        "monitoring": {
+            "enabled": true,
+            "statsInterval": 60,
+            "performanceTracking": true,
+            "errorTracking": true
+        },
+        "persistence": {
+            "enabled": false,
+            "storage": "memory",
+            "backupInterval": 3600,
+            "maxHistory": 10000
+        }
+    },
+    "scheduler": {
+        "enabled": true,
+        "algorithm": "priority_queue",
+        "preemption": true,
+        "loadBalancing": true,
+        "resourceAware": true,
+        "workerPool": {
+            "minWorkers": 1,
+            "maxWorkers": 8,
+            "scaleUpThreshold": 80,
+            "scaleDownThreshold": 30,
+            "adjustmentInterval": 60
+        },
+        "scheduling": {
+            "fairness": true,
+            "starvationPrevention": true,
+            "deadlineAware": false,
+            "priorityBoost": true
+        },
+        "monitoring": {
+            "queueLength": true,
+            "workerUtilization": true,
+            "taskLatency": true,
+            "throughput": true
+        }
+    },
+    "middleware": {
+        "logging": {
+            "enabled": true,
+            "level": "INFO",
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            "includeRequestId": true,
+            "includeUserAgent": true,
+            "includeProcessingTime": true,
+            "excludePaths": ["/health", "/metrics"],
+            "sensitiveHeaders": ["authorization", "x-api-key"]
+        },
+        "authentication": {
+            "enabled": false,
+            "middleware": "bearer",
+            "excludePaths": ["/health", "/docs"],
+            "tokenValidation": true,
+            "userExtraction": false
+        },
+        "rateLimit": {
+            "enabled": true,
+            "backend": "memory",
+            "strategy": "fixed-window",
+            "windowSize": 60,
+            "maxRequests": 100,
+            "excludePaths": ["/health"],
+            "headers": true
+        },
+        "cors": {
+            "enabled": true,
+            "allowOrigins": ["*"],
+            "allowCredentials": true,
+            "allowMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allowHeaders": ["*"],
+            "maxAge": 86400
+        },
+        "compression": {
+            "enabled": true,
+            "backend": "gzip",
+            "minSize": 1024,
+            "level": 6,
+            "excludeTypes": ["image/*", "video/*"]
+        },
+        "errorHandling": {
+            "enabled": true,
+            "includeStackTrace": false,
+            "userFriendlyMessages": true,
+            "logErrors": true,
+            "customErrorPages": false
+        }
+    },
+    "websocket": {
+        "enabled": true,
+        "pingInterval": 30,
+        "pingTimeout": 10,
+        "maxConnections": 1000,
+        "messageQueueSize": 100,
+        "compression": true,
+        "subprotocols": [],
+        "origins": ["*"],
+        "heartbeat": {
+            "enabled": true,
+            "interval": 30,
+            "timeout": 60
+        },
+        "events": {
+            "taskProgress": true,
+            "taskStatus": true,
+            "systemMetrics": true,
+            "processingUpdates": true
+        }
+    },
+    "database": {
+        "enabled": false,
+        "type": "sqlite",
+        "connection": {
+            "host": "localhost",
+            "port": 5432,
+            "database": "ai_popup",
+            "username": null,
+            "password": null
+        },
+        "pool": {
+            "minSize": 1,
+            "maxSize": 10,
+            "maxIdleTime": 300,
+            "maxLifetime": 3600
+        },
+        "migrations": {
+            "enabled": true,
+            "path": "migrations",
+            "autoApply": true
+        }
+    },
+    "cache": {
+        "enabled": true,
+        "backend": "memory",
+        "ttl": 300,
+        "maxSize": "100MB",
+        "serialization": "json",
+        "compression": false,
+        "redis": {
+            "host": "localhost",
+            "port": 6379,
+            "db": 0,
+            "password": null,
+            "maxConnections": 10
+        }
+    },
+    "monitoring": {
+        "enabled": true,
+        "metrics": {
+            "system": true,
+            "application": true,
+            "business": true,
+            "custom": true
+        },
+        "exporters": {
+            "prometheus": {
+                "enabled": false,
+                "path": "/metrics",
+                "port": 9090
+            },
+            "json": {
+                "enabled": true,
+                "path": "../logs/metrics.json",
+                "interval": 60
+            }
+        },
+        "alerts": {
+            "enabled": false,
+            "rules": [],
+            "channels": ["log"]
+        },
+        "profiling": {
+            "enabled": false,
+            "sampleRate": 0.1,
+            "maxDuration": 60
+        }
+    },
+    "security": {
+        "headers": {
+            "xFrameOptions": "DENY",
+            "xContentTypeOptions": "nosniff",
+            "xXSSProtection": "1; mode=block",
+            "strictTransportSecurity": "max-age=31536000; includeSubDomains",
+            "contentSecurityPolicy": "default-src 'self'"
+        },
+        "inputValidation": {
+            "enabled": true,
+            "sanitize": true,
+            "maxBodySize": "10MB",
+            "allowedContentTypes": ["application/json", "multipart/form-data"]
+        },
+        "outputEncoding": {
+            "enabled": true,
+            "contentType": true,
+            "charset": "utf-8"
+        },
+        "audit": {
+            "enabled": true,
+            "logLevel": "INFO",
+            "includeRequestBody": false,
+            "includeResponseBody": false,
+            "excludePaths": ["/health", "/metrics"]
+        }
+    },
+    "performance": {
+        "optimization": {
+            "asyncProcessing": true,
+            "connectionPooling": true,
+            "responseCompression": true,
+            "caching": true,
+            "lazyLoading": true
+        },
+        "limits": {
+            "maxConcurrentRequests": 100,
+            "maxRequestSize": "10MB",
+            "maxResponseSize": "100MB",
+            "requestTimeout": 300,
+            "connectionTimeout": 30
+        },
+        "tuning": {
+            "workerProcesses": 1,
+            "workerConnections": 1000,
+            "keepAliveTimeout": 30,
+            "clientMaxBodySize": "10MB"
+        }
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": {
+            "console": {
+                "enabled": true,
+                "level": "WARNING",
+                "format": "%(levelname)s - %(message)s"
+            },
+            "file": {
+                "enabled": true,
+                "path": "../logs/backend.log",
+                "level": "DEBUG",
+                "maxSize": "100MB",
+                "backupCount": 5,
+                "encoding": "utf-8"
+            },
+            "access": {
+                "enabled": true,
+                "path": "../logs/access.log",
+                "format": "%(asctime)s - %(client_ip)s - %(request_line)s - %(status_code)s - %(response_time)s",
+                "maxSize": "50MB",
+                "backupCount": 3
+            }
+        },
+        "categories": {
+            "api": "INFO",
+            "task_manager": "INFO",
+            "scheduler": "DEBUG",
+            "middleware": "INFO",
+            "websocket": "DEBUG",
+            "database": "INFO",
+            "security": "WARNING"
+        }
+    },
+    "errorHandling": {
+        "global": {
+            "catchExceptions": true,
+            "returnErrorDetails": false,
+            "logErrors": true,
+            "customErrorResponses": true
+        },
+        "httpErrors": {
+            "400": {"message": "Bad Request", "code": "BAD_REQUEST"},
+            "401": {"message": "Unauthorized", "code": "UNAUTHORIZED"},
+            "403": {"message": "Forbidden", "code": "FORBIDDEN"},
+            "404": {"message": "Not Found", "code": "NOT_FOUND"},
+            "429": {"message": "Too Many Requests", "code": "RATE_LIMIT_EXCEEDED"},
+            "500": {"message": "Internal Server Error", "code": "INTERNAL_ERROR"},
+            "503": {"message": "Service Unavailable", "code": "SERVICE_UNAVAILABLE"}
+        },
+        "taskErrors": {
+            "timeout": {"retry": true, "maxRetries": 3},
+            "resourceExhausted": {"retry": true, "delay": 60},
+            "validationFailed": {"retry": false},
+            "processingFailed": {"retry": true, "maxRetries": 2}
+        },
+        "recovery": {
+            "circuitBreaker": {
+                "enabled": false,
+                "failureThreshold": 5,
+                "recoveryTimeout": 60
+            },
+            "fallbackServices": [],
+            "gracefulShutdown": true
+        }
+    },
+    "deployment": {
+        "environment": {
+            "development": {
+                "debug": true,
+                "reload": true,
+                "logLevel": "DEBUG",
+                "corsAllowAll": true
+            },
+            "staging": {
+                "debug": false,
+                "reload": false,
+                "logLevel": "INFO",
+                "corsAllowAll": false
+            },
+            "production": {
+                "debug": false,
+                "reload": false,
+                "logLevel": "WARNING",
+                "corsAllowAll": false
+            }
+        },
+        "scaling": {
+            "horizontal": {
+                "enabled": false,
+                "minInstances": 1,
+                "maxInstances": 3,
+                "cpuThreshold": 70,
+                "memoryThreshold": 80
+            },
+            "vertical": {
+                "enabled": true,
+                "cpuLimit": "2000m",
+                "memoryLimit": "2Gi"
+            }
+        },
+        "healthChecks": {
+            "enabled": true,
+            "path": "/health",
+            "interval": 30,
+            "timeout": 10,
+            "unhealthyThreshold": 3,
+            "healthyThreshold": 2
+        },
+        "gracefulShutdown": {
+            "enabled": true,
+            "timeout": 30,
+            "forceShutdown": 60
+        }
+    },
+    "integration": {
+        "frontend": {
+            "corsEnabled": true,
+            "websocketEnabled": true,
+            "progressUpdates": true,
+            "errorNotifications": true
+        },
+        "processing": {
+            "asyncTasks": true,
+            "progressCallbacks": true,
+            "resultCaching": true,
+            "errorRecovery": true
+        },
+        "ai": {
+            "modelLoading": true,
+            "inferenceQueue": true,
+            "resultStreaming": false
+        },
+        "external": {
+            "rateLimiter": "builtin",
+            "cache": "memory",
+            "metrics": "builtin",
+            "tracing": null
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+  "src_module": {
+    "description": "SRC主模块配置",
+    "components": {
+      "main": {
+        "description": "主入口模块",
+        "file": "main.py",
+        "responsibility": "提供FastAPI应用和运行配置"
+      },
+      "entry": {
+        "description": "统一入口脚本",
+        "file": "entry.py",
+        "responsibility": "负责启动整个SRC模块"
+      }
+    },
+    "orchestration": {
+      "main_entry": "entry.py",
+      "dependencies": [
+        "main.py"
+      ],
+      "startup_sequence": [
+        "加载配置",
+        "初始化FastAPI应用",
+        "启动服务器"
+      ]
+    }
+  }
+}

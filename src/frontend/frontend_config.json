@@ -1,0 +1,229 @@
+{
+    "meta": {
+        "name": "前端界面配置",
+        "description": "PyQt5前端界面的详细配置参数",
+        "version": "1.0.0",
+        "createdAt": "2024-01-16T00:00:00Z",
+        "lastModified": "2024-01-16T00:00:00Z"
+    },
+    "ui": {
+        "framework": "PyQt5",
+        "version": "5.15+",
+        "theme": {
+            "current": "dark",
+            "available": ["light", "dark", "auto"],
+            "colors": {
+                "primary": "#007bff",
+                "secondary": "#6c757d",
+                "success": "#28a745",
+                "danger": "#dc3545",
+                "warning": "#ffc107",
+                "info": "#17a2b8",
+                "background": "#1a1a1a",
+                "surface": "#2d2d2d",
+                "text": "#ffffff",
+                "textSecondary": "#cccccc"
+            }
+        },
+        "window": {
+            "title": "AI弹窗项目 - 智能人脸合成与视频处理平台",
+            "icon": "assets/icons/app.ico",
+            "defaultSize": {
+                "width": 1280,
+                "height": 720
+            },
+            "minSize": {
+                "width": 800,
+                "height": 600
+            },
+            "maxSize": {
+                "width": 1920,
+                "height": 1080
+            },
+            "position": "center",
+            "alwaysOnTop": false,
+            "frameless": false
+        },
+        "layout": {
+            "sidebar": {
+                "enabled": true,
+                "width": 200,
+                "collapsible": true
+            },
+            "toolbar": {
+                "enabled": true,
+                "height": 40,
+                "position": "top"
+            },
+            "statusbar": {
+                "enabled": true,
+                "height": 25
+            }
+        }
+    },
+    "components": {
+        "tabs": [
+            {
+                "id": "home",
+                "name": "首页",
+                "icon": "home.png",
+                "enabled": true,
+                "order": 1
+            },
+            {
+                "id": "processing",
+                "name": "处理",
+                "icon": "processing.png",
+                "enabled": true,
+                "order": 2
+            },
+            {
+                "id": "monitor",
+                "name": "监控",
+                "icon": "monitor.png",
+                "enabled": true,
+                "order": 3
+            },
+            {
+                "id": "settings",
+                "name": "设置",
+                "icon": "settings.png",
+                "enabled": true,
+                "order": 4
+            }
+        ],
+        "widgets": {
+            "fileBrowser": {
+                "enabled": true,
+                "filters": [".jpg", ".jpeg", ".png", ".bmp", ".mp4", ".avi", ".mov"],
+                "maxPreviewSize": "200x200",
+                "dragDropEnabled": true
+            },
+            "progressDialog": {
+                "enabled": true,
+                "showDetails": true,
+                "autoClose": false,
+                "cancelable": true
+            },
+            "previewWidget": {
+                "enabled": true,
+                "maxSize": "400x300",
+                "autoResize": true,
+                "zoomEnabled": true
+            },
+            "monitorWidget": {
+                "enabled": true,
+                "refreshInterval": 2000,
+                "metrics": ["cpu", "memory", "gpu", "disk", "network"],
+                "charts": {
+                    "cpu": {"type": "line", "color": "#007bff"},
+                    "memory": {"type": "area", "color": "#28a745"},
+                    "gpu": {"type": "line", "color": "#dc3545"}
+                }
+            }
+        }
+    },
+    "interaction": {
+        "shortcuts": {
+            "global": {
+                "openFile": "Ctrl+O",
+                "newProject": "Ctrl+N",
+                "save": "Ctrl+S",
+                "exit": "Ctrl+Q",
+                "fullscreen": "F11",
+                "refresh": "F5"
+            },
+            "processing": {
+                "start": "F9",
+                "pause": "F10",
+                "stop": "F12",
+                "preview": "Space"
+            }
+        },
+        "dragDrop": {
+            "enabled": true,
+            "acceptedTypes": ["image/*", "video/*"],
+            "maxFiles": 10,
+            "maxTotalSize": "1GB"
+        },
+        "contextMenus": {
+            "fileList": {
+                "open": true,
+                "preview": true,
+                "delete": true,
+                "properties": true
+            },
+            "taskQueue": {
+                "start": true,
+                "pause": true,
+                "cancel": true,
+                "priority": true
+            }
+        }
+    },
+    "communication": {
+        "backend": {
+            "protocol": "http",
+            "host": "localhost",
+            "port": 8000,
+            "basePath": "/api/v1",
+            "timeout": 30000,
+            "retryAttempts": 3,
+            "retryDelay": 1000
+        },
+        "websocket": {
+            "enabled": true,
+            "url": "ws://localhost:8000/ws",
+            "reconnect": true,
+            "reconnectInterval": 5000,
+            "heartbeat": 30000
+        },
+        "dataFormat": {
+            "request": "json",
+            "response": "json",
+            "encoding": "utf-8"
+        }
+    },
+    "performance": {
+        "rendering": {
+            "doubleBuffer": true,
+            "hardwareAcceleration": true,
+            "vsync": true,
+            "maxFps": 60
+        },
+        "memory": {
+            "imageCacheSize": "100MB",
+            "previewCacheSize": "50MB",
+            "autoCleanup": true,
+            "cleanupInterval": 300000
+        },
+        "threading": {
+            "uiThread": "main",
+            "workerThreads": 2,
+            "maxConcurrentOperations": 4
+        }
+    },
+    "accessibility": {
+        "enabled": true,
+        "keyboardNavigation": true,
+        "screenReader": true,
+        "highContrast": false,
+        "fontSize": "medium",
+        "language": "zh-CN"
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "file": "logs/frontend.log",
+        "maxSize": "10MB",
+        "backupCount": 5,
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    },
+    "errorHandling": {
+        "showDialog": true,
+        "autoReport": false,
+        "userFriendlyMessages": true,
+        "recoveryOptions": true,
+        "logErrors": true
+    }
+}

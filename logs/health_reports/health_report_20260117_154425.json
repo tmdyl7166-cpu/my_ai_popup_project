@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-01-17T15:44:23.854587",
+  "checks": {
+    "python": {
+      "name": "Python环境",
+      "status": "healthy",
+      "version": "3.10.12 (main, Jan  8 2026, 06:52:19) [GCC 11.4.0]",
+      "path": "/usr/local/python/current/bin/python3",
+      "virtual_env": false
+    },
+    "structure": {
+      "name": "项目结构",
+      "status": "healthy",
+      "directories": {
+        "src": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/src"
+        },
+        "rules": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/rules"
+        },
+        "assets": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/assets"
+        },
+        "docs": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/docs"
+        },
+        "logs": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/logs"
+        },
+        "web": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/web"
+        },
+        "scripts": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/scripts"
+        }
+      },
+      "files": {
+        "project_config.json": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/project_config.json"
+        },
+        "requirements.txt": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/requirements.txt"
+        },
+        "README.md": {
+          "exists": true,
+          "path": "/workspaces/my_ai_popup_project/README.md"
+        }
+      }
+    },
+    "dependencies": {
+      "name": "依赖",
+      "status": "warning",
+      "packages": {
+        "fastapi": "installed",
+        "uvicorn": "installed",
+        "pydantic": "installed",
+        "PyQt5": "installed",
+        "PyQt6": "installed",
+        "numpy": "installed",
+        "opencv-python": "missing",
+        "requests": "installed",
+        "websocket-client": "missing"
+      }
+    },
+    "services": {
+      "name": "服务",
+      "status": "healthy",
+      "services": {
+        "api": {
+          "port": 8000,
+          "status": "running"
+        },
+        "web": {
+          "port": 8080,
+          "status": "stopped"
+        },
+        "ollama": {
+          "status": "stopped"
+        }
+      }
+    },
+    "resources": {
+      "name": "资源",
+      "status": "healthy",
+      "cpu": 68.8,
+      "memory": 68.4,
+      "disk": 72.1
+    }
+  },
+  "overall_status": "warning"
+}

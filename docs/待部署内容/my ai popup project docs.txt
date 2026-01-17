@@ -1,0 +1,68 @@
+my_ai_popup_project/docs/待部署内容
+my_ai_popup_project/docs/类似项目部署文档进度
+
+这两个文件夹中的文档内容，是其他项目的部署过程，对这些文档内容进行分析识别后，进行以下操作。
+
+1.结合my_ai_popup_project项目逻辑以及子项目的实际部署情况，把这两个文件夹中的文档内容中，对my_ai_popup_project项目能够用上的优化内容进行统计整合整理。
+2. 把整合出来的内容，以序号-部署项目，的文档方式，在my_ai_popup_project/docs/deployment_progress 文件夹中创建出所有的缺失可部署内容，详细的任务部署文档。
+
+
+my_ai_popup_project/docs/待部署内容
+my_ai_popup_project/docs/类似项目部署文档进度
+
+这两个文件夹中的文档内容，是其他项目的部署过程，对这些文档内容进行分析识别后，进行以下操作。
+
+1.结合my_ai_popup_project项目逻辑以及子项目的实际部署情况，把这两个文件夹中的文档内容中，对my_ai_popup_project项目能够用上的优化内容进行统计整合整理。
+2. 把整合出来的内容，以序号-部署项目，的文档方式，在my_ai_popup_project/docs/deployment_progress 文件夹中创建出所有的缺失可部署内容，详细的任务部署文档。
+
+1. 强制停止容器
+
+使用 docker stop 强制停止容器，指定容器 ID 或名称，并且用 -t 0 参数来确保它立即停止：
+
+sudo docker stop -t 0 angry_proskuriakova
+
+2. 强制删除容器
+
+如果停止操作无法成功，可以强制删除容器。这样，即使容器无法停止，Docker 也会删除它：
+
+sudo docker rm -f angry_proskuriakova
+sudo docker rm -f priceless_germain
+
+3. 查看容器的日志
+
+如果容器依然无法删除或停止，可以查看容器的日志，看看是否有更多信息能够帮助定位问题。尝试以下命令查看日志：
+
+sudo docker logs angry_proskuriakova
+
+
+这会输出容器的日志，可能会揭示出容器无法停止的原因。
+
+4. 查看 Docker 服务状态
+
+如果 Docker 守护进程本身遇到问题，也可能导致容器操作失败。查看 Docker 服务的状态和日志：
+
+sudo systemctl status docker
+sudo journalctl -u docker.service
+
+5. 检查 Docker 的资源限制
+
+容器可能受限于一些资源，如 CPU 或内存。你可以尝试增加资源限制，然后重试容器的停止命令：
+
+sudo docker update --memory 2g --cpus 2 angry_proskuriakova
+
+
+然后再试停止或删除容器：
+
+sudo docker stop angry_proskuriakova
+
+6. 重启 Docker 服务
+
+如果容器仍然无法停止，重启 Docker 服务有时能清理掉一些挂起的进程：
+
+sudo systemctl restart docker
+
+
+重启后，再次尝试停止容器：
+
+sudo docker stop $(docker ps -q)
+

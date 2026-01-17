@@ -1,0 +1,158 @@
+{
+    "meta": {
+        "name": "集成模块配置",
+        "description": "定义第三方引擎集成的配置和参数",
+        "version": "1.0.0",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "lastModified": "2024-01-01T00:00:00Z"
+    },
+    "engines": {
+        "deep-live-cam": {
+            "enabled": true,
+            "priority": 1,
+            "path": "../assets/Deep-Live-Cam-main",
+            "executable": "run.py",
+            "config": {
+                "gpu": "auto",
+                "executionProvider": "cuda",
+                "executionThreadCount": 8,
+                "executionQueueCount": 1
+            },
+            "features": ["realtime", "face-swap", "expression"],
+            "supportedTasks": ["image_to_camera", "video_to_camera"],
+            "timeout": 300000,
+            "healthCheck": {
+                "enabled": true,
+                "interval": 30,
+                "command": "python --version"
+            }
+        },
+        "facefusion": {
+            "enabled": true,
+            "priority": 2,
+            "path": "../assets/facefusion-master",
+            "executable": "facefusion.py",
+            "config": {
+                "headless": true,
+                "logLevel": "error",
+                "maxMemory": "4GB"
+            },
+            "features": ["face-swap", "face-enhance", "batch"],
+            "supportedTasks": ["image_to_image", "image_to_video"],
+            "timeout": 600000,
+            "healthCheck": {
+                "enabled": true,
+                "interval": 60,
+                "command": "python facefusion.py --version"
+            }
+        },
+        "iroop": {
+            "enabled": true,
+            "priority": 3,
+            "path": "../assets/iRoopDeepFaceCam-main",
+            "executable": "run.py",
+            "config": {
+                "manyFaces": false,
+                "sourceFaceIndex": 0,
+                "targetFaceIndex": 0
+            },
+            "features": ["one-shot", "face-swap", "expression"],
+            "supportedTasks": ["image_to_video", "video_to_video"],
+            "timeout": 300000,
+            "healthCheck": {
+                "enabled": true,
+                "interval": 45,
+                "command": "python run.py --help"
+            }
+        }
+    },
+    "integration": {
+        "interface": {
+            "protocol": "subprocess",
+            "communication": "stdout/stdin",
+            "encoding": "utf-8",
+            "bufferSize": 8192
+        },
+        "processManagement": {
+            "isolation": "separate_process",
+            "resourceLimits": {
+                "cpuPercent": 80,
+                "memoryMB": 4096,
+                "maxProcesses": 3
+            },
+            "cleanup": {
+                "onExit": true,
+                "forceKillTimeout": 5000
+            }
+        },
+        "errorHandling": {
+            "retryPolicy": {
+                "maxAttempts": 2,
+                "backoffStrategy": "exponential",
+                "baseDelay": 2000
+            },
+            "fallbackChain": ["deep-live-cam", "facefusion", "iroop"],
+            "errorMapping": {
+                "timeout": "ENGINE_TIMEOUT",
+                "memory": "INSUFFICIENT_MEMORY",
+                "gpu": "GPU_UNAVAILABLE",
+                "file": "INVALID_INPUT"
+            }
+        }
+    },
+    "taskMapping": {
+        "image_to_camera": {
+            "primary": "deep-live-cam",
+            "fallback": ["facefusion"],
+            "parameters": {
+                "realtime": true,
+                "fps": 25,
+                "resolution": "1280x720"
+            }
+        },
+        "image_to_video": {
+            "primary": "facefusion",
+            "fallback": ["iroop", "deep-live-cam"],
+            "parameters": {
+                "batch": true,
+                "quality": "high",
+                "outputFormat": "mp4"
+            }
+        },
+        "video_to_camera": {
+            "primary": "deep-live-cam",
+            "fallback": ["iroop"],
+            "parameters": {
+                "realtime": true,
+                "loop": true,
+                "syncAudio": false
+            }
+        },
+        "image_to_image": {
+            "primary": "facefusion",
+            "fallback": ["iroop"],
+            "parameters": {
+                "enhance": true,
+                "blend": "poisson"
+            }
+        }
+    },
+    "performance": {
+        "monitoring": {
+            "enabled": true,
+            "metrics": ["latency", "throughput", "resource_usage"],
+            "interval": 5000
+        },
+        "optimization": {
+            "preloading": true,
+            "caching": true,
+            "parallelExecution": false
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "includeEngineOutput": false,
+        "performanceLogs": true,
+        "errorDetails": true
+    }
+}

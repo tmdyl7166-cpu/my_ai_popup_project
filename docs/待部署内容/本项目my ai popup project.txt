@@ -1,0 +1,313 @@
+本项目my_ai_popup_project
+
+一、整体项目核心逻辑一句话总结
+
+这是一个以「本地 AI + 弹窗 GUI」为入口，
+通过「自然语言 → 任务理解 → 规则决策 → AI/视频处理执行 → 实时/离线输出」的多模块联动系统。
+
+它的本质不是“单一人脸合成工具”，而是一个：
+
+AI 指挥中枢
+
+多开源人脸系统的统一调度平台
+
+前端实时交互 + 后端任务编排 + AI 理解执行的闭环系统
+
+整体运行分层逻辑（从上到下）
+前端用户
+ ↓
+GUI（PyQt 弹窗）
+ ↓
+AI命令理解（Ollama）
+ ↓
+规则系统（L1-L5）
+ ↓
+任务调度 / 任务管理
+ ↓
+处理引擎（实时 / 图片 / 视频 / 批量）
+ ↓
+第三方AI集成（Deep-Live-Cam / Facefusion / iRoop）
+ ↓
+结果回流（视频 / 图像 / 实时画面）
+
+三、启动与部署总体流程大纲
+项目启动顺序（非常关键）
+（1）环境与依赖层
+
+Python 虚拟环境
+
+requirements.txt
+
+AI 模型（assets/models）
+
+OpenCV / GPU / CUDA（如果有）
+
+这是所有模块的地基。
+
+（2）配置加载层（Config 层）
+
+加载顺序：
+
+.env
+
+settings.json
+
+app_config.py
+
+📌 联动逻辑：
+
+配置内容会被：
+
+前端（UI显示、默认行为）
+
+后端（API端口、限流）
+
+AI模块（模型路径、参数）
+
+Processing模块（分辨率、FPS）
+同时使用
+
+👉 配置是“全项目共享状态”
+
+（3）规则系统启动（rules/）
+
+规则系统不是“配置文件”，而是AI行为控制核心：
+
+层级	作用
+L1	项目最高目标（做什么、不做什么）
+L2	全局理解（项目是什么、当前上下文）
+L3	约束（安全、范围、禁止行为）
+L4	决策（如何选择方案）
+L5	执行（具体动作）
+
+📌 联动逻辑：
+
+Ollama → 输出“意图”
+
+规则系统 → 裁决是否可执行 + 如何执行
+
+task_manager → 接收最终执行方案
+
+ 前端（PyQt5）部署与逻辑
+前端并不“做AI”，只做三件事：
+
+展示
+
+采集用户意图
+
+反馈执行状态
+
+前端模块联动关系
+main_window
+ ├─ popup_window（AI弹窗入口）
+ ├─ video_panel（实时画面）
+ ├─ image_panel（静态预览）
+ ├─ control_buttons（用户控制）
+ └─ progress_bar（任务状态）
+
+
+ 前端 → 后端：
+
+通过 API / 内部调用
+
+不直接操作 AI 模型
+
+不直接处理视频算法
+
+ AI 命令理解与调度逻辑
+Ollama 的角色不是“执行者”，而是：
+
+“高级指挥官 + 任务拆解器”
+
+AI 处理流程：
+用户自然语言
+ ↓
+ollama_client
+ ↓
+语义解析 / 意图识别
+ ↓
+生成任务结构（JSON / 指令）
+ ↓
+交给 rules 系统裁决
+
+
+📌 关键联动：
+
+AI 不直接调用 face_swapper
+
+AI 不直接操作视频
+
+一切必须经过：
+
+rules
+
+task_manager
+
+后端任务系统（真正的中枢）
+task_manager + scheduler 是整个系统的“心脏”
+职责分工：
+模块	作用
+task_manager	创建 / 管理 / 状态跟踪
+scheduler	决定任务何时执行
+api_server	对外通信
+middleware	安全 / 日志 / 限流
+
+ 联动逻辑：
+
+前端 → API → task_manager
+
+AI → rules → task_manager
+
+scheduler → processing
+
+ Processing 处理引擎层（能力核心）
+四大处理模式
+模块	使用场景
+realtime_processor	摄像头 / 实时替换
+image_processor	图片 → 图片
+video_processor	视频 → 视频
+batch_processor	批量任务
+
+ 处理器不关心“用哪个模型”
+ 它只关心：
+
+输入是什么
+
+输出是什么
+
+调用哪个 AI 处理器
+
+ AI 人脸模块联动关系
+processing
+ ↓
+ai.processors
+ ├─ face_swapper
+ ├─ face_enhancer
+ └─ expression_editor
+ ↓
+ai.face_recognition
+ ├─ detector
+ ├─ aligner
+ └─ recognizer
+
+
+ 统一原则：
+
+所有人脸检测 → detector
+
+所有人脸对齐 → aligner
+
+所有识别 → recognizer
+
+避免重复实现。
+
+ 第三方项目集成层（桥接层）
+integrations/ 的真实作用
+
+“把复杂开源项目，包装成统一接口”
+
+集成	用途
+deep_live_cam	实时换脸
+facefusion	高质量视频
+iroop_deepfacecam	表情/姿态
+
+ 联动规则：
+
+integrations 不被前端直接调用
+
+只允许：
+
+processing → integrations
+
+ 数据与资源流转逻辑
+assets/images/source
+ → processing
+ → assets/images/output
+
+assets/videos/source
+ → processing
+ → assets/videos/output
+
+ 所有输出路径统一由 config 控制
+
+全项目联动的核心原则（非常重要）
+ 单向依赖原则（防止混乱）
+UI → API → Task → Processing → AI → Integration
+
+
+ 不允许反向调用
+
+状态唯一来源原则
+
+任务状态 → task_manager
+
+配置状态 → config
+
+AI决策 → rules
+
+ 任一模块修改，必须检查的联动点
+修改内容	必须检查
+AI命令	rules / task_manager
+视频逻辑	processing / utils
+模型参数	config / docs
+UI交互	API / task状态
+
+根目录的my_ai_popup_project\project_config.json配置作为指向，根据目前每个子项目的json配置以及说明文档内容进行指向
+
+rules文件夹中的所有json配置内容，代表整个项目运行的逻辑和执行规则
+## 五层规则配置系统
+
+本项目采用独特的五层逻辑规则配置系统，确保系统的稳定性和可演化性：
+
+### L1 - 元目标层 (Meta Goal)
+定义项目的最高目标和约束条件，是项目的宏观指导思想。
+
+### L2 - 全局理解层 (Understanding)
+描述项目的整体架构、模块关系和数据流。
+
+### L3 - 约束层 (Constraints)
+定义技术实现的约束、规范和依赖关系。
+
+### L4 - 决策层 (Decisions)
+记录关键设计决策和权衡，以及为什么选择某种技术或架构。
+
+### L5 - 执行层 (Execution)
+具体的执行规则、操作指南和任务分配。
+
+
+my_ai_popup_project\web文件夹作为管理员对整个项目系统的健康监控检测，对全局所有自动化脚本进行调用，能实时检测所有子项目以及各api接口等部署情况的观察和整个项目所有部署的情况，呈现的内容由docs文件夹中指向的所有实际项目部署情况产生。
+
+my_ai_popup_project\scripts文件夹包含所有的系统配置自动化健康监控检测，确保整个项目的功能稳定以及配置检测自动化部署，修复修正检查等。
+
+my_ai_popup_project\docs包含整个项目的详细说明以及任务部署的详细说明情况。
+
+my_ai_popup_project\assets包含了项目所需的所有资源文件、第三方开源项目和媒体数据
+
+my_ai_popup_project\src作为AI弹窗项目的核心文件夹，包含了AI弹窗项目的核心源码，按照分层架构组织为多个功能模块。
+
+
+其中my_ai_popup_project\src\frontend 目录作为项目后续打包以后，提供给用户使用的前端功能桌面窗口呈现。
+
+优化 my_ai_popup_project\src\frontend 文件夹，frontend 目录中的项目是后续打包以后，呈现给前端用户的功能性桌面窗口，现在根据以下内容进行分析，部署一个窗口框架，对应的窗口结构合理以及功能模块预留出占位。
+
+模块功能分为四个结构
+主体结构：选择功能区 AI学习区域 任务部署区域  反馈区域  
+模块内容根据以下描述进行部署。
+
+1.用户首选主要合成文件类型
+可选择图片，视频，摄像头。
+选择内容后，呈现选择的内容，并且自动识别对应的参数呈现到任务预备区域。
+
+AI学习区域，预选的本地AI，选择后自动下载，预留所有可选学习内容，以及学习说明和进度。
+
+任务部署分为两个模式类型。
+
+简单模式：用户选择次要合成文件类型，图片与图片合成，图片内容合成到视频，图片内容合成到实时摄像头，AI简单的调度处理引擎（实时 / 图片 / 视频 / 批量）第三方AI集成（Deep-Live-Cam / Facefusion / iRoop）直接进行合成。
+
+高级模式：用户仅选择主要文件后与AI产生自然语言的交流，让AI深度理解分析识别输入的任务内容，根据主要参数与任务要求，结合所有引擎和学习库创造出合成内容。
+
+ 反馈区域  对任务内容进行结果预览的实时反馈。
+
+根据这些描述，分析以后，预留出前端用户使用的简单的自然语言功能模块预留，以及需要留空的位置或后续用户可输入的位置进行说明和配置，并且在my_ai_popup_project\docs\project_docs 文件夹中创建一个前端用户功能模块说明文档，把每一个模块对应的前端用户功能模块名称，功能说明，接口实现方式，所需要调用的api运行逻辑和调用脚本的具体实现内容都详细说明到里面。
+
+符合我的需求，并且希望你检查整个项目部署的所有脚本，把所有的脚本内容颗粒度细化，把功能性脚本的内容进行识别，然后进行拆分，对现有项目的部署/运维/自动化脚本进行彻底重构，实现 高内聚、低耦合、模块化，都只能负责一个明确、单一的功能，每一个功能必须拆分为独立模块，然后根据拆分的内容，建立统一入口

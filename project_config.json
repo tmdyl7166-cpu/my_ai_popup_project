@@ -1,0 +1,915 @@
+{
+    "meta": {
+        "name": "夜灵AR多功能合成软件配置",
+        "description": "定义项目子目录功能和部署路径的统一配置，作为项目导航和配置指引",
+        "version": "2.0.0",
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-17T00:00:00Z",
+        "author": "AI Assistant",
+        "rulesVersion": "1.0.0"
+    },
+    "project": {
+        "name": "夜灵AR多功能合成软件",
+        "fullName": "夜灵AR多功能合成软件",
+        "type": "Desktop Application with AI Capabilities",
+        "rootPath": "./my_ai_popup_project",
+        "description": "基于AI的人脸合成、视频处理和实时预览多功能桌面应用"
+    },
+    "subprojects": {
+        "src": {
+            "name": "核心源码模块",
+            "path": "./src",
+            "description": "包含前端、后端、AI处理等核心功能模块，是项目的主要代码库",
+            "type": "source_code",
+            "configFile": "./src/src_config.json",
+            "readmeFile": "./src/src_README.md",
+            "entryPoint": "./src/main.py",
+            "priority": 1,
+            "dependencies": [],
+            "submodules": {
+                "frontend": {
+                    "name": "前端UI模块",
+                    "path": "./src/frontend",
+                    "description": "PyQt5图形界面，负责用户交互和界面展示",
+                    "configFile": "./src/frontend/frontend_config.json",
+                    "readmeFile": "./src/frontend/frontend_README.md",
+                    "entryPoint": "./src/frontend/main_window.py",
+                    "dependencies": ["backend", "config"],
+                    "features": [
+                        "主窗口管理",
+                        "弹窗组件",
+                        "UI组件库",
+                        "样式管理"
+                    ],
+                    "responsibility": "提供用户图形界面，处理用户输入和界面渲染"
+                },
+                "backend": {
+                    "name": "后端服务模块",
+                    "path": "./src/backend",
+                    "description": "FastAPI后端服务，任务管理、调度、API接口",
+                    "configFile": "./src/backend/backend_config.json",
+                    "readmeFile": "./src/backend/backend_README.md",
+                    "entryPoint": "./src/backend/api_server.py",
+                    "dependencies": ["ai", "processing", "utils"],
+                    "features": [
+                        "API服务器",
+                        "任务管理器",
+                        "调度器",
+                        "中间件"
+                    ],
+                    "responsibility": "处理业务逻辑，提供RESTful API和WebSocket服务"
+                },
+                "ai": {
+                    "name": "AI模块",
+                    "path": "./src/ai",
+                    "description": "AI推理和处理，Ollama客户端、人脸识别等",
+                    "configFile": "./src/ai/ai_config.json",
+                    "readmeFile": "./src/ai/ai_README.md",
+                    "entryPoint": "./src/ai/ollama_client.py",
+                    "dependencies": ["config", "integrations", "utils"],
+                    "features": [
+                        "Ollama客户端",
+                        "人脸识别",
+                        "质量分析",
+                        "命令理解"
+                    ],
+                    "submodules": {
+                        "ollama_client.py": {
+                            "description": "Ollama LLM客户端",
+                            "responsibility": "与本地Ollama服务通信，处理AI推理请求"
+                        },
+                        "analyzers/": {
+                            "description": "分析器模块",
+                            "responsibility": "提供各种分析和质量检测功能"
+                        },
+                        "face_recognition/": {
+                            "description": "人脸识别模块",
+                            "responsibility": "人脸检测、特征提取和比对"
+                        },
+                        "processors/": {
+                            "description": "处理器模块",
+                            "responsibility": "AI结果处理和后处理"
+                        }
+                    },
+                    "responsibility": "提供AI推理能力和人脸识别功能"
+                },
+                "processing": {
+                    "name": "处理模块",
+                    "path": "./src/processing",
+                    "description": "媒体处理引擎，图片/视频处理、批量处理",
+                    "configFile": "./src/processing/processing_config.json",
+                    "readmeFile": "./src/processing/processing_README.md",
+                    "entryPoint": "./src/processing/batch_processor.py",
+                    "dependencies": ["ai", "utils", "integrations"],
+                    "features": [
+                        "图片处理",
+                        "视频处理",
+                        "批量处理",
+                        "格式转换"
+                    ],
+                    "responsibility": "执行媒体文件处理任务，包括图片增强、视频合成等"
+                },
+                "integrations": {
+                    "name": "集成模块",
+                    "path": "./src/integrations",
+                    "description": "第三方引擎集成，Deep-Live-Cam、FaceFusion等",
+                    "configFile": "./src/integrations/integrations_config.json",
+                    "readmeFile": "./src/integrations/integrations_README.md",
+                    "entryPoint": "./src/integrations/__init__.py",
+                    "dependencies": ["utils"],
+                    "features": [
+                        "Deep-Live-Cam集成",
+                        "FaceFusion集成",
+                        "iRoop集成",
+                        "引擎抽象层"
+                    ],
+                    "responsibility": "封装第三方换脸引擎，提供统一的调用接口"
+                },
+                "utils": {
+                    "name": "工具模块",
+                    "path": "./src/utils",
+                    "description": "通用工具模块，文件操作、日志、线程管理等",
+                    "configFile": "./src/utils/utils_config.json",
+                    "readmeFile": "./src/utils/utils_README.md",
+                    "entryPoint": "./src/utils/logger.py",
+                    "dependencies": [],
+                    "features": [
+                        "文件工具",
+                        "日志管理",
+                        "路径解析",
+                        "线程工具"
+                    ],
+                    "submodules": {
+                        "file_utils.py": {
+                            "description": "文件操作工具",
+                            "responsibility": "提供文件读写、遍历、压缩等操作"
+                        },
+                        "image_utils.py": {
+                            "description": "图片处理工具",
+                            "responsibility": "图片格式转换、缩放、裁剪等"
+                        },
+                        "video_utils.py": {
+                            "description": "视频处理工具",
+                            "responsibility": "视频帧提取、编码、合成等"
+                        },
+                        "logger.py": {
+                            "description": "日志管理工具",
+                            "responsibility": "统一日志记录和输出"
+                        },
+                        "path_resolver.py": {
+                            "description": "路径解析工具",
+                            "responsibility": "路径规范化、相对路径转绝对路径"
+                        },
+                        "thread_utils.py": {
+                            "description": "线程工具",
+                            "responsibility": "线程池、异步任务管理"
+                        }
+                    },
+                    "responsibility": "提供通用的工具函数和辅助功能"
+                },
+                "config": {
+                    "name": "配置模块",
+                    "path": "./src/config",
+                    "description": "配置管理系统，环境变量、设置管理等",
+                    "configFile": "./src/config/config_config.json",
+                    "readmeFile": "./src/config/config_README.md",
+                    "entryPoint": "./src/config/app_config.py",
+                    "dependencies": [],
+                    "features": [
+                        "配置加载",
+                        "环境管理",
+                        "设置验证",
+                        "配置持久化"
+                    ],
+                    "responsibility": "管理项目配置，支持环境变量和配置文件"
+                }
+            }
+        },
+        "assets": {
+            "name": "资源和第三方项目",
+            "path": "./assets",
+            "description": "模型、第三方项目和测试资源的存储目录",
+            "type": "resources",
+            "configFile": "./assets/assets_config.json",
+            "readmeFile": "./assets/assets_README.md",
+            "submodules": {
+                "models/": {
+                    "name": "AI模型目录",
+                    "path": "./assets/models",
+                    "description": "存储AI模型文件，包括人脸检测、识别、增强模型",
+                    "autoDownload": true,
+                    "supportedFormats": [".onnx", ".pth", ".pt", ".bin"],
+                    "responsibility": "存放各类AI模型文件"
+                },
+                "images/": {
+                    "name": "图片资源目录",
+                    "path": "./assets/images",
+                    "description": "存储图片资源，包括源图、模板和输出",
+                    "subdirs": {
+                        "source/": "源图片存放位置",
+                        "templates/": "模板图片存放位置",
+                        "output/": "处理输出图片存放位置"
+                    },
+                    "responsibility": "管理项目使用的图片资源"
+                },
+                "videos/": {
+                    "name": "视频资源目录",
+                    "path": "./assets/videos",
+                    "description": "存储视频资源，包括源视频和处理输出",
+                    "subdirs": {
+                        "source/": "源视频存放位置",
+                        "output/": "处理输出视频存放位置"
+                    },
+                    "responsibility": "管理项目使用的视频资源"
+                },
+                "Deep-Live-Cam-main": {
+                    "name": "Deep-Live-Cam集成",
+                    "path": "./assets/Deep-Live-Cam-main",
+                    "description": "实时人脸替换引擎，支持GPU加速",
+                    "type": "third_party",
+                    "version": "latest",
+                    "configFile": "./assets/Deep-Live-Cam-main/mypi.ini",
+                    "healthCheck": "python run.py --version",
+                    "responsibility": "提供实时换脸功能"
+                },
+                "facefusion-master": {
+                    "name": "FaceFusion集成",
+                    "path": "./assets/facefusion-master",
+                    "description": "高质量视频人脸合成引擎",
+                    "type": "third_party",
+                    "version": "latest",
+                    "configFile": "./assets/facefusion-master/facefusion.ini",
+                    "healthCheck": "python facefusion.py --version",
+                    "responsibility": "提供高质量人脸融合功能"
+                },
+                "iRoopDeepFaceCam-main": {
+                    "name": "iRoop集成",
+                    "path": "./assets/iRoopDeepFaceCam-main",
+                    "description": "表情和姿态换脸引擎",
+                    "type": "third_party",
+                    "version": "latest",
+                    "configFile": "./assets/iRoopDeepFaceCam-main/mypi.ini",
+                    "healthCheck": "python run.py --help",
+                    "responsibility": "提供表情和姿态换脸功能"
+                },
+                "obs-studio-master": {
+                    "name": "OBS Studio集成",
+                    "path": "./assets/obs-studio-master",
+                    "description": "视频录制和直播集成",
+                    "type": "third_party",
+                    "version": "latest",
+                    "responsibility": "提供视频录制和直播功能"
+                },
+                "cache/": {
+                    "name": "缓存目录",
+                    "path": "./assets/cache",
+                    "description": "临时缓存文件存储",
+                    "maxSize": "2GB",
+                    "ttl": 86400,
+                    "responsibility": "存储处理过程中的临时文件"
+                },
+                "temp/": {
+                    "name": "临时目录",
+                    "path": "./assets/temp",
+                    "description": "临时文件存储，自动清理",
+                    "autoCleanup": {
+                        "enabled": true,
+                        "maxAge": 1,
+                        "interval": 3600
+                    },
+                    "responsibility": "存储临时处理文件"
+                }
+            }
+        },
+        "rules": {
+            "name": "规则系统",
+            "path": "./rules",
+            "description": "项目规则配置，五层架构规则定义",
+            "type": "configuration",
+            "configFile": "./rules/rules.config.js",
+            "readmeFile": "./rules/rules_README.md",
+            "submodules": {
+                "L1-meta-goal.json": {
+                    "name": "元目标规则",
+                    "description": "定义项目的核心目标和愿景"
+                },
+                "L2-understanding.json": {
+                    "name": "理解规则",
+                    "description": "定义AI理解任务和需求的规则"
+                },
+                "L3-constraints.json": {
+                    "name": "约束规则",
+                    "description": "定义项目约束条件和限制"
+                },
+                "L4-decisions.json": {
+                    "name": "决策规则",
+                    "description": "定义项目决策流程和原则"
+                },
+                "L5-execution.json": {
+                    "name": "执行规则",
+                    "description": "定义任务执行流程和标准"
+                },
+                "data/": {
+                    "name": "规则数据目录",
+                    "path": "./rules/data",
+                    "description": "存放规则相关数据文件"
+                }
+            },
+            "responsibility": "管理项目的规则系统和决策框架"
+        },
+        "scripts": {
+            "name": "自动化脚本",
+            "path": "./scripts",
+            "description": "健康监控、配置验证、部署等自动化脚本",
+            "type": "automation",
+            "configFile": "./scripts/scripts_config.json",
+            "readmeFile": "./scripts/scripts_README.md",
+            "entryPoint": "./scripts/entry.py",
+            "submodules": {
+                "core/": {
+                    "name": "核心脚本模块",
+                    "path": "./scripts/core",
+                    "description": "脚本注册管理器、路径配置等核心功能",
+                    "subModules": {
+                        "script_registry.py": "脚本注册管理器，负责脚本模块的注册、发现和元数据管理",
+                        "path_config.py": "路径配置模块，提供路径解析和规范化功能"
+                    },
+                    "responsibility": "提供脚本系统的核心功能"
+                },
+                "health/": {
+                    "name": "健康检查模块",
+                    "path": "./scripts/health",
+                    "description": "包含各类健康检查器和验证器",
+                    "subModules": [
+                        "structure_checker.py - 结构检查器",
+                        "config_consistency_checker.py - 配置一致性检查器",
+                        "rules_validator.py - 规则验证器",
+                        "docs_sync_checker.py - 文档同步检查器",
+                        "dependency_checker.py - 依赖检查器",
+                        "task_docs_unifier.py - 任务文档统一器",
+                        "file_cleanup_util.py - 文件清理工具",
+                        "health_monitor_orchestrator.py - 健康监控编排器",
+                        "menu_interactivity_monitor.py - 菜单交互监控器"
+                    ],
+                    "responsibility": "执行项目健康检查和验证"
+                },
+                "health_monitor/": {
+                    "name": "健康监控脚本",
+                    "path": "./scripts/health_monitor",
+                    "description": "项目健康检查、配置验证、文档同步等监控脚本",
+                    "subScripts": {
+                        "health_monitor.py": {
+                            "name": "主健康监控脚本",
+                            "description": "执行全面的项目健康检查",
+                            "execution": {
+                                "command": "python scripts/health_monitor/health_monitor.py",
+                                "frequency": "daily",
+                                "timeout": 300,
+                                "required": true
+                            },
+                            "dependencies": ["config_monitor.py"],
+                            "outputs": ["health_report.json", "logs/health_check.log"]
+                        },
+                        "config_monitor.py": {
+                            "name": "配置监控脚本",
+                            "description": "监控项目配置变化",
+                            "execution": {
+                                "command": "python scripts/health_monitor/config_monitor.py",
+                                "frequency": "on-demand",
+                                "timeout": 60,
+                                "required": false
+                            },
+                            "dependencies": [],
+                            "outputs": ["config_monitor_report.json"]
+                        },
+                        "config_validator.py": {
+                            "name": "配置一致性验证脚本",
+                            "description": "验证项目配置的一致性和完整性",
+                            "execution": {
+                                "command": "python scripts/health_monitor/config_validator.py",
+                                "frequency": "daily",
+                                "timeout": 60,
+                                "required": true
+                            },
+                            "dependencies": [],
+                            "outputs": ["config_validation_report.json", "logs/config_validator.log"]
+                        },
+                        "docs_sync_monitor.py": {
+                            "name": "文档同步监控脚本",
+                            "description": "监控文档更新状态和同步情况",
+                            "execution": {
+                                "command": "python scripts/health_monitor/docs_sync_monitor.py",
+                                "frequency": "daily",
+                                "timeout": 90,
+                                "required": true
+                            },
+                            "dependencies": [],
+                            "outputs": ["docs_sync_report.json", "logs/docs_sync_monitor.log"]
+                        },
+                        "ui_interaction_monitor.py": {
+                            "name": "UI交互健康检测脚本",
+                            "description": "检测前端交互、弹窗管理、数据传递等UI相关问题",
+                            "execution": {
+                                "command": "python scripts/health_monitor/ui_interaction_monitor.py",
+                                "frequency": "daily",
+                                "timeout": 120,
+                                "required": true
+                            },
+                            "dependencies": ["health_monitor.py"],
+                            "outputs": ["ui", "logs/ui_interaction_report.json_interaction_monitor.log"]
+                        }
+                    },
+                    "responsibility": "提供系统化的健康监控功能"
+                },
+                "deploy/": {
+                    "name": "部署模块",
+                    "path": "./scripts/deploy",
+                    "description": "提供项目部署功能",
+                    "subModules": [
+                        "deploy_entry.py - 部署入口",
+                        "shell_wrapper.py - Shell包装器",
+                        "deploy_core/ - 部署核心逻辑",
+                        "deploy_modules/ - 部署模块",
+                        "deploy_utils/ - 部署工具"
+                    ],
+                    "responsibility": "管理项目部署流程"
+                },
+                "test/": {
+                    "name": "测试模块",
+                    "path": "./scripts/test",
+                    "description": "提供项目测试功能",
+                    "subModules": [
+                        "test_runner.py - 测试运行器",
+                        "test_launch_config.py - 启动配置测试",
+                        "test_frontend_backend.py - 前后端测试",
+                        "test_error_handling.py - 错误处理测试",
+                        "test_dependencies.py - 依赖测试"
+                    ],
+                    "responsibility": "执行项目测试和验证"
+                },
+                "web/": {
+                    "name": "Web相关脚本",
+                    "path": "./scripts/web",
+                    "description": "提供Web功能和API管理",
+                    "subModules": [
+                        "api_manager.py - API管理器",
+                        "entry.py - Web脚本入口",
+                        "menu_manager.py - 菜单管理器",
+                        "security_validator.py - 安全验证器",
+                        "web_orchestrator.py - Web编排器"
+                    ],
+                    "responsibility": "管理Web相关功能"
+                },
+                "utils/": {
+                    "name": "工具模块",
+                    "path": "./scripts/utils",
+                    "description": "提供通用工具函数",
+                    "subModules": [
+                        "logging_utils.py - 日志工具",
+                        "file_utils.py - 文件工具"
+                    ],
+                    "responsibility": "提供通用工具函数"
+                },
+                "config/": {
+                    "name": "配置模块",
+                    "path": "./scripts/config",
+                    "description": "提供配置加载和管理功能",
+                    "subModules": [
+                        "config_loader.py - 配置加载器"
+                    ],
+                    "responsibility": "管理脚本配置"
+                },
+                "logs/": {
+                    "name": "日志模块",
+                    "path": "./scripts/logs",
+                    "description": "脚本日志管理",
+                    "responsibility": "管理脚本执行日志"
+                },
+                "reports/": {
+                    "name": "报告模块",
+                    "path": "./scripts/reports",
+                    "description": "测试报告生成",
+                    "responsibility": "生成和管理测试报告"
+                },
+                "ui/": {
+                    "name": "UI相关脚本",
+                    "path": "./scripts/ui",
+                    "description": "UI相关功能脚本",
+                    "responsibility": "提供UI辅助功能"
+                },
+                "main_controller.py": {
+                    "name": "主控制器",
+                    "description": "脚本系统的主控制器，协调各模块工作"
+                },
+                "entry.py": {
+                    "name": "脚本入口",
+                    "description": "脚本系统的统一入口点"
+                },
+                "health_check.py": {
+                    "name": "健康检查",
+                    "description": "独立的健康检查脚本"
+                },
+                "start_health_monitor.py": {
+                    "name": "启动健康监控",
+                    "description": "启动健康监控服务"
+                },
+                "start_backend_simple.py": {
+                    "name": "启动后端服务",
+                    "description": "简化的后端服务启动脚本"
+                },
+                "start_gui_py.py": {
+                    "name": "启动GUI",
+                    "description": "启动PyQt5 GUI界面"
+                },
+                "validate_configs.py": {
+                    "name": "配置验证",
+                    "description": "验证项目配置的正确性"
+                },
+                "verify_paths.py": {
+                    "name": "路径验证",
+                    "description": "验证项目路径配置"
+                }
+            },
+            "scriptAliases": {
+                "entry": "python scripts/entry.py",
+                "health-check": "python scripts/entry.py --task health-check",
+                "config-check": "python scripts/validate_configs.py",
+                "verify-paths": "python scripts/verify_paths.py",
+                "start-health-monitor": "python scripts/start_health_monitor.py --verbose",
+                "start-backend": "python scripts/start_backend_simple.py",
+                "start-gui": "python scripts/start_gui_py.py",
+                "test": "python -m scripts.test.test_runner"
+            }
+        },
+        "docs": {
+            "name": "文档",
+            "path": "./docs",
+            "description": "项目文档、API文档、使用指南",
+            "type": "documentation",
+            "configFile": "./docs/docs_config.json",
+            "readmeFile": "./docs/docs_README.md",
+            "submodules": {
+                "project_docs/": {
+                    "name": "项目文档",
+                    "path": "./docs/project_docs",
+                    "description": "项目整体架构、配置、开发环境等说明文档",
+                    "documents": [
+                        "项目架构说明.md - 整体架构设计",
+                        "配置管理说明.md - 配置系统说明",
+                        "开发环境说明.md - 开发环境搭建",
+                        "自动化脚本说明.md - 自动化脚本文档",
+                        "API接口说明.md - API接口文档",
+                        "TODO.md - 任务跟踪"
+                    ],
+                    "responsibility": "存放项目核心文档"
+                },
+                "deployment_progress/": {
+                    "name": "部署进度文档",
+                    "path": "./docs/deployment_progress",
+                    "description": "跟踪项目部署进度和优化任务的文档",
+                    "documents": [
+                        "01-整体进度.md - 总体部署进度",
+                        "02-优化机会.md - 优化建议",
+                        "03-当前部署进度.md - 当前详情",
+                        "04-任务跟踪.md - 任务跟踪",
+                        "05-环境配置管理.md - 环境配置",
+                        "06-安全与权限管理.md - 安全管理",
+                        "07-监控与健康检查.md - 监控文档",
+                        "08-测试与验证策略.md - 测试策略",
+                        "09-回滚与灾难恢复.md - 恢复计划",
+                        "10-性能优化部署.md - 性能优化",
+                        "21-脚本验证与修复-20260117.md - 历史记录",
+                        "22-Web-API接口映射创建-20260117.md - 历史记录"
+                    ],
+                    "responsibility": "跟踪部署进度和任务状态"
+                },
+                "tasks/": {
+                    "name": "任务文档",
+                    "path": "./docs/tasks",
+                    "description": "具体任务文档和说明"
+                },
+                "待部署内容/": {
+                    "name": "待部署内容",
+                    "path": "./docs/待部署内容",
+                    "description": "待部署功能文档"
+                },
+                "类似项目部署文档进度/": {
+                    "name": "参考项目文档",
+                    "path": "./docs/类似项目部署文档进度",
+                    "description": "类似项目的部署参考"
+                },
+                "docs_config.json": {
+                    "name": "文档配置",
+                    "description": "文档系统的配置文件"
+                },
+                "docs_README.md": {
+                    "name": "文档说明",
+                    "description": "docs目录的使用说明"
+                },
+                "文档索引说明.md": {
+                    "name": "文档索引",
+                    "description": "文档索引和分类说明"
+                }
+            }
+        },
+        "tests": {
+            "name": "测试模块",
+            "path": "./tests",
+            "description": "单元测试、集成测试、端到端测试",
+            "type": "testing",
+            "configFile": "./tests/tests_config.json",
+            "readmeFile": "./tests/tests_README.md",
+            "submodules": {
+                "test_ai/": {
+                    "name": "AI模块测试",
+                    "path": "./tests/test_ai",
+                    "description": "AI模块的单元测试和集成测试",
+                    "responsibility": "测试AI相关功能"
+                },
+                "test_api/": {
+                    "name": "API接口测试",
+                    "path": "./tests/test_api",
+                    "description": "后端API接口的测试用例",
+                    "responsibility": "测试API接口功能"
+                },
+                "test_processing/": {
+                    "name": "处理模块测试",
+                    "path": "./tests/test_processing",
+                    "description": "媒体处理模块的测试用例",
+                    "responsibility": "测试处理功能"
+                },
+                "test_ui/": {
+                    "name": "UI测试",
+                    "path": "./tests/test_ui",
+                    "description": "前端界面的测试用例",
+                    "responsibility": "测试UI功能"
+                }
+            }
+        },
+        "logs": {
+            "name": "日志",
+            "path": "./logs",
+            "description": "应用运行日志和监控报告",
+            "type": "logs",
+            "submodules": {
+                "app_20260117.log": {
+                    "name": "应用日志",
+                    "description": "应用运行的主要日志文件"
+                },
+                "web_app.log": {
+                    "name": "Web应用日志",
+                    "description": "Web监控中心的日志文件"
+                },
+                "health_reports/": {
+                    "name": "健康报告",
+                    "path": "./logs/health_reports",
+                    "description": "健康检查报告存放目录"
+                },
+                "test_reports/": {
+                    "name": "测试报告",
+                    "path": "./logs/test_reports",
+                    "description": "测试执行报告存放目录"
+                }
+            }
+        },
+        "web": {
+            "name": "Web监控中心",
+            "path": "./web",
+            "description": "基于FastAPI的Web界面，用于统一监控和管理项目各个组件",
+            "type": "web_interface",
+            "configFile": "./web/web_config.json",
+            "readmeFile": "./web/README.md",
+            "entryPoint": "./web/start_monitor.py",
+            "dependencies": ["src", "scripts", "assets", "docs"],
+            "framework": "FastAPI + Socket.IO",
+            "submodules": {
+                "api/": {
+                    "name": "API接口目录",
+                    "path": "./web/api",
+                    "description": "Web模块的API接口定义",
+                    "files": [
+                        "api_mapping.json - API映射配置",
+                        "frontend_mapping.md - 前端映射文档"
+                    ],
+                    "responsibility": "定义Web模块的API接口"
+                },
+                "static/": {
+                    "name": "静态资源目录",
+                    "path": "./web/static",
+                    "description": "前端静态资源文件",
+                    "subdirs": {
+                        "css/": "样式文件",
+                        "js/": "JavaScript文件",
+                        "images/": "图片资源"
+                    },
+                    "responsibility": "存放前端静态资源"
+                },
+                "templates/": {
+                    "name": "模板目录",
+                    "path": "./web/templates",
+                    "description": "Jinja2模板文件",
+                    "responsibility": "存放HTML模板"
+                },
+                "app.py": {
+                    "name": "Web应用主文件",
+                    "description": "FastAPI应用主入口"
+                },
+                "start_monitor.py": {
+                    "name": "监控启动脚本",
+                    "description": "启动Web监控中心"
+                },
+                "system_monitor.py": {
+                    "name": "系统监控模块",
+                    "description": "监控系统资源使用情况"
+                },
+                "deployment_monitor.py": {
+                    "name": "部署监控模块",
+                    "description": "监控部署进度和状态"
+                },
+                "socket_events.py": {
+                    "name": "Socket事件",
+                    "description": "WebSocket事件处理"
+                },
+                "config_manager.py": {
+                    "name": "配置管理",
+                    "description": "Web配置管理功能"
+                },
+                "script_manager.py": {
+                    "name": "脚本管理",
+                    "description": "脚本执行管理功能"
+                }
+            },
+            "features": [
+                "实时脚本监控",
+                "系统资源监控",
+                "部署进度跟踪",
+                "配置在线管理",
+                "日志实时查看",
+                "API调试接口"
+            ],
+            "modules": {
+                "dashboard": "主仪表板，显示系统概况和关键指标",
+                "scripts": "脚本管理，控制自动化脚本的运行状态",
+                "system": "系统监控，实时显示CPU、内存、磁盘等资源使用情况",
+                "deployment": "部署进度，跟踪各组件的部署和配置状态",
+                "config": "配置管理，在线查看和编辑项目配置",
+                "logs": "日志查看，实时查看脚本执行日志",
+                "api": "API调试，测试和调试后端API接口"
+            }
+        },
+        "backup": {
+            "name": "备份目录",
+            "path": "./backup",
+            "description": "项目备份文件存储",
+            "type": "backup",
+            "submodules": {
+                "deploy/": {
+                    "name": "部署备份",
+                    "path": "./backup/deploy",
+                    "description": "部署相关备份文件"
+                }
+            }
+        },
+        "data": {
+            "name": "数据目录",
+            "path": "./data",
+            "description": "项目数据文件存储",
+            "type": "data"
+        },
+        ".vscode": {
+            "name": "VSCode配置",
+            "path": "./.vscode",
+            "description": "VSCode编辑器配置",
+            "type": "configuration",
+            "files": {
+                "launch.json": "调试启动配置",
+                "settings.json": "编辑器设置",
+                "extensions.json": "推荐扩展"
+            }
+        },
+        ".devcontainer": {
+            "name": "开发容器配置",
+            "path": "./.devcontainer",
+            "description": "VSCode开发容器配置",
+            "type": "configuration"
+        }
+    },
+    "deployment": {
+        "paths": {
+            "projectRoot": "./my_ai_popup_project",
+            "sourceCode": "./my_ai_popup_project/src",
+            "assets": "./my_ai_popup_project/assets",
+            "config": "./my_ai_popup_project/rules",
+            "output": "./my_ai_popup_project/output",
+            "logs": "./my_ai_popup_project/logs",
+            "temp": "./my_ai_popup_project/temp",
+            "backup": "./my_ai_popup_project/backup",
+            "data": "./my_ai_popup_project/data"
+        },
+        "entryPoints": {
+            "main": "./my_ai_popup_project/src/main.py",
+            "gui": "./my_ai_popup_project/src/frontend/main_window.py",
+            "api": "./my_ai_popup_project/src/backend/api_server.py",
+            "cli": "./my_ai_popup_project/src/cli.py",
+            "web": "./my_ai_popup_project/web/start_monitor.py"
+        },
+        "dependencies": {
+            "python": "./my_ai_popup_project/requirements.txt",
+            "docker": "./Dockerfile",
+            "scripts": "./my_ai_popup_project/start.sh"
+        },
+        "automationScripts": {
+            "setupVirtualEnv": "./my_ai_popup_project/setup_virtual_env.bat",
+            "installDependencies": "./my_ai_popup_project/install_dependencies.bat",
+            "startScript": "./my_ai_popup_project/start.sh"
+        },
+        "environments": {
+            "development": {
+                "debug": true,
+                "reload": true,
+                "logLevel": "DEBUG"
+            },
+            "staging": {
+                "debug": false,
+                "reload": false,
+                "logLevel": "INFO"
+            },
+            "production": {
+                "debug": false,
+                "reload": false,
+                "logLevel": "WARNING"
+            }
+        }
+    },
+    "rules": {
+        "metaGoal": "rules/L1-meta-goal.json",
+        "understanding": "rules/L2-understanding.json",
+        "constraints": "rules/L3-constraints.json",
+        "decisions": "rules/L4-decisions.json",
+        "execution": "rules/L5-execution.json",
+        "blackboxRules": ".blackboxrules"
+    },
+    "validation": {
+        "requiredPaths": [
+            "./src",
+            "./assets",
+            "./rules",
+            "./requirements.txt",
+            "./README.md",
+            "./project_config.json"
+        ],
+        "optionalPaths": [
+            "./tests",
+            "./docs",
+            "./logs",
+            "./.devcontainer",
+            "./web"
+        ],
+        "configValidation": {
+            "enabled": true,
+            "strictMode": false,
+            "autoFix": false
+        }
+    },
+    "monitoring": {
+        "healthCheck": {
+            "enabled": true,
+            "interval": 300,
+            "scripts": [
+                "scripts/health_monitor/health_monitor.py",
+                "scripts/health_monitor/config_validator.py"
+            ]
+        },
+        "metrics": {
+            "enabled": true,
+            "collectionInterval": 60,
+            "retention": 86400
+        },
+        "alerts": {
+            "enabled": true,
+            "channels": ["log", "ui"],
+            "thresholds": {
+                "cpu": 80,
+                "memory": 85,
+                "disk": 90
+            }
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": {
+            "console": {
+                "enabled": true,
+                "level": "WARNING"
+            },
+            "file": {
+                "enabled": true,
+                "path": "./logs/app.log",
+                "maxSize": "100MB",
+                "backupCount": 5
+            }
+        }
+    }
+}
+

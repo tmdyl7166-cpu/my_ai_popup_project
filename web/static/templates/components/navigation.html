@@ -1,0 +1,47 @@
+<!-- Navigation Component -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-cogs me-2"></i>AI弹窗项目监控中心
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-nav="dashboard">
+                        <i class="fas fa-tachometer-alt me-1"></i>仪表板
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-nav="scripts">
+                        <i class="fas fa-terminal me-1"></i>脚本监控
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-nav="deployment">
+                        <i class="fas fa-rocket me-1"></i>部署进度
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-nav="config">
+                        <i class="fas fa-cogs me-1"></i>配置管理
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-nav="logs">
+                        <i class="fas fa-file-alt me-1"></i>日志查看
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <span class="navbar-text me-3" id="connection-status">
+                    <i class="fas fa-circle text-success"></i> 已连接
+                </span>
+                <span class="navbar-text" id="last-update"></span>
+            </div>
+        </div>
+    </div>
+</nav>
+

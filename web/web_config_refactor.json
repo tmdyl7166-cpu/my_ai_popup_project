@@ -1,0 +1,59 @@
+{
+  "web_module": {
+    "description": "Web监控模块配置",
+    "components": {
+      "web_monitor": {
+        "description": "主监控应用",
+        "file": "web_monitor.py",
+        "responsibility": "整合所有管理器，提供统一的监控界面"
+      },
+      "script_manager": {
+        "description": "脚本管理器",
+        "file": "script_manager.py",
+        "responsibility": "负责脚本的运行、状态管理和调度"
+      },
+      "system_monitor": {
+        "description": "系统监控器",
+        "file": "system_monitor.py",
+        "responsibility": "负责系统资源监控和状态检查"
+      },
+      "config_manager": {
+        "description": "配置管理器",
+        "file": "config_manager.py",
+        "responsibility": "负责配置文件的读取和更新"
+      },
+      "deployment_monitor": {
+        "description": "部署监控器",
+        "file": "deployment_monitor.py",
+        "responsibility": "负责部署进度和文档管理"
+      },
+      "socket_events": {
+        "description": "Socket.IO事件处理器",
+        "file": "socket_events.py",
+        "responsibility": "负责处理WebSocket事件"
+      },
+      "entry": {
+        "description": "统一入口脚本",
+        "file": "entry.py",
+        "responsibility": "负责启动Web监控应用"
+      }
+    },
+    "orchestration": {
+      "main_entry": "entry.py",
+      "dependencies": [
+        "web_monitor.py",
+        "script_manager.py",
+        "system_monitor.py",
+        "config_manager.py",
+        "deployment_monitor.py",
+        "socket_events.py"
+      ],
+      "startup_sequence": [
+        "初始化管理器",
+        "设置路由",
+        "注册Socket事件",
+        "启动服务器"
+      ]
+    }
+  }
+}

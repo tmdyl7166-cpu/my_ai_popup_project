@@ -1,0 +1,28 @@
+{
+  "ai_module": {
+    "description": "AI模块配置",
+    "components": {
+      "ollama_client": {
+        "description": "Ollama客户端",
+        "file": "ollama_client.py",
+        "responsibility": "提供与本地Ollama AI模型的交互功能"
+      },
+      "entry": {
+        "description": "统一入口脚本",
+        "file": "entry.py",
+        "responsibility": "负责启动AI相关服务"
+      }
+    },
+    "orchestration": {
+      "main_entry": "entry.py",
+      "dependencies": [
+        "ollama_client.py"
+      ],
+      "startup_sequence": [
+        "初始化Ollama客户端",
+        "检查模型可用性",
+        "启动AI服务"
+      ]
+    }
+  }
+}

@@ -1,0 +1,388 @@
+{
+    "meta": {
+        "layer": "L2",
+        "name": "全局理解层",
+        "description": "描述项目的架构、模块关系和数据流",
+        "dependsOn": ["L1"],
+        "createdAt": "2024-01-01T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z",
+        "version": "1.0.0"
+    },
+    "architecture": {
+        "style": "Layered Architecture with Plugin Pattern",
+        "description": "采用分层架构+插件模式，确保模块间低耦合高内聚",
+        "layers": [
+            {
+                "name": "Presentation Layer",
+                "role": "用户界面层",
+                "responsibilities": ["UI展示", "用户交互", "进度展示"],
+                "technologies": ["PyQt5", "QSS样式"]
+            },
+            {
+                "name": "Application Layer",
+                "role": "应用层",
+                "responsibilities": ["任务调度", "状态管理", "API网关"],
+                "technologies": ["FastAPI", "Task Scheduler"]
+            },
+            {
+                "name": "AI Processing Layer",
+                "role": "AI处理层",
+                "responsibilities": ["AI推理", "命令理解", "参数优化"],
+                "technologies": ["Ollama", "PyTorch", "InsightFace"]
+            },
+            {
+                "name": "Processing Layer",
+                "role": "处理层",
+                "responsibilities": ["图像处理", "视频处理", "实时处理"],
+                "technologies": ["OpenCV", "MoviePy", "Pillow"]
+            },
+            {
+                "name": "Integration Layer",
+                "role": "集成层",
+                "responsibilities": ["第三方引擎集成", "硬件抽象"],
+                "technologies": ["Deep-Live-Cam", "FaceFusion", "iRoop"]
+            },
+            {
+                "name": "Infrastructure Layer",
+                "role": "基础设施层",
+                "responsibilities": ["文件操作", "日志记录", "配置管理"],
+                "technologies": ["Python Standard Library", "Logging"]
+            }
+        ]
+    },
+    "modules": {
+        "frontend": {
+            "description": "前端UI模块",
+            "path": "src/frontend/",
+            "components": [
+                "main_window.py - 主窗口",
+                "popup_window.py - 弹窗",
+                "video_panel.py - 视频面板",
+                "image_panel.py - 图片面板",
+                "progress_bar.py - 进度条",
+                "control_buttons.py - 控制按钮"
+            ],
+            "responsibilities": [
+                "展示用户界面",
+                "接收用户输入",
+                "显示处理进度",
+                "管理弹窗状态"
+            ],
+            "outputs": ["user_events", "progress_updates"],
+            "dependencies": ["backend", "config"]
+        },
+        "backend": {
+            "description": "后端服务模块",
+            "path": "src/backend/",
+            "components": [
+                "api_server.py - API服务",
+                "task_manager.py - 任务管理",
+                "scheduler.py - 调度器",
+                "middleware/ - 中间件"
+            ],
+            "responsibilities": [
+                "提供REST API",
+                "管理任务队列",
+                "处理认证和日志",
+                "速率限制"
+            ],
+            "outputs": ["api_responses", "task_status"],
+            "inputs": ["user_requests", "task_commands"],
+            "dependencies": ["ai", "processing"]
+        },
+        "ai": {
+            "description": "AI模块",
+            "path": "src/ai/",
+            "components": [
+                "ollama_client.py - Ollama客户端",
+                "face_recognition/ - 人脸识别子模块",
+                "processors/ - 处理器子模块",
+                "analyzers/ - 分析器子模块"
+            ],
+            "responsibilities": [
+                "本地AI推理",
+                "人脸检测与识别",
+                "图像质量分析",
+                "命令理解与解析"
+            ],
+            "outputs": ["ai_decisions", "analysis_results", "suggested_parameters"],
+            "inputs": ["media_data", "user_commands"],
+            "dependencies": ["config", "integrations"]
+        },
+        "processing": {
+            "description": "媒体处理模块",
+            "path": "src/processing/",
+            "components": [
+                "video_processor.py - 视频处理",
+                "image_processor.py - 图片处理",
+                "realtime_processor.py - 实时处理",
+                "batch_processor.py - 批量处理"
+            ],
+            "responsibilities": [
+                "图像合成",
+                "视频帧处理",
+                "实时流处理",
+                "批量任务处理"
+            ],
+            "outputs": ["processed_media", "progress_events"],
+            "inputs": ["source_media", "processing_parameters"],
+            "dependencies": ["utils", "ai"]
+        },
+        "integrations": {
+            "description": "第三方引擎集成模块",
+            "path": "src/integrations/",
+            "components": [
+                "deep_live_cam.py - Deep-Live-Cam集成",
+                "facefusion.py - FaceFusion集成",
+                "iroop_deepfacecam.py - iRoop集成"
+            ],
+            "responsibilities": [
+                "封装第三方引擎接口",
+                "统一调用接口",
+                "处理引擎差异"
+            ],
+            "outputs": ["engine_results"],
+            "inputs": ["engine_commands"],
+            "dependencies": ["ai"]
+        },
+        "utils": {
+            "description": "工具模块",
+            "path": "src/utils/",
+            "components": [
+                "file_utils.py - 文件工具",
+                "video_utils.py - 视频工具",
+                "image_utils.py - 图片工具",
+                "thread_utils.py - 线程工具",
+                "logger.py - 日志工具"
+            ],
+            "responsibilities": [
+                "提供通用工具函数",
+                "文件操作封装",
+                "日志记录"
+            ],
+            "outputs": ["utilities"],
+            "inputs": [],
+            "dependencies": []
+        },
+        "config": {
+            "description": "配置模块",
+            "path": "src/config/",
+            "components": [
+                "settings.json - JSON配置",
+                "app_config.py - Python配置"
+            ],
+            "responsibilities": [
+                "管理应用配置",
+                "环境变量加载"
+            ],
+            "outputs": ["config_data"],
+            "dependencies": []
+        }
+    },
+    "relationships": {
+        "dataFlow": {
+            "description": "主要数据流路径",
+            "paths": [
+                {
+                    "from": "frontend",
+                    "to": "backend",
+                    "data": "用户请求、任务配置",
+                    "direction": "downstream"
+                },
+                {
+                    "from": "backend",
+                    "to": "ai",
+                    "data": "处理命令、媒体数据",
+                    "direction": "downstream"
+                },
+                {
+                    "from": "ai",
+                    "to": "processing",
+                    "data": "AI决策、处理参数",
+                    "direction": "downstream"
+                },
+                {
+                    "from": "processing",
+                    "to": "integrations",
+                    "data": "处理指令",
+                    "direction": "downstream"
+                },
+                {
+                    "from": "integrations",
+                    "to": "processing",
+                    "data": "处理结果",
+                    "direction": "upstream"
+                },
+                {
+                    "from": "processing",
+                    "to": "ai",
+                    "data": "质量反馈",
+                    "direction": "upstream"
+                },
+                {
+                    "from": "ai",
+                    "to": "backend",
+                    "data": "分析结果、参数建议",
+                    "direction": "upstream"
+                },
+                {
+                    "from": "backend",
+                    "to": "frontend",
+                    "data": "任务状态、进度更新",
+                    "direction": "upstream"
+                }
+            ]
+        },
+        "dependencies": {
+            "frontend": ["backend", "config"],
+            "backend": ["ai", "processing", "utils"],
+            "ai": ["config", "integrations", "utils"],
+            "processing": ["ai", "utils", "integrations"],
+            "integrations": ["utils"],
+            "utils": [],
+            "config": []
+        },
+        "communication": {
+            "patterns": [
+                {
+                    "pattern": "Synchronous Request-Response",
+                    "modules": ["frontend <-> backend"],
+                    "useCase": "API调用"
+                },
+                {
+                    "pattern": "Asynchronous Event-Driven",
+                    "modules": ["processing <-> frontend"],
+                    "useCase": "进度更新"
+                },
+                {
+                    "pattern": "Callback",
+                    "modules": ["ai -> processing"],
+                    "useCase": "AI分析完成回调"
+                },
+                {
+                    "pattern": "Streaming",
+                    "modules": ["realtime -> frontend"],
+                    "useCase": "实时视频流"
+                }
+            ]
+        },
+        "dataContracts": {
+            "TaskRequest": {
+                "taskType": "string",
+                "sourcePath": "string",
+                "targetPath": "string",
+                "parameters": "object",
+                "priority": "number"
+            },
+            "TaskResponse": {
+                "taskId": "string",
+                "status": "string",
+                "progress": "number",
+                "resultPath": "string",
+                "error": "string"
+            },
+            "MediaData": {
+                "type": "string",
+                "path": "string",
+                "metadata": "object",
+                "frameData": "bytes"
+            },
+            "AICommand": {
+                "rawCommand": "string",
+                "operationType": "string",
+                "parameters": "object",
+                "confidence": "number"
+            }
+        }
+    },
+    "dataFlow": {
+        "description": "核心数据流说明",
+        "flows": [
+            {
+                "name": "图片合成到实时摄像头",
+                "steps": [
+                    "1. 用户选择源图片",
+                    "2. 开启实时摄像头",
+                    "3. AI分析图片人脸参数",
+                    "4. 实时检测摄像头画面人脸",
+                    "5. 将源图片人脸替换到摄像头画面",
+                    "6. 输出到虚拟摄像头"
+                ],
+                "latency": "< 100ms"
+            },
+            {
+                "name": "图片合成到视频",
+                "steps": [
+                    "1. 用户选择源图片和目标视频",
+                    "2. AI分析图片人脸特征",
+                    "3. 逐帧处理视频",
+                    "4. 检测每帧人脸",
+                    "5. 人脸替换/合成",
+                    "6. 生成新视频文件"
+                ],
+                "latency": "real-time x processing_time"
+            },
+            {
+                "name": "AI命令理解",
+                "steps": [
+                    "1. 用户输入自然语言命令",
+                    "2. Ollama解析命令意图",
+                    "3. 提取操作类型和参数",
+                    "4. 生成执行计划",
+                    "5. 调用相应处理模块"
+                ],
+                "latency": "< 5s"
+            }
+        ]
+    },
+    "stateManagement": {
+        "description": "系统状态管理策略",
+        "states": [
+            {
+                "name": "IDLE",
+                "description": "空闲状态，等待用户操作",
+                "transitions": ["SELECT_SOURCE", "START_TASK"]
+            },
+            {
+                "name": "SOURCE_SELECTED",
+                "description": "已选择源文件，等待目标选择",
+                "transitions": ["SELECT_TARGET", "START_TASK"]
+            },
+            {
+                "name": "PROCESSING",
+                "description": "处理中状态",
+                "transitions": ["PAUSE", "CANCEL", "COMPLETE", "ERROR"]
+            },
+            {
+                "name": "PAUSED",
+                "description": "暂停状态",
+                "transitions": ["RESUME", "CANCEL"]
+            },
+            {
+                "name": "COMPLETED",
+                "description": "完成状态",
+                "transitions": ["NEW_TASK", "EXPORT"]
+            },
+            {
+                "name": "ERROR",
+                "description": "错误状态",
+                "transitions": ["RETRY", "CANCEL"]
+            }
+        ]
+    },
+    "entryPoints": {
+        "main": {
+            "file": "src/main.py",
+            "description": "FastAPI服务入口"
+        },
+        "gui": {
+            "file": "src/frontend/main_window.py",
+            "description": "PyQt5 GUI入口"
+        },
+        "cli": {
+            "file": "src/cli.py",
+            "description": "命令行接口入口"
+        }
+    }
+}
+

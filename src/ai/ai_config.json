@@ -1,0 +1,101 @@
+{
+    "meta": {
+        "name": "AI模块配置",
+        "description": "定义AI推理、人脸识别、命令理解等配置",
+        "version": "1.0.0",
+        "createdAt": "2024-01-16T00:00:00Z",
+        "lastModified": "2024-01-16T00:00:00Z"
+    },
+    "ollama": {
+        "host": "http://localhost:11434",
+        "defaultModel": "llama3.2:3b",
+        "timeout": 300000,
+        "maxRetries": 3,
+        "retryDelay": 5000,
+        "healthCheckInterval": 30,
+        "models": {
+            "llama3.2:3b": {
+                "contextLength": 4096,
+                "temperature": 0.7,
+                "topP": 0.9
+            },
+            "mistral": {
+                "contextLength": 8192,
+                "temperature": 0.8,
+                "topP": 0.95
+            }
+        }
+    },
+    "faceRecognition": {
+        "defaultEngine": "insightface",
+        "fallbackEngine": "dlib",
+        "detectors": {
+            "insightface": {
+                "model": "buffalo_l",
+                "detSize": [640, 640],
+                "detThresh": 0.5
+            },
+            "dlib": {
+                "model": "hog",
+                "upsampleTimes": 1
+            },
+            "mediapipe": {
+                "modelComplexity": 1,
+                "minDetectionConfidence": 0.5
+            }
+        },
+        "recognizers": {
+            "insightface": {
+                "model": "w600k_r50.onnx",
+                "threshold": 0.5
+            },
+            "face_recognition": {
+                "model": "cnn",
+                "tolerance": 0.6
+            }
+        }
+    },
+    "processing": {
+        "gpuAcceleration": true,
+        "batchSize": 1,
+        "memoryFraction": 0.8,
+        "cpuThreads": 4,
+        "cache": {
+            "enabled": true,
+            "maxSize": 1000,
+            "ttl": 3600
+        }
+    },
+    "commandUnderstanding": {
+        "enabled": true,
+        "confidenceThreshold": 0.8,
+        "maxTokens": 512,
+        "prompts": {
+            "taskClassification": "分析用户命令，确定任务类型和参数",
+            "parameterExtraction": "从命令中提取处理参数",
+            "validation": "验证命令的合理性和安全性"
+        }
+    },
+    "qualityAnalysis": {
+        "enabled": true,
+        "metrics": ["brightness", "contrast", "sharpness", "face_quality"],
+        "thresholds": {
+            "minBrightness": 0.3,
+            "maxBrightness": 0.9,
+            "minContrast": 0.2,
+            "minSharpness": 0.5,
+            "minFaceQuality": 0.6
+        }
+    },
+    "performance": {
+        "inferenceTimeout": 30000,
+        "maxConcurrentRequests": 2,
+        "memoryLimit": "4GB",
+        "cpuLimit": 80
+    },
+    "logging": {
+        "level": "INFO",
+        "includeInferenceLogs": false,
+        "performanceMetrics": true
+    }
+}

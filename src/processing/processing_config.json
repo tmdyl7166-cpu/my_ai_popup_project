@@ -1,0 +1,511 @@
+{
+    "meta": {
+        "name": "处理引擎配置",
+        "description": "AI弹窗项目处理引擎的完整配置，包括批量处理、实时处理、引擎集成和性能优化",
+        "version": "1.0.0",
+        "createdAt": "2024-01-16T00:00:00Z",
+        "lastModified": "2024-01-16T00:00:00Z"
+    },
+    "engine": {
+        "type": "hybrid",
+        "primary": "gpu_accelerated",
+        "fallback": "cpu_fallback",
+        "parallelization": "multi_thread",
+        "maxWorkers": 4,
+        "autoSwitch": true,
+        "healthCheck": {
+            "enabled": true,
+            "interval": 30,
+            "timeout": 10
+        }
+    },
+    "processing": {
+        "modes": {
+            "batch": {
+                "enabled": true,
+                "description": "批量文件处理模式",
+                "maxConcurrentTasks": 4,
+                "queueSize": 100,
+                "priorityLevels": 3,
+                "timeout": 3600
+            },
+            "realtime": {
+                "enabled": true,
+                "description": "实时视频流处理模式",
+                "latencyTarget": 100,
+                "bufferSize": 30,
+                "frameSkip": false,
+                "adaptiveQuality": true
+            },
+            "preview": {
+                "enabled": true,
+                "description": "快速预览处理模式",
+                "quality": "medium",
+                "maxResolution": "720p",
+                "fastMode": true
+            }
+        },
+        "supportedFormats": {
+            "input": {
+                "images": [".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp"],
+                "videos": [".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv"],
+                "maxFileSize": "2GB",
+                "maxResolution": "4K"
+            },
+            "output": {
+                "images": [".jpg", ".png", ".tiff"],
+                "videos": [".mp4", ".avi", ".mov"],
+                "defaultQuality": "high",
+                "compression": "auto"
+            }
+        },
+        "quality": {
+            "presets": {
+                "low": {
+                    "resolution": "480p",
+                    "bitrate": "1000k",
+                    "fps": 24
+                },
+                "medium": {
+                    "resolution": "720p",
+                    "bitrate": "2500k",
+                    "fps": 30
+                },
+                "high": {
+                    "resolution": "1080p",
+                    "bitrate": "5000k",
+                    "fps": 30
+                },
+                "ultra": {
+                    "resolution": "4K",
+                    "bitrate": "15000k",
+                    "fps": 60
+                }
+            },
+            "autoQuality": {
+                "enabled": true,
+                "targetScore": 8.5,
+                "maxIterations": 3
+            }
+        }
+    },
+    "ai": {
+        "models": {
+            "faceDetection": {
+                "engine": "insightface",
+                "model": "buffalo_l",
+                "confidence": 0.5,
+                "maxFaces": 10,
+                "minFaceSize": 20
+            },
+            "faceRecognition": {
+                "engine": "arcface",
+                "model": "w600k_r50",
+                "threshold": 0.6,
+                "distance": "cosine"
+            },
+            "faceSwap": {
+                "primary": "simswap",
+                "fallback": "faceswap",
+                "resolution": "256x256",
+                "blendMode": "poisson",
+                "postProcess": true
+            }
+        },
+        "inference": {
+            "device": "auto",
+            "precision": "fp16",
+            "batchSize": 1,
+            "optimization": {
+                "tensorrt": true,
+                "onnx": true,
+                "quantization": "dynamic"
+            }
+        },
+        "performance": {
+            "warmup": true,
+            "cache": {
+                "enabled": true,
+                "size": "2GB",
+                "ttl": 3600
+            },
+            "profiling": {
+                "enabled": false,
+                "logLevel": "INFO"
+            }
+        }
+    },
+    "integrations": {
+        "engines": {
+            "deepLiveCam": {
+                "enabled": true,
+                "path": "../assets/Deep-Live-Cam-main",
+                "config": "deep_live_cam_config.json",
+                "priority": 1,
+                "capabilities": ["realtime", "face_swap"]
+            },
+            "facefusion": {
+                "enabled": true,
+                "path": "../assets/facefusion-master",
+                "config": "facefusion_config.json",
+                "priority": 2,
+                "capabilities": ["batch", "high_quality", "video"]
+            },
+            "iroop": {
+                "enabled": true,
+                "path": "../assets/iRoopDeepFaceCam-main",
+                "config": "iroop_config.json",
+                "priority": 3,
+                "capabilities": ["expression", "pose", "realtime"]
+            }
+        },
+        "api": {
+            "protocol": "rest",
+            "timeout": 300,
+            "retry": {
+                "maxAttempts": 3,
+                "backoff": "exponential",
+                "maxDelay": 60
+            },
+            "rateLimit": {
+                "requests": 10,
+                "period": 60
+            }
+        }
+    },
+    "pipelines": {
+        "faceSwap": {
+            "enabled": true,
+            "steps": [
+                "face_detection",
+                "face_alignment",
+                "feature_extraction",
+                "swap_generation",
+                "post_processing"
+            ],
+            "parallelSteps": ["face_detection", "feature_extraction"],
+            "qualityGates": {
+                "face_detection": {"minConfidence": 0.7},
+                "swap_generation": {"minQuality": 0.8}
+            }
+        },
+        "videoProcessing": {
+            "enabled": true,
+            "steps": [
+                "frame_extraction",
+                "batch_processing",
+                "frame_reconstruction",
+                "encoding"
+            ],
+            "frameBuffer": 30,
+            "keyframeInterval": 30,
+            "compression": "h264"
+        },
+        "imageEnhancement": {
+            "enabled": true,
+            "steps": [
+                "quality_analysis",
+                "upscaling",
+                "denoising",
+                "color_correction"
+            ],
+            "targetResolution": "2x",
+            "denoiseStrength": "medium"
+        }
+    },
+    "resources": {
+        "hardware": {
+            "gpu": {
+                "detection": "auto",
+                "memory": {
+                    "minRequired": "2GB",
+                    "recommended": "8GB",
+                    "allocation": "dynamic"
+                },
+                "utilization": {
+                    "target": 80,
+                    "max": 95
+                }
+            },
+            "cpu": {
+                "cores": "auto",
+                "threads": "max",
+                "optimization": "avx2"
+            },
+            "memory": {
+                "system": {
+                    "minRequired": "8GB",
+                    "recommended": "16GB"
+                },
+                "process": {
+                    "limit": "4GB",
+                    "monitoring": true
+                }
+            }
+        },
+        "storage": {
+            "temp": {
+                "path": "../temp/processing",
+                "maxSize": "10GB",
+                "cleanup": {
+                    "enabled": true,
+                    "interval": 3600,
+                    "maxAge": 86400
+                }
+            },
+            "cache": {
+                "path": "../temp/cache",
+                "maxSize": "5GB",
+                "policy": "lru"
+            },
+            "output": {
+                "path": "../output",
+                "naming": "timestamp",
+                "overwrite": false
+            }
+        }
+    },
+    "performance": {
+        "optimization": {
+            "gpuAcceleration": {
+                "enabled": true,
+                "cuda": true,
+                "directml": true,
+                "vulkan": false
+            },
+            "memoryManagement": {
+                "pooling": true,
+                "garbageCollection": "auto",
+                "cacheEviction": "lru"
+            },
+            "concurrency": {
+                "threadPool": true,
+                "asyncProcessing": true,
+                "maxConcurrent": 4
+            }
+        },
+        "monitoring": {
+            "metrics": {
+                "enabled": true,
+                "collection": ["cpu", "memory", "gpu", "disk", "network"],
+                "interval": 5,
+                "retention": 3600
+            },
+            "profiling": {
+                "enabled": false,
+                "sampling": 100,
+                "output": "../logs/performance_profile.json"
+            },
+            "alerts": {
+                "memoryThreshold": 90,
+                "cpuThreshold": 95,
+                "gpuThreshold": 95,
+                "latencyThreshold": 1000
+            }
+        },
+        "benchmarks": {
+            "enabled": true,
+            "baseline": {
+                "faceSwap": "2.5s",
+                "videoProcessing": "15fps",
+                "batchThroughput": "8tasks/min"
+            },
+            "regression": {
+                "threshold": 10,
+                "action": "alert"
+            }
+        }
+    },
+    "quality": {
+        "control": {
+            "enabled": true,
+            "metrics": {
+                "faceDetection": {
+                    "accuracy": 0.95,
+                    "precision": 0.90
+                },
+                "faceSwap": {
+                    "quality": 8.5,
+                    "consistency": 0.85
+                },
+                "video": {
+                    "stability": 0.90,
+                    "smoothness": 0.95
+                }
+            },
+            "validation": {
+                "preProcess": true,
+                "postProcess": true,
+                "sampleRate": 0.1
+            }
+        },
+        "improvement": {
+            "autoEnhance": true,
+            "algorithms": ["super_resolution", "denoising", "color_correction"],
+            "thresholds": {
+                "lowQuality": 6.0,
+                "enhancementTrigger": 7.5
+            }
+        }
+    },
+    "task": {
+        "management": {
+            "queue": {
+                "size": 1000,
+                "priority": ["high", "normal", "low"],
+                "timeout": 3600,
+                "retry": {
+                    "maxAttempts": 3,
+                    "backoff": "exponential"
+                }
+            },
+            "scheduling": {
+                "algorithm": "priority_queue",
+                "preemption": true,
+                "loadBalancing": true
+            },
+            "monitoring": {
+                "progress": true,
+                "status": true,
+                "metrics": true
+            }
+        },
+        "validation": {
+            "input": {
+                "fileExists": true,
+                "formatSupported": true,
+                "sizeLimit": true,
+                "corruptionCheck": true
+            },
+            "output": {
+                "qualityCheck": true,
+                "integrity": true,
+                "metadata": true
+            }
+        }
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": {
+            "file": {
+                "path": "../logs/processing.log",
+                "maxSize": "100MB",
+                "backupCount": 5
+            },
+            "console": {
+                "enabled": true,
+                "level": "WARNING"
+            }
+        },
+        "categories": {
+            "performance": "DEBUG",
+            "errors": "ERROR",
+            "integrations": "INFO"
+        }
+    },
+    "error": {
+        "handling": {
+            "recovery": {
+                "autoRetry": true,
+                "fallbackEngines": true,
+                "gracefulDegradation": true
+            },
+            "reporting": {
+                "enabled": true,
+                "level": "ERROR",
+                "includeContext": true,
+                "anonymize": true
+            },
+            "classification": {
+                "input_errors": "user_input",
+                "system_errors": "infrastructure",
+                "engine_errors": "third_party"
+            }
+        },
+        "fallback": {
+            "strategies": {
+                "gpu_failure": "cpu_fallback",
+                "engine_failure": "alternative_engine",
+                "memory_exhaustion": "reduce_quality"
+            },
+            "thresholds": {
+                "maxFallbacks": 3,
+                "timeout": 300
+            }
+        }
+    },
+    "deployment": {
+        "environment": {
+            "development": {
+                "debug": true,
+                "profiling": true,
+                "mockEngines": false
+            },
+            "staging": {
+                "debug": false,
+                "profiling": true,
+                "mockEngines": false
+            },
+            "production": {
+                "debug": false,
+                "profiling": false,
+                "mockEngines": false
+            }
+        },
+        "scaling": {
+            "autoScale": true,
+            "minWorkers": 1,
+            "maxWorkers": 8,
+            "scaleUpThreshold": 80,
+            "scaleDownThreshold": 30
+        },
+        "maintenance": {
+            "healthChecks": {
+                "enabled": true,
+                "interval": 60,
+                "timeout": 30
+            },
+            "cleanup": {
+                "tempFiles": true,
+                "cacheFiles": true,
+                "logRotation": true
+            }
+        }
+    },
+    "integration": {
+        "api": {
+            "endpoints": {
+                "process": "/api/v1/process",
+                "batch": "/api/v1/batch",
+                "status": "/api/v1/status",
+                "cancel": "/api/v1/cancel"
+            },
+            "authentication": {
+                "required": false,
+                "method": "bearer",
+                "tokenExpiry": 3600
+            },
+            "rateLimit": {
+                "enabled": true,
+                "requests": 100,
+                "period": 60
+            }
+        },
+        "websocket": {
+            "enabled": true,
+            "endpoint": "/ws/processing",
+            "events": ["progress", "status", "error"],
+            "heartbeat": 30
+        },
+        "callbacks": {
+            "completion": {
+                "enabled": true,
+                "url": "http://localhost:8000/callback",
+                "method": "POST",
+                "timeout": 30
+            }
+        }
+    }
+}

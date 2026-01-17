@@ -1,0 +1,61 @@
+/* Scripts Styles */
+.script-card {
+    transition: all 0.3s ease;
+}
+
+.script-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.script-status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.script-action-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.script-info {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.script-last-run {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.script-frequency {
+    font-weight: 500;
+    color: #374151;
+}
+
+.script-description {
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+.script-controls {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .script-controls {
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+
+    .script-action-btn {
+        width: 28px;
+        height: 28px;
+    }
+}

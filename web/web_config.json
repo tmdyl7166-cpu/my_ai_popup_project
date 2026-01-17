@@ -1,0 +1,353 @@
+{
+    "meta": {
+        "name": "Web监控中心配置",
+        "description": "AI弹窗项目Web监控中心的完整配置，包括界面布局、功能模块、API接口和监控规则",
+        "version": "1.0.0",
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z"
+    },
+    "web": {
+        "framework": {
+            "backend": "FastAPI + Socket.IO",
+            "frontend": "Vanilla JS + Bootstrap 5",
+            "templating": "Jinja2",
+            "realtime": "WebSocket"
+        },
+        "server": {
+            "host": "0.0.0.0",
+            "port": 8080,
+            "autoPort": true,
+            "cors": {
+                "enabled": true,
+                "origins": ["*"],
+                "methods": ["GET", "POST", "PUT", "DELETE"],
+                "headers": ["*"]
+            },
+            "staticFiles": {
+                "enabled": true,
+                "path": "./static",
+                "url": "/static"
+            }
+        },
+        "modules": {
+            "dashboard": {
+                "enabled": true,
+                "path": "modules/dashboard.js",
+                "css": "modules/dashboard.css",
+                "dependencies": ["system", "scripts"],
+                "config": {
+                    "refreshInterval": 5000,
+                    "showCharts": true,
+                    "compactView": false
+                }
+            },
+            "scripts": {
+                "enabled": true,
+                "path": "modules/scripts.js",
+                "css": "modules/scripts.css",
+                "dependencies": ["api"],
+                "config": {
+                    "autoRefresh": true,
+                    "showLogs": true,
+                    "batchOperations": true,
+                    "maxConcurrentRuns": 3
+                }
+            },
+            "deployment": {
+                "enabled": true,
+                "path": "modules/deployment.js",
+                "css": "modules/deployment.css",
+                "dependencies": ["docs"],
+                "config": {
+                    "trackProgress": true,
+                    "showDetails": true,
+                    "autoUpdate": true
+                }
+            },
+            "config": {
+                "enabled": true,
+                "path": "modules/config.js",
+                "css": "modules/config.css",
+                "dependencies": ["api"],
+                "config": {
+                    "editable": true,
+                    "validateOnSave": true,
+                    "backupOnChange": true
+                }
+            },
+            "logs": {
+                "enabled": true,
+                "path": "modules/logs.js",
+                "css": "modules/logs.css",
+                "dependencies": ["api"],
+                "config": {
+                    "maxLines": 1000,
+                    "autoScroll": true,
+                    "filterEnabled": true,
+                    "exportEnabled": true
+                }
+            },
+            "system": {
+                "enabled": true,
+                "path": "modules/system.js",
+                "css": "modules/system.css",
+                "dependencies": [],
+                "config": {
+                    "showCharts": true,
+                    "alertThresholds": {
+                        "cpu": 80,
+                        "memory": 85,
+                        "disk": 90
+                    },
+                    "historyPoints": 60
+                }
+            },
+            "api": {
+                "enabled": true,
+                "path": "modules/api.js",
+                "css": "modules/api.css",
+                "dependencies": [],
+                "config": {
+                    "timeout": 30000,
+                    "retryAttempts": 3,
+                    "debugMode": false
+                }
+            },
+            "docs": {
+                "enabled": true,
+                "path": "modules/docs.js",
+                "css": "modules/docs.css",
+                "dependencies": ["api"],
+                "config": {
+                    "syncInterval": 300000,
+                    "showProgress": true,
+                    "trackChanges": true
+                }
+            }
+        },
+        "ui": {
+            "theme": {
+                "primary": "#667eea",
+                "secondary": "#764ba2",
+                "success": "#28a745",
+                "warning": "#ffc107",
+                "danger": "#dc3545",
+                "info": "#17a2b8",
+                "dark": "#343a40",
+                "light": "#f8f9fa"
+            },
+            "layout": {
+                "sidebar": {
+                    "enabled": true,
+                    "width": 280,
+                    "collapsible": true,
+                    "position": "left"
+                },
+                "navbar": {
+                    "enabled": true,
+                    "height": 60,
+                    "fixed": true
+                },
+                "tabs": {
+                    "enabled": true,
+                    "position": "top",
+                    "scrollable": true
+                }
+            },
+            "components": {
+                "notifications": {
+                    "enabled": true,
+                    "position": "top-right",
+                    "duration": 5000,
+                    "maxCount": 5
+                },
+                "modals": {
+                    "enabled": true,
+                    "backdrop": true,
+                    "keyboard": true,
+                    "focus": true
+                },
+                "tooltips": {
+                    "enabled": true,
+                    "delay": 500,
+                    "placement": "auto"
+                },
+                "charts": {
+                    "enabled": true,
+                    "library": "chart.js",
+                    "animations": true,
+                    "responsive": true
+                }
+            },
+            "responsive": {
+                "breakpoints": {
+                    "xs": 576,
+                    "sm": 768,
+                    "md": 992,
+                    "lg": 1200,
+                    "xl": 1400
+                },
+                "mobile": {
+                    "sidebar": "overlay",
+                    "tabs": "scrollable",
+                    "tables": "responsive"
+                }
+            }
+        },
+        "monitoring": {
+            "realtime": {
+                "enabled": true,
+                "protocol": "websocket",
+                "heartbeat": 30000,
+                "reconnect": true,
+                "reconnectDelay": 5000
+            },
+            "polling": {
+                "enabled": true,
+                "interval": 5000,
+                "backoff": "exponential",
+                "maxDelay": 30000
+            },
+            "alerts": {
+                "enabled": true,
+                "levels": ["info", "warning", "error", "critical"],
+                "channels": ["ui", "console", "log"],
+                "throttling": {
+                    "enabled": true,
+                    "window": 60000,
+                    "maxAlerts": 10
+                }
+            },
+            "metrics": {
+                "enabled": true,
+                "collection": ["performance", "errors", "usage"],
+                "retention": 86400000,
+                "export": {
+                    "enabled": true,
+                    "format": "json",
+                    "location": "./metrics"
+                }
+            }
+        },
+        "security": {
+            "inputValidation": {
+                "enabled": true,
+                "sanitize": true,
+                "maxLength": 10000,
+                "allowedTags": []
+            },
+            "rateLimiting": {
+                "enabled": true,
+                "requests": 100,
+                "window": 60000,
+                "blockDuration": 300000
+            },
+            "authentication": {
+                "enabled": false,
+                "method": "none",
+                "sessionTimeout": 3600000
+            },
+            "cors": {
+                "enabled": true,
+                "origins": ["localhost", "127.0.0.1"],
+                "credentials": false
+            }
+        },
+        "performance": {
+            "caching": {
+                "enabled": true,
+                "staticFiles": true,
+                "apiResponses": false,
+                "ttl": 300000
+            },
+            "compression": {
+                "enabled": true,
+                "level": 6,
+                "types": ["text/*", "application/json", "application/javascript"]
+            },
+            "optimization": {
+                "minify": false,
+                "bundle": false,
+                "preload": ["critical.css", "main.js"]
+            }
+        },
+        "logging": {
+            "enabled": true,
+            "level": "INFO",
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            "handlers": {
+                "file": {
+                    "enabled": true,
+                    "path": "../logs/web_app.log",
+                    "maxSize": "10MB",
+                    "backupCount": 5
+                },
+                "console": {
+                    "enabled": true,
+                    "level": "WARNING"
+                }
+            },
+            "categories": {
+                "api": "DEBUG",
+                "ui": "INFO",
+                "monitoring": "INFO",
+                "security": "WARNING"
+            }
+        },
+        "deployment": {
+            "environment": {
+                "development": {
+                    "debug": true,
+                    "minify": false,
+                    "sourceMaps": true,
+                    "hotReload": true
+                },
+                "staging": {
+                    "debug": false,
+                    "minify": true,
+                    "sourceMaps": true,
+                    "hotReload": false
+                },
+                "production": {
+                    "debug": false,
+                    "minify": true,
+                    "sourceMaps": false,
+                    "hotReload": false
+                }
+            },
+            "build": {
+                "enabled": false,
+                "output": "./dist",
+                "source": "./src",
+                "exclude": ["node_modules", ".git", "logs"]
+            },
+            "packaging": {
+                "enabled": false,
+                "format": "zip",
+                "include": ["*.py", "*.html", "*.js", "*.css", "*.json"],
+                "exclude": ["__pycache__", "*.log", ".git"]
+            }
+        }
+    },
+    "integration": {
+        "project": {
+            "configPath": "../project_config.json",
+            "docsPath": "../docs",
+            "scriptsPath": "../scripts",
+            "logsPath": "../logs"
+        },
+        "apis": {
+            "health": "/api/health",
+            "project": "/api/project/status",
+            "scripts": "/api/scripts",
+            "deployment": "/api/deployment/progress",
+            "config": "/api/config",
+            "logs": "/api/logs",
+            "system": "/api/system/resources"
+        },
+        "websocket": {
+            "url": "/ws/monitoring",
+            "events": ["status_update", "script_result", "script_completed", "script_error"]
+        }
+    }
+}

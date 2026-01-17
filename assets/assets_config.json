@@ -1,0 +1,110 @@
+{
+    "meta": {
+        "name": "资源和第三方项目配置",
+        "description": "定义assets目录下模型、第三方项目和测试资源的配置",
+        "version": "1.0.0",
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z"
+    },
+    "models": {
+        "path": "./models",
+        "autoDownload": true,
+        "cacheEnabled": true,
+        "supportedFormats": [".onnx", ".pth", ".pt", ".bin"],
+        "defaultModels": {
+            "face_detector": "retinaface",
+            "face_recognizer": "arcface",
+            "face_enhancer": "gfpgan"
+        }
+    },
+    "images": {
+        "source": {
+            "path": "./images/source",
+            "maxFileSize": "50MB",
+            "supportedFormats": [".jpg", ".jpeg", ".png", ".bmp", ".webp"],
+            "autoCleanup": false
+        },
+        "templates": {
+            "path": "./images/templates",
+            "maxFileSize": "20MB",
+            "supportedFormats": [".jpg", ".jpeg", ".png"],
+            "autoCleanup": false
+        },
+        "output": {
+            "path": "./images/output",
+            "autoCleanup": {
+                "enabled": true,
+                "maxAge": 30,
+                "maxSize": "1GB"
+            }
+        }
+    },
+    "videos": {
+        "source": {
+            "path": "./videos/source",
+            "maxFileSize": "2GB",
+            "supportedFormats": [".mp4", ".avi", ".mov", ".mkv"],
+            "autoCleanup": false
+        },
+        "output": {
+            "path": "./videos/output",
+            "autoCleanup": {
+                "enabled": true,
+                "maxAge": 7,
+                "maxSize": "5GB"
+            }
+        }
+    },
+    "thirdParty": {
+        "deep-live-cam": {
+            "path": "./Deep-Live-Cam-main",
+            "version": "latest",
+            "config": "./Deep-Live-Cam-main/mypi.ini",
+            "healthCheck": "python run.py --version"
+        },
+        "facefusion": {
+            "path": "./facefusion-master",
+            "version": "latest",
+            "config": "./facefusion-master/facefusion.ini",
+            "healthCheck": "python facefusion.py --version"
+        },
+        "iroop": {
+            "path": "./iRoopDeepFaceCam-main",
+            "version": "latest",
+            "config": "./iRoopDeepFaceCam-main/mypi.ini",
+            "healthCheck": "python run.py --help"
+        },
+        "obs-studio": {
+            "path": "./obs-studio-master",
+            "version": "latest",
+            "config": "./obs-studio-master/CMakeLists.txt",
+            "healthCheck": "cmake --version"
+        }
+    },
+    "cache": {
+        "enabled": true,
+        "path": "./cache",
+        "maxSize": "2GB",
+        "ttl": 86400,
+        "compression": "gzip"
+    },
+    "temp": {
+        "path": "./temp",
+        "autoCleanup": {
+            "enabled": true,
+            "maxAge": 1,
+            "interval": 3600
+        }
+    },
+    "validation": {
+        "strictMode": false,
+        "allowSymlinks": true,
+        "checkPermissions": true,
+        "virusScan": false
+    },
+    "logging": {
+        "level": "INFO",
+        "includeAccessLogs": false,
+        "maxLogSize": "100MB"
+    }
+}

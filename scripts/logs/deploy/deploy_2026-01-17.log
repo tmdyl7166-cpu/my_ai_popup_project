@@ -1,0 +1,40 @@
+2026-01-17 08:27:56,621 - deploy.deploy_entry - INFO - 项目根目录: /workspaces/my_ai_popup_project
+2026-01-17 08:27:56,621 - deploy.deploy_entry - INFO - 执行任务: health
+2026-01-17 08:27:56,624 - deploy.deploy_entry - ERROR - 创建模块失败: setup_env - No module named 'deploy_modules.setup_env'
+2026-01-17 08:27:56,625 - deploy.deploy_entry - ERROR - 创建模块失败: install_deps - No module named 'deploy_modules.setup_env'
+2026-01-17 08:27:56,625 - deploy.deploy_entry - ERROR - 创建模块失败: health_check - No module named 'deploy_modules.setup_env'
+2026-01-17 08:27:56,625 - deploy.deploy_entry - ERROR - 没有可执行的模块
+2026-01-17 08:29:18,638 - deploy.deploy_entry - INFO - 项目根目录: /workspaces/my_ai_popup_project
+2026-01-17 08:29:18,639 - deploy.deploy_entry - INFO - 执行任务: health
+2026-01-17 08:29:18,650 - deploy.deploy_core - INFO - 执行模块: setup_env
+2026-01-17 08:29:18,651 - deploy.rollback_manager - INFO - 备份成功: /workspaces/my_ai_popup_project/requirements.txt -> /workspaces/my_ai_popup_project/backup/deploy/requirements.txt_20260117_082918
+2026-01-17 08:29:18,651 - deploy.setup_env - INFO - 开始执行模块: setup_env
+2026-01-17 08:29:18,651 - deploy.setup_env - INFO - 检查环境准备前置条件
+2026-01-17 08:29:18,654 - deploy.setup_env - INFO - Python版本: Python 3.14.0
+2026-01-17 08:29:18,654 - deploy.setup_env - INFO - 前置条件检查通过
+2026-01-17 08:29:18,654 - deploy.setup_env - INFO - 开始执行环境准备
+2026-01-17 08:29:18,654 - deploy.setup_env - INFO - 创建虚拟环境: /workspaces/my_ai_popup_project/ai_popup_env
+2026-01-17 08:29:18,655 - deploy.setup_env - INFO - 虚拟环境已存在
+2026-01-17 08:29:18,655 - deploy.setup_env - INFO - 升级pip
+2026-01-17 08:29:18,655 - deploy.setup_env - WARNING - pip升级异常: [Errno 2] No such file or directory: '/workspaces/my_ai_popup_project/ai_popup_env/bin/python'
+2026-01-17 08:29:18,655 - deploy.setup_env - INFO - 创建必要的目录
+2026-01-17 08:29:18,655 - deploy.setup_env - DEBUG - 创建目录: /workspaces/my_ai_popup_project/logs
+2026-01-17 08:29:18,656 - deploy.setup_env - DEBUG - 创建目录: /workspaces/my_ai_popup_project/data
+2026-01-17 08:29:18,656 - deploy.setup_env - DEBUG - 创建目录: /workspaces/my_ai_popup_project/assets/images/output
+2026-01-17 08:29:18,656 - deploy.setup_env - DEBUG - 创建目录: /workspaces/my_ai_popup_project/assets/videos/output
+2026-01-17 08:29:18,656 - deploy.setup_env - DEBUG - 创建目录: /workspaces/my_ai_popup_project/backup/deploy
+2026-01-17 08:29:18,656 - deploy.setup_env - INFO - 目录创建完成
+2026-01-17 08:29:18,656 - deploy.setup_env - INFO - 验证项目结构
+2026-01-17 08:29:18,656 - deploy.setup_env - INFO - 项目结构验证通过
+2026-01-17 08:29:18,656 - deploy.setup_env - INFO - 环境准备完成
+2026-01-17 08:29:18,656 - deploy.setup_env - INFO - 模块 setup_env 执行成功
+2026-01-17 08:29:18,656 - deploy.deploy_core - INFO - 执行模块: install_deps
+2026-01-17 08:29:18,657 - deploy.rollback_manager - INFO - 备份成功: /workspaces/my_ai_popup_project/requirements.txt -> /workspaces/my_ai_popup_project/backup/deploy/requirements.txt_20260117_082918
+2026-01-17 08:29:18,657 - deploy.install_deps - INFO - 开始执行模块: install_deps
+2026-01-17 08:29:18,657 - deploy.install_deps - INFO - 检查依赖安装前置条件
+2026-01-17 08:29:18,657 - deploy.install_deps - ERROR - Python可执行文件不存在: /workspaces/my_ai_popup_project/ai_popup_env/bin/python
+2026-01-17 08:29:18,657 - deploy.install_deps - ERROR - 模块 install_deps 前置条件检查失败
+2026-01-17 08:29:18,657 - deploy.deploy_core - ERROR - 模块执行失败: install_deps
+2026-01-17 08:29:18,657 - deploy.rollback_manager - INFO - 恢复成功: /workspaces/my_ai_popup_project/backup/deploy/requirements.txt_20260117_082918 -> /workspaces/my_ai_popup_project/requirements.txt
+2026-01-17 08:29:18,658 - deploy.rollback_manager - INFO - 恢复成功: /workspaces/my_ai_popup_project/backup/deploy/requirements.txt_20260117_082918 -> /workspaces/my_ai_popup_project/requirements.txt
+2026-01-17 08:29:18,658 - deploy.deploy_entry - INFO - 部署结果已保存: /tmp/deploy_test.json

@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2024-01-16T18:00:00Z",
+  "description": "Web脚本系统统一配置文件",
+  "settings": {
+    "auto_save": true,
+    "debug_mode": false,
+    "log_level": "INFO",
+    "timeout": 300,
+    "retry_attempts": 3
+  },
+  "modules": {
+    "api_manager": {
+      "enabled": true,
+      "priority": 1,
+      "description": "API管理和跨域处理",
+      "dependencies": []
+    },
+    "menu_manager": {
+      "enabled": true,
+      "priority": 2,
+      "description": "菜单互动性和结构管理",
+      "dependencies": []
+    },
+    "security_validator": {
+      "enabled": true,
+      "priority": 3,
+      "description": "安全验证和漏洞检测",
+      "dependencies": []
+    },
+    "web_orchestrator": {
+      "enabled": true,
+      "priority": 0,
+      "description": "Web脚本编排器",
+      "dependencies": ["api_manager", "menu_manager", "security_validator"]
+    }
+  },
+  "orchestration": {
+    "execution_order": ["api_manager", "menu_manager", "security_validator"],
+    "parallel_execution": false,
+    "timeout": 300,
+    "failure_handling": "continue"
+  },
+  "web_interface": {
+    "dashboard_enabled": true,
+    "real_time_updates": true,
+    "interactive_controls": true,
+    "responsive_design": true,
+    "theme": "default",
+    "language": "zh-CN"
+  },
+  "security": {
+    "input_validation": true,
+    "csrf_protection": true,
+    "xss_prevention": true,
+    "rate_limiting": true,
+    "audit_logging": true
+  },
+  "performance": {
+    "caching_enabled": true,
+    "lazy_loading": true,
+    "async_operations": true,
+    "optimization_level": "medium"
+  },
+  "compatibility": {
+    "backend_version_check": true,
+    "module_compatibility": true,
+    "browser_support": ["chrome", "firefox", "edge"],
+    "mobile_responsive": true
+  }
+}

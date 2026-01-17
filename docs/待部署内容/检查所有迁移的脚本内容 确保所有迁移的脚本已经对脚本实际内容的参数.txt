@@ -1,0 +1,19 @@
+检查所有迁移的脚本内容，确保所有迁移的脚本已经对脚本实际内容的参数，上下文，联动配置，依赖配置，函数，路径等问题都进行了同步修正，并且与迁移到本项目my_ai_popup_project中的同目录配置json产生交互。对my_ai_popup_project子项目以及所有内容都进行一次优化检查。
+
+
+my_ai_popup_project/docs/待部署内容
+my_ai_popup_project/docs/类似项目部署文档进度
+
+这两个文件夹中的文档内容，是其他项目的部署过程，对这些文档内容进行分析识别后，进行以下操作。
+
+1.结合my_ai_popup_project项目逻辑以及子项目的实际部署情况，把这两个文件夹中的文档内容中，对my_ai_popup_project项目能够用上的优化内容进行统计整合整理。
+2. 把整合出来的内容，以序号-部署项目，的文档方式，在my_ai_popup_project/docs/deployment_progress 文件夹中创建出所有的缺失可部署内容，详细的任务部署文档。
+
+
+对 my_ai_popup_project/docs/deployment_progress文件夹中的任务文档按照序号顺序进行逐个识别，对文档内容中未完成的部分进行分析，然后优化部署到项目实际功能中，并且每次识别一个任务文档后，会在my_ai_popup_project/docs/tasks文件夹中 创建一个任务进度跟踪文档，并把每次部署的任务更新到TODO.md文档中，每次优化完成以后，还会同步修正内容。
+优化部署逻辑，必须根据项目的执行规则进行部署，确保有效性和逻辑性，每次部署完成 任一模块修改，必须检查的联动点
+修改内容	必须检查
+AI命令	rules / task_manager
+视频逻辑	processing / utils
+模型参数	config / docs
+UI交互	API / task状态

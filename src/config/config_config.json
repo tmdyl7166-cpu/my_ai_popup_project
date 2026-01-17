@@ -1,0 +1,161 @@
+{
+    "meta": {
+        "name": "配置模块配置",
+        "description": "定义配置管理系统的配置参数",
+        "version": "1.0.0",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "lastModified": "2024-01-01T00:00:00Z"
+    },
+    "appConfig": {
+        "dataclass": {
+            "validateAssignment": true,
+            "frozen": false
+        },
+        "loading": {
+            "envFile": ".env",
+            "configFile": "settings.json",
+            "overrideOrder": ["defaults", "env_file", "config_file", "env_vars", "runtime"],
+            "caseSensitive": false
+        },
+        "validation": {
+            "enabled": true,
+            "strict": false,
+            "customValidators": true
+        }
+    },
+    "settings": {
+        "json": {
+            "indent": 2,
+            "ensureAscii": false,
+            "sortKeys": false
+        },
+        "file": {
+            "path": "./rules/settings.json",
+            "autoCreate": true,
+            "backup": true
+        }
+    },
+    "environment": {
+        "variables": {
+            "APP_NAME": {
+                "type": "string",
+                "default": "AI弹窗项目",
+                "validation": "not_empty"
+            },
+            "APP_VERSION": {
+                "type": "string",
+                "default": "1.0.0",
+                "validation": "version"
+            },
+            "APP_ENV": {
+                "type": "string",
+                "default": "development",
+                "validation": "in_list",
+                "options": ["development", "staging", "production"]
+            },
+            "API_HOST": {
+                "type": "string",
+                "default": "0.0.0.0",
+                "validation": "ip_address"
+            },
+            "API_PORT": {
+                "type": "integer",
+                "default": 8000,
+                "validation": "port_range",
+                "min": 1024,
+                "max": 65535
+            },
+            "API_DEBUG": {
+                "type": "boolean",
+                "default": true,
+                "validation": "boolean"
+            },
+            "OLLAMA_HOST": {
+                "type": "string",
+                "default": "http://localhost:11434",
+                "validation": "url"
+            },
+            "OLLAMA_MODEL": {
+                "type": "string",
+                "default": "llama3.2:3b",
+                "validation": "not_empty"
+            },
+            "GPU_MEMORY_FRACTION": {
+                "type": "float",
+                "default": 0.8,
+                "validation": "range",
+                "min": 0.1,
+                "max": 1.0
+            },
+            "MAX_WORKERS": {
+                "type": "integer",
+                "default": 4,
+                "validation": "range",
+                "min": 1,
+                "max": 16
+            },
+            "LOG_LEVEL": {
+                "type": "string",
+                "default": "INFO",
+                "validation": "in_list",
+                "options": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+            }
+        },
+        "files": {
+            ".env": {
+                "path": ".env",
+                "required": false,
+                "autoCreate": false
+            },
+            ".env.local": {
+                "path": ".env.local",
+                "required": false,
+                "autoCreate": false
+            }
+        }
+    },
+    "runtime": {
+        "hotReload": {
+            "enabled": false,
+            "watchFiles": [".env", "settings.json"],
+            "debounceTime": 1000
+        },
+        "caching": {
+            "enabled": true,
+            "ttl": 300,
+            "maxSize": 100
+        },
+        "threading": {
+            "safe": true,
+            "lockTimeout": 5000
+        }
+    },
+    "validation": {
+        "rules": {
+            "required": {
+                "checkExistence": true,
+                "checkType": true
+            },
+            "optional": {
+                "checkType": true,
+                "allowNone": true
+            }
+        },
+        "errorHandling": {
+            "failOnError": false,
+            "logErrors": true,
+            "defaultValues": true
+        }
+    },
+    "export": {
+        "formats": ["json", "yaml", "env"],
+        "includeDefaults": false,
+        "includeComments": true,
+        "maskSecrets": true
+    },
+    "logging": {
+        "level": "INFO",
+        "includeConfigChanges": true,
+        "maskSensitiveData": true
+    }
+}

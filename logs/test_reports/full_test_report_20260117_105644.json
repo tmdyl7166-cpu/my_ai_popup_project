@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-01-17T10:56:44.533449",
+  "test_results": {
+    "launch_config": {
+      "overall_status": "error",
+      "error": "No module named 'scripts'"
+    },
+    "dependencies": {
+      "overall_status": "error",
+      "error": "No module named 'scripts'"
+    },
+    "error_handling": {
+      "overall_status": "error",
+      "error": "No module named 'scripts'"
+    },
+    "frontend_backend": {
+      "overall_status": "error",
+      "error": "No module named 'scripts'"
+    }
+  },
+  "summary": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "warnings": 0,
+    "skipped": 0
+  },
+  "overall_status": "skip"
+}

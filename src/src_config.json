@@ -1,0 +1,127 @@
+{
+    "meta": {
+        "name": "源码模块配置",
+        "description": "定义src目录下所有子模块的配置、依赖关系和启动顺序",
+        "version": "1.0.0",
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z"
+    },
+    "modules": {
+        "frontend": {
+            "enabled": true,
+            "priority": 1,
+            "dependencies": ["backend", "config"],
+            "entryPoint": "main_window.py",
+            "configFile": "src/frontend/frontend_config.json",
+            "config": {
+                "theme": "dark",
+                "width": 1280,
+                "height": 720,
+                "autoStart": true
+            }
+        },
+        "backend": {
+            "enabled": true,
+            "priority": 2,
+            "dependencies": ["ai", "processing", "utils"],
+            "entryPoint": "api_server.py",
+            "configFile": "src/backend/backend_config.json",
+            "config": {
+                "host": "0.0.0.0",
+                "port": 8000,
+                "workers": 1,
+                "debug": true
+            }
+        },
+        "ai": {
+            "enabled": true,
+            "priority": 3,
+            "dependencies": ["config", "integrations", "utils"],
+            "entryPoint": "ollama_client.py",
+            "configFile": "src/ai/ai_config.json",
+            "config": {
+                "ollamaHost": "http://localhost:11434",
+                "defaultModel": "llama3.2:3b",
+                "timeout": 300000
+            }
+        },
+        "processing": {
+            "enabled": true,
+            "priority": 4,
+            "dependencies": ["ai", "utils", "integrations"],
+            "entryPoint": "batch_processor.py",
+            "configFile": "src/processing/processing_config.json",
+            "config": {
+                "maxWorkers": 4,
+                "gpuMemoryFraction": 0.8,
+                "tempDir": "/tmp/ai_processing"
+            }
+        },
+        "integrations": {
+            "enabled": true,
+            "priority": 5,
+            "dependencies": ["utils"],
+            "entryPoint": "deep_live_cam.py",
+            "configFile": "src/integrations/integrations_config.json",
+            "config": {
+                "defaultEngine": "deep-live-cam",
+                "fallbackEngine": "facefusion",
+                "engineTimeout": 300000
+            }
+        },
+        "utils": {
+            "enabled": true,
+            "priority": 6,
+            "dependencies": [],
+            "entryPoint": "logger.py",
+            "configFile": "src/utils/utils_config.json",
+            "config": {
+                "logLevel": "INFO",
+                "logFormat": "json",
+                "maxLogSize": "10MB"
+            }
+        },
+        "config": {
+            "enabled": true,
+            "priority": 7,
+            "dependencies": [],
+            "entryPoint": "app_config.py",
+            "configFile": "src/config/config_config.json",
+            "config": {
+                "envFile": ".env",
+                "configFile": "settings.json",
+                "autoReload": false
+            }
+        }
+    },
+    "startup": {
+        "order": ["config", "utils", "integrations", "ai", "processing", "backend", "frontend"],
+        "parallelStart": false,
+        "healthChecks": true,
+        "timeout": 300
+    },
+    "communication": {
+        "protocol": "internal_api",
+        "ports": {
+            "backend": 8000,
+            "websocket": 8001
+        },
+        "endpoints": {
+            "health": "/health",
+            "status": "/status",
+            "metrics": "/metrics"
+        }
+    },
+    "monitoring": {
+        "enabled": true,
+        "metrics": ["cpu", "memory", "disk", "network"],
+        "interval": 5,
+        "retention": 3600
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": ["console", "file"],
+        "file": "../logs/src.log"
+    }
+}

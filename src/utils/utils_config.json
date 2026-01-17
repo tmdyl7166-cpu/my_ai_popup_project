@@ -1,0 +1,350 @@
+{
+    "meta": {
+        "name": "工具模块配置",
+        "description": "AI弹窗项目工具模块的完整配置，包括日志、文件操作、图片视频处理、线程管理和路径解析等功能",
+        "version": "1.0.0",
+        "createdAt": "2024-01-16T00:00:00Z",
+        "lastModified": "2024-01-16T00:00:00Z"
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": {
+            "console": {
+                "enabled": true,
+                "level": "WARNING",
+                "format": "%(levelname)s - %(message)s"
+            },
+            "file": {
+                "enabled": true,
+                "path": "../logs/utils.log",
+                "level": "DEBUG",
+                "maxSize": "10MB",
+                "backupCount": 3,
+                "encoding": "utf-8"
+            },
+            "rotating": {
+                "enabled": false,
+                "path": "../logs/utils_rotating.log",
+                "maxSize": "50MB",
+                "backupCount": 5
+            }
+        },
+        "categories": {
+            "file_operations": "INFO",
+            "image_processing": "DEBUG",
+            "video_processing": "DEBUG",
+            "thread_management": "INFO",
+            "path_resolution": "DEBUG"
+        },
+        "performance": {
+            "logSlowOperations": true,
+            "slowThreshold": 1000,
+            "includeStackTrace": false
+        }
+    },
+    "file_operations": {
+        "supported_formats": {
+            "images": [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tiff", ".webp"],
+            "videos": [".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv", ".wmv"],
+            "models": [".pt", ".pth", ".onnx", ".h5", ".bin", ".safetensors", ".ckpt"],
+            "documents": [".txt", ".md", ".json", ".yaml", ".yml", ".xml"]
+        },
+        "size_limits": {
+            "maxFileSize": "2GB",
+            "maxBatchSize": "10GB",
+            "warningThreshold": "500MB"
+        },
+        "operations": {
+            "copy": {
+                "bufferSize": "64KB",
+                "overwrite": false,
+                "preserveMetadata": true
+            },
+            "move": {
+                "atomic": true,
+                "fallbackCopy": true
+            },
+            "delete": {
+                "safeDelete": true,
+                "recycleBin": "../temp/recycle"
+            }
+        },
+        "caching": {
+            "enabled": true,
+            "cacheDir": "../temp/file_cache",
+            "maxCacheSize": "1GB",
+            "ttl": 3600,
+            "compression": "gzip"
+        }
+    },
+    "image_processing": {
+        "backends": {
+            "primary": "opencv",
+            "fallback": ["pillow", "scikit-image"],
+            "autoSelect": true
+        },
+        "quality": {
+            "defaultFormat": "png",
+            "compression": {
+                "jpeg": 95,
+                "png": 9,
+                "webp": 90
+            },
+            "resize": {
+                "method": "lanczos",
+                "maintainAspectRatio": true
+            }
+        },
+        "processing": {
+            "maxResolution": "8K",
+            "colorSpace": "RGB",
+            "normalization": {
+                "enabled": true,
+                "mean": [0.485, 0.456, 0.406],
+                "std": [0.229, 0.224, 0.225]
+            },
+            "augmentation": {
+                "enabled": false,
+                "randomCrop": false,
+                "horizontalFlip": false,
+                "rotation": 0
+            }
+        },
+        "caching": {
+            "enabled": true,
+            "cacheDir": "../temp/image_cache",
+            "maxCacheSize": "2GB",
+            "format": "compressed"
+        }
+    },
+    "video_processing": {
+        "backends": {
+            "primary": "opencv",
+            "fallback": ["ffmpeg"],
+            "hardwareAcceleration": {
+                "cuda": true,
+                "directml": true,
+                "vulkan": false
+            }
+        },
+        "codecs": {
+            "input": ["mp4", "avi", "mov", "mkv", "webm"],
+            "output": ["mp4", "avi", "mov"],
+            "preferred": "h264",
+            "fallback": "mp4v"
+        },
+        "quality": {
+            "presets": {
+                "low": {"fps": 24, "bitrate": "1000k"},
+                "medium": {"fps": 30, "bitrate": "2500k"},
+                "high": {"fps": 30, "bitrate": "5000k"},
+                "ultra": {"fps": 60, "bitrate": "8000k"}
+            },
+            "autoQuality": true,
+            "targetBitrate": "auto"
+        },
+        "processing": {
+            "frameBuffer": 30,
+            "keyframeInterval": 30,
+            "maxConcurrentFrames": 4,
+            "memoryLimit": "1GB"
+        },
+        "extraction": {
+            "format": "jpg",
+            "quality": 95,
+            "naming": "frame_{:06d}",
+            "parallel": true
+        }
+    },
+    "threading": {
+        "executor": {
+            "type": "ThreadPoolExecutor",
+            "maxWorkers": 4,
+            "threadNamePrefix": "utils-worker",
+            "daemon": true
+        },
+        "task_queue": {
+            "enabled": true,
+            "maxSize": 1000,
+            "numWorkers": 4,
+            "timeout": 30
+        },
+        "progress_tracking": {
+            "enabled": true,
+            "updateInterval": 100,
+            "callbacks": true,
+            "etaCalculation": true
+        },
+        "async": {
+            "enabled": true,
+            "eventLoopPolicy": "default",
+            "maxConcurrentTasks": 10
+        }
+    },
+    "path_resolution": {
+        "project_root": "../",
+        "auto_detection": true,
+        "standard_paths": {
+            "assets": "../assets",
+            "models": "../assets/models",
+            "images": "../assets/images",
+            "videos": "../assets/videos",
+            "output": "../output",
+            "logs": "../logs",
+            "temp": "../temp",
+            "config": "../src/config"
+        },
+        "third_party": {
+            "deep_live_cam": "../assets/Deep-Live-Cam-main",
+            "facefusion": "../assets/facefusion-master",
+            "iroop": "../assets/iRoopDeepFaceCam-main"
+        },
+        "validation": {
+            "checkExistence": true,
+            "autoCreate": true,
+            "permissions": "755"
+        }
+    },
+    "performance": {
+        "monitoring": {
+            "enabled": true,
+            "metrics": ["cpu", "memory", "disk", "network"],
+            "interval": 5,
+            "retention": 3600
+        },
+        "optimization": {
+            "memoryPooling": true,
+            "objectReuse": true,
+            "lazyLoading": true,
+            "compression": "auto"
+        },
+        "limits": {
+            "maxMemoryUsage": "2GB",
+            "maxCpuUsage": 80,
+            "maxConcurrentOperations": 10,
+            "timeout": 300
+        },
+        "profiling": {
+            "enabled": false,
+            "outputDir": "../logs/profiling",
+            "format": "json",
+            "includeStackTraces": false
+        }
+    },
+    "error_handling": {
+        "strategy": "graceful_degradation",
+        "logging": {
+            "enabled": true,
+            "level": "ERROR",
+            "includeContext": true
+        },
+        "recovery": {
+            "autoRetry": true,
+            "maxRetries": 3,
+            "backoff": "exponential",
+            "fallbackMethods": true
+        },
+        "user_feedback": {
+            "friendlyMessages": true,
+            "suggestions": true,
+            "contactInfo": false
+        }
+    },
+    "caching": {
+        "global": {
+            "enabled": true,
+            "backend": "filesystem",
+            "maxSize": "5GB",
+            "ttl": 3600,
+            "compression": "gzip"
+        },
+        "types": {
+            "file_info": {"ttl": 300, "maxSize": "100MB"},
+            "image_data": {"ttl": 1800, "maxSize": "2GB"},
+            "video_frames": {"ttl": 600, "maxSize": "1GB"},
+            "processing_results": {"ttl": 3600, "maxSize": "1GB"}
+        },
+        "cleanup": {
+            "enabled": true,
+            "interval": 1800,
+            "strategy": "lru",
+            "minFreeSpace": "1GB"
+        }
+    },
+    "validation": {
+        "input": {
+            "strict": false,
+            "sanitize": true,
+            "validateTypes": true,
+            "checkRanges": true
+        },
+        "output": {
+            "verifyIntegrity": true,
+            "checkQuality": false,
+            "validateFormat": true
+        },
+        "runtime": {
+            "healthChecks": true,
+            "resourceMonitoring": true,
+            "performanceTracking": true
+        }
+    },
+    "integration": {
+        "modules": {
+            "frontend": {
+                "callbacks": true,
+                "progressUpdates": true,
+                "errorReporting": true
+            },
+            "backend": {
+                "apiCalls": true,
+                "dataValidation": true,
+                "responseFormatting": true
+            },
+            "processing": {
+                "sharedResources": true,
+                "coordinatedExecution": true,
+                "resultCaching": true
+            }
+        },
+        "external": {
+            "opencv": {"version": "4.8+", "features": ["core", "imgproc", "videoio"]},
+            "pillow": {"version": "10.0+", "features": ["Image", "ImageOps"]},
+            "numpy": {"version": "1.24+", "features": ["array", "linalg"]},
+            "tqdm": {"version": "4.64+", "features": ["progress_bar"]}
+        }
+    },
+    "deployment": {
+        "environment": {
+            "development": {
+                "debug": true,
+                "profiling": true,
+                "strictValidation": false
+            },
+            "staging": {
+                "debug": false,
+                "profiling": true,
+                "strictValidation": true
+            },
+            "production": {
+                "debug": false,
+                "profiling": false,
+                "strictValidation": true
+            }
+        },
+        "packaging": {
+            "include": ["*.py", "*.json"],
+            "exclude": ["__pycache__", "*.pyc", ".git"],
+            "compression": "zip",
+            "standalone": false
+        },
+        "distribution": {
+            "pypi": false,
+            "conda": false,
+            "docker": true,
+            "binary": true
+        }
+    }
+}

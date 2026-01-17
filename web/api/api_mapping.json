@@ -1,0 +1,303 @@
+{
+    "meta": {
+        "name": "Web API 接口映射配置",
+        "description": "定义前端模块与后端脚本的统一接口映射关系",
+        "version": "1.0.0",
+        "createdAt": "2026-01-17T00:00:00Z",
+        "lastModified": "2026-01-17T00:00:00Z"
+    },
+    "frontendModules": {
+        "dashboard": {
+            "name": "监控仪表板",
+            "description": "项目整体状态监控和资源展示",
+            "apiEndpoints": ["/api/health", "/api/project/status", "/api/system/resources"]
+        },
+        "scriptManager": {
+            "name": "脚本管理器",
+            "description": "脚本列表、运行状态、执行控制",
+            "apiEndpoints": ["/api/scripts/list", "/api/scripts/status", "/api/scripts/run/{script_name}", "/api/scripts/stop/{script_name}"]
+        },
+        "logViewer": {
+            "name": "日志查看器",
+            "description": "查看各脚本的执行日志",
+            "apiEndpoints": ["/api/logs/{script_name}"]
+        },
+        "configEditor": {
+            "name": "配置编辑器",
+            "description": "项目配置的查看和修改",
+            "apiEndpoints": ["/api/config/{component}", "/api/config/{component}"]
+        },
+        "deploymentTracker": {
+            "name": "部署进度跟踪",
+            "description": "查看项目部署进度和状态",
+            "apiEndpoints": ["/api/deployment/progress"]
+        }
+    },
+    "apiEndpoints": {
+        "GET /api/health": {
+            "name": "健康检查",
+            "description": "获取 Web 应用健康状态",
+            "frontendModule": "dashboard",
+            "script": null,
+            "response": {
+                "status": "healthy | warning | error",
+                "timestamp": "ISO 8601 时间戳",
+                "version": "应用版本号"
+            },
+            "caching": {
+                "enabled": false,
+                "ttl": 0
+            },
+            "authRequired": false
+        },
+        "GET /api/project/status": {
+            "name": "项目状态",
+            "description": "获取项目整体运行状态",
+            "frontendModule": "dashboard",
+            "script": null,
+            "response": {
+                "project_name": "项目名称",
+                "version": "版本号",
+                "status": "运行状态",
+                "components": "组件状态对象",
+                "last_updated": "最后更新时间"
+            },
+            "caching": {
+                "enabled": true,
+                "ttl": 30
+            },
+            "authRequired": false
+        },
+        "GET /api/system/resources": {
+            "name": "系统资源",
+            "description": "获取系统资源使用情况",
+            "frontendModule": "dashboard",
+            "script": null,
+            "response": {
+                "cpu_percent": "CPU使用率",
+                "memory": "内存使用情况",
+                "disk": "磁盘使用情况",
+                "timestamp": "时间戳"
+            },
+            "caching": {
+                "enabled": true,
+                "ttl": 5
+            },
+            "authRequired": false
+        },
+        "GET /api/scripts/list": {
+            "name": "脚本列表",
+            "description": "获取所有可用脚本的列表",
+            "frontendModule": "scriptManager",
+            "script": "scripts_config.json",
+            "response": {
+                "scripts": [
+                    {
+                        "name": "脚本文件名",
+                        "display_name": "显示名称",
+                        "description": "脚本描述",
+                        "status": "运行状态",
+                        "last_run": "最后运行时间",
+                        "frequency": "执行频率"
+                    }
+                ]
+            },
+            "caching": {
+                "enabled": true,
+                "ttl": 60
+            },
+            "authRequired": false
+        },
+        "GET /api/scripts/status": {
+            "name": "脚本状态",
+            "description": "获取所有脚本的运行状态",
+            "frontendModule": "scriptManager",
+            "script": null,
+            "response": {
+                "scripts": "脚本状态对象",
+                "monitoring_active": "监控是否激活",
+                "timestamp": "时间戳"
+            },
+            "caching": {
+                "enabled": true,
+                "ttl": 10
+            },
+            "authRequired": false
+        },
+        "POST /api/scripts/run/{script_name}": {
+            "name": "运行脚本",
+            "description": "执行指定的健康监控脚本",
+            "frontendModule": "scriptManager",
+            "script": "scripts/health_monitor/{script_name}",
+            "parameters": {
+                "script_name": "脚本文件名 (health_monitor.py, config_validator.py, etc.)"
+            },
+            "response": {
+                "status": "started | running | completed | failed",
+                "return_code": "返回码",
+                "stdout": "标准输出",
+                "stderr": "错误输出"
+            },
+            "caching": {
+                "enabled": false,
+                "ttl": 0
+            },
+            "authRequired": false,
+            "timeout": 300
+        },
+        "POST /api/scripts/stop/{script_name}": {
+            "name": "停止脚本",
+            "description": "停止正在运行的脚本",
+            "frontendModule": "scriptManager",
+            "script": null,
+            "parameters": {
+                "script_name": "脚本文件名"
+            },
+            "response": {
+                "status": "stopped",
+                "message": "停止信息"
+            },
+            "caching": {
+                "enabled": false,
+                "ttl": 0
+            },
+            "authRequired": false
+        },
+        "GET /api/logs/{script_name}": {
+            "name": "获取日志",
+            "description": "获取指定脚本的执行日志",
+            "frontendModule": "logViewer",
+            "script": null,
+            "parameters": {
+                "script_name": "脚本文件名",
+                "lines": "返回行数 (默认100)"
+            },
+            "response": {
+                "status": "success | error | not_found",
+                "logs": "日志行列表",
+                "total_lines": "总行数",
+                "returned_lines": "返回行数"
+            },
+            "caching": {
+                "enabled": false,
+                "ttl": 0
+            },
+            "authRequired": false
+        },
+        "GET /api/config/{component}": {
+            "name": "获取配置",
+            "description": "获取指定组件的配置信息",
+            "frontendModule": "configEditor",
+            "script": null,
+            "parameters": {
+                "component": "组件名 (project, frontend, backend, scripts)"
+            },
+            "response": "配置对象",
+            "caching": {
+                "enabled": true,
+                "ttl": 300
+            },
+            "authRequired": false
+        },
+        "POST /api/config/{component}": {
+            "name": "更新配置",
+            "description": "更新指定组件的配置信息",
+            "frontendModule": "configEditor",
+            "script": null,
+            "parameters": {
+                "component": "组件名",
+                "config": "新配置对象"
+            },
+            "response": {
+                "status": "success",
+                "message": "更新结果信息"
+            },
+            "caching": {
+                "enabled": false,
+                "ttl": 0
+            },
+            "authRequired": false
+        },
+        "GET /api/deployment/progress": {
+            "name": "部署进度",
+            "description": "获取项目部署进度信息",
+            "frontendModule": "deploymentTracker",
+            "script": null,
+            "response": {
+                "status": "success | error | not_found",
+                "content": "部署进度内容"
+            },
+            "caching": {
+                "enabled": true,
+                "ttl": 600
+            },
+            "authRequired": false
+        }
+    },
+    "backendScripts": {
+        "health_monitor.py": {
+            "name": "主健康监控",
+            "description": "执行全面的项目健康检查",
+            "configFile": "scripts_config.json",
+            "execution": {
+                "command": "python3 scripts/start_health_monitor.py --verbose",
+                "frequency": "daily",
+                "timeout": 300
+            },
+            "outputs": ["health_report.json", "logs/health_check.log"]
+        },
+        "config_validator.py": {
+            "name": "配置验证",
+            "description": "验证项目配置的一致性和完整性",
+            "configFile": "scripts_config.json",
+            "execution": {
+                "command": "python3 scripts/validate_configs.py",
+                "frequency": "on-demand",
+                "timeout": 60
+            },
+            "outputs": ["config_validation_report.json"]
+        },
+        "docs_sync_monitor.py": {
+            "name": "文档同步",
+            "description": "监控文档更新状态和同步情况",
+            "configFile": "scripts_config.json",
+            "execution": {
+                "command": "python3 scripts/sync_web_config.sh",
+                "frequency": "daily",
+                "timeout": 90
+            },
+            "outputs": ["docs_sync_report.json"]
+        }
+    },
+    "configRules": {
+        "responseFormat": {
+            "success": {
+                "success": true,
+                "data": "响应数据",
+                "message": "操作成功",
+                "timestamp": "ISO 8601"
+            },
+            "error": {
+                "success": false,
+                "error": "错误信息",
+                "message": "用户友好的错误描述",
+                "timestamp": "ISO 8601"
+            }
+        },
+        "caching": {
+            "defaultTTL": 60,
+            "maxTTL": 3600,
+            "disabledFor": ["POST", "PUT", "DELETE"]
+        },
+        "rateLimiting": {
+            "enabled": true,
+            "defaultLimit": 60,
+            "windowSeconds": 60
+        },
+        "websocket": {
+            "endpoint": "/ws/monitoring",
+            "events": ["status_update", "script_result", "script_completed", "script_error"]
+        }
+    }
+}
+

@@ -1,0 +1,241 @@
+{
+    "meta": {
+        "layer": "L1",
+        "name": "元目标层",
+        "description": "定义项目的最高目标和约束条件，是项目的宏观指导思想",
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z",
+        "version": "1.0.0"
+    },
+    "project": {
+        "name": "AI弹窗项目",
+        "fullName": "智能人脸合成与视频处理平台",
+        "code": "my_ai_popup_project",
+        "type": "Desktop Application with AI Capabilities",
+        "description": "基于本地AI的弹窗式应用，集成人脸识别、图像合成、视频处理等能力"
+    },
+    "goals": {
+        "primary": {
+            "title": "提供智能人脸合成能力",
+            "description": "让用户能够通过简单的操作，实现图片与视频之间的人脸替换和内容合成",
+            "successCriteria": [
+                "支持4种核心合成模式",
+                "AI命令理解准确率达到90%以上",
+                "处理延迟低于2秒"
+            ]
+        },
+        "secondary": [
+            {
+                "title": "本地AI优先",
+                "description": "优先使用本地AI模型，保护用户隐私",
+                "priority": "high"
+            },
+            {
+                "title": "多引擎集成",
+                "description": "集成Deep-Live-Cam、FaceFusion、iRoop等主流换脸引擎",
+                "priority": "high"
+            },
+            {
+                "title": "实时处理",
+                "description": "支持实时摄像头换脸和特效处理",
+                "priority": "high"
+            },
+            {
+                "title": "虚拟摄像头输出",
+                "description": "支持输出到OBS等支持虚拟摄像头的应用",
+                "priority": "medium"
+            },
+            {
+                "title": "性能监控",
+                "description": "提供实时性能监控和自动优化",
+                "priority": "medium"
+            }
+        ]
+    },
+    "values": {
+        "privacy": {
+            "priority": "highest",
+            "description": "用户数据仅在本地处理，不上传到云端",
+            "implementation": "使用Ollama本地模型，所有数据处理在本地完成"
+        },
+        "performance": {
+            "priority": "high",
+            "description": "追求最佳的处理速度和资源利用率",
+            "implementation": "异步处理、GPU加速、智能缓存"
+        },
+        "usability": {
+            "priority": "high",
+            "description": "提供简单直观的用户界面",
+            "implementation": "PyQt5图形界面、任务进度可视化、清晰的错误提示"
+        },
+        "extensibility": {
+            "priority": "medium",
+            "description": "架构设计支持未来功能扩展",
+            "implementation": "模块化设计、插件化引擎接口、REST API支持"
+        },
+        "stability": {
+            "priority": "high",
+            "description": "保证系统稳定运行",
+            "implementation": "完善的异常处理、状态机管理、日志记录"
+        }
+    },
+    "constraints": {
+        "performance": {
+            "maxStartupTime": 10,
+            "maxStartupTimeUnit": "seconds",
+            "maxProcessingLatency": {
+                "realtime": 100,
+                "realtimeUnit": "milliseconds",
+                "batch": 300,
+                "batchUnit": "seconds"
+            },
+            "maxMemoryUsage": {
+                "value": 8,
+                "unit": "GB",
+                "softLimit": 12
+            },
+            "minGpuMemory": {
+                "value": 4,
+                "unit": "GB"
+            },
+            "targetFps": {
+                "realtime": 25,
+                "playback": 30
+            }
+        },
+        "compatibility": {
+            "python": {
+                "minVersion": "3.10",
+                "maxVersion": "3.11",
+                "recommended": "3.10"
+            },
+            "os": {
+                "windows": "10+",
+                "linux": "Ubuntu 20.04+ / Debian 10+",
+                "macos": "12+"
+            },
+            "hardware": {
+                "minCpu": "4 cores",
+                "minRam": "8 GB",
+                "minDisk": "20 GB free space",
+                "optionalGpu": "CUDA compatible GPU with 4GB+ VRAM"
+            }
+        },
+        "resourceLimits": {
+            "maxConcurrentTasks": 4,
+            "maxQueueSize": 100,
+            "maxCacheSize": {
+                "value": 5,
+                "unit": "GB"
+            },
+            "maxLogFileSize": {
+                "value": 100,
+                "unit": "MB"
+            }
+        },
+        "security": {
+            "dataPrivacy": "local-only",
+            "networkAccess": "optional",
+            "fileSystemAccess": "restricted",
+            "permissions": "user-consent-required"
+        },
+        "quality": {
+            "minFaceDetectionAccuracy": 0.85,
+            "minSynthesisQuality": 0.80,
+            "maxArtifactsRatio": 0.05,
+            "targetResolution": "1080p"
+        }
+    },
+    "nonGoals": [
+        "不支持云端AI服务集成（仅本地）",
+        "不支持实时直播推流",
+        "不支持多人同时处理（单用户模式）",
+        "不提供用户认证系统（本地应用）"
+    ],
+    "riskManagement": {
+        "identifiedRisks": [
+            {
+                "id": "R1",
+                "description": "GPU内存不足导致处理失败",
+                "probability": "medium",
+                "impact": "high",
+                "mitigation": "提供CPU回退机制，自动释放内存"
+            },
+            {
+                "id": "R2",
+                "description": "AI模型加载失败",
+                "probability": "low",
+                "impact": "high",
+                "mitigation": "多引擎备用机制，清晰的错误提示"
+            },
+            {
+                "id": "R3",
+                "description": "处理超时",
+                "probability": "medium",
+                "impact": "medium",
+                "mitigation": "任务超时机制，进度反馈，用户可取消"
+            },
+            {
+                "id": "R4",
+                "description": "文件格式不支持",
+                "probability": "low",
+                "impact": "low",
+                "mitigation": "前置格式检查，友好提示"
+            }
+        ]
+    },
+    "successMetrics": {
+        "functional": [
+            "100%的核心功能可用",
+            "4种合成模式全部实现",
+            "AI命令理解准确率 >= 90%"
+        ],
+        "performance": [
+            "启动时间 <= 10秒",
+            "实时处理延迟 < 100ms",
+            "批量处理速度 >= 5 fps"
+        ],
+        "stability": [
+            "崩溃率 < 0.1%",
+            "任务成功率 >= 95%",
+            "内存泄漏检测通过"
+        ],
+        "usability": [
+            "新用户首次使用时间 < 5分钟",
+            "用户满意度 >= 4.0/5.0",
+            "帮助文档覆盖100%功能"
+        ]
+    },
+    "roadmap": {
+        "v1.0": {
+            "milestone": "核心功能发布",
+            "features": [
+                "基础换脸功能",
+                "图片合成到图片",
+                "图片合成到视频",
+                "实时摄像头预览"
+            ],
+            "targetDate": "2024-Q1"
+        },
+        "v1.5": {
+            "milestone": "AI增强",
+            "features": [
+                "AI命令理解",
+                "智能参数推荐",
+                "质量分析"
+            ],
+            "targetDate": "2024-Q2"
+        },
+        "v2.0": {
+            "milestone": "专业版",
+            "features": [
+                "批量处理",
+                "OBS集成",
+                "虚拟摄像头",
+                "性能监控"
+            ],
+            "targetDate": "2024-Q3"
+        }
+    }
+}
+

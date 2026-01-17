@@ -1,0 +1,315 @@
+{
+    "meta": {
+        "layer": "L4",
+        "name": "决策层",
+        "description": "记录关键设计决策和权衡，以及为什么选择某种技术或架构",
+        "dependsOn": ["L1", "L2", "L3"],
+        "createdAt": "2026-01-16T00:00:00Z",
+        "lastModified": "2026-01-16T00:00:00Z",
+        "version": "1.0.0"
+    },
+    "architectureDecisions": {
+        "AD001": {
+            "title": "采用分层架构+插件模式",
+            "context": "需要支持多种AI引擎集成，同时保持系统可扩展性",
+            "decision": "选择分层架构(Layered Architecture)结合插件模式(Plugin Pattern)",
+            "alternatives": [
+                "微服务架构(Microservices)",
+                "单体架构(Monolithic)",
+                "事件驱动架构(Event-Driven)"
+            ],
+            "rationale": [
+                "分层架构提供清晰的职责分离",
+                "插件模式支持第三方引擎的动态集成",
+                "降低模块间的耦合度",
+                "便于测试和维护"
+            ],
+            "consequences": {
+                "positive": [
+                    "模块职责清晰",
+                    "易于扩展新引擎",
+                    "便于单元测试"
+                ],
+                "negative": [
+                    "可能增加配置复杂度",
+                    "需要额外的插件管理机制"
+                ]
+            },
+            "status": "accepted"
+        },
+        "AD002": {
+            "title": "选择PyQt5作为GUI框架",
+            "context": "需要跨平台桌面应用GUI，支持实时视频预览",
+            "decision": "使用PyQt5作为主要GUI框架",
+            "alternatives": [
+                "Tkinter(标准库)",
+                "PySide6",
+                "Kivy",
+                "Electron"
+            ],
+            "rationale": [
+                "PyQt5性能优秀，支持OpenGL加速",
+                "原生跨平台支持(Windows/Linux/macOS)",
+                "丰富的组件库和文档",
+                "与Python生态系统良好集成"
+            ],
+            "consequences": {
+                "positive": [
+                    "优秀的性能和用户体验",
+                    "丰富的定制化选项",
+                    "稳定的跨平台支持"
+                ],
+                "negative": [
+                    "许可证费用(商业使用)",
+                    "相对较大的包体积"
+                ]
+            },
+            "status": "accepted"
+        },
+        "AD003": {
+            "title": "优先使用本地AI模型",
+            "context": "需要在保护用户隐私的同时提供AI能力",
+            "decision": "优先使用Ollama本地AI模型，网络访问仅限于必要情况",
+            "alternatives": [
+                "云端AI服务(OpenAI/Claude)",
+                "混合模式(本地+云端)",
+                "完全离线模式"
+            ],
+            "rationale": [
+                "保护用户隐私和数据安全",
+                "降低运营成本",
+                "支持离线使用",
+                "避免网络依赖问题"
+            ],
+            "consequences": {
+                "positive": [
+                    "数据完全本地化",
+                    "无网络延迟",
+                    "成本可控"
+                ],
+                "negative": [
+                    "硬件要求较高",
+                    "模型更新依赖用户操作",
+                    "功能受限于本地模型能力"
+                ]
+            },
+            "status": "accepted"
+        },
+        "AD004": {
+            "title": "采用FastAPI作为后端框架",
+            "context": "需要高性能的异步API服务，支持实时通信",
+            "decision": "使用FastAPI构建REST API和WebSocket服务",
+            "alternatives": [
+                "Flask",
+                "Django",
+                "Tornado",
+                "aiohttp"
+            ],
+            "rationale": [
+                "基于Starlette的异步性能",
+                "自动API文档生成",
+                "类型提示支持",
+                "WebSocket原生支持"
+            ],
+            "consequences": {
+                "positive": [
+                    "优秀的异步性能",
+                    "自动生成的API文档",
+                    "强类型支持"
+                ],
+                "negative": [
+                    "学习曲线相对陡峭",
+                    "依赖较多"
+                ]
+            },
+            "status": "accepted"
+        },
+        "AD005": {
+            "title": "多引擎集成策略",
+            "context": "需要集成多个开源人脸合成引擎",
+            "decision": "采用统一接口封装+优先级回退机制",
+            "alternatives": [
+                "直接调用各引擎API",
+                "单一引擎依赖",
+                "自定义引擎实现"
+            ],
+            "rationale": [
+                "提高系统可用性",
+                "便于引擎切换和升级",
+                "统一的质量控制",
+                "降低维护成本"
+            ],
+            "consequences": {
+                "positive": [
+                    "系统容错性强",
+                    "易于添加新引擎",
+                    "统一的调用接口"
+                ],
+                "negative": [
+                    "增加抽象层复杂度",
+                    "可能影响性能"
+                ]
+            },
+            "status": "accepted"
+        }
+    },
+    "technologyChoices": {
+        "programmingLanguage": {
+            "choice": "Python 3.10+",
+            "rationale": [
+                "丰富的AI/ML生态系统",
+                "优秀的跨平台支持",
+                "简洁易读的语法",
+                "强大的科学计算库"
+            ],
+            "constraints": ["性能敏感部分使用Cython优化"]
+        },
+        "aiFramework": {
+            "choice": "PyTorch + InsightFace",
+            "rationale": [
+                "PyTorch的灵活性和性能",
+                "InsightFace在人脸识别领域的专业性",
+                "活跃的社区支持",
+                "与Ollama的良好集成"
+            ]
+        },
+        "mediaProcessing": {
+            "choice": "OpenCV + MoviePy",
+            "rationale": [
+                "OpenCV的成熟稳定",
+                "MoviePy的易用性",
+                "广泛的格式支持",
+                "GPU加速支持"
+            ]
+        },
+        "configurationFormat": {
+            "choice": "JSON + Python配置类",
+            "rationale": [
+                "JSON的通用性和可读性",
+                "Python配置类的类型安全",
+                "便于版本控制",
+                "支持注释和文档"
+            ]
+        }
+    },
+    "designPrinciples": {
+        "modularity": {
+            "principle": "高内聚低耦合",
+            "implementation": [
+                "每个模块职责单一",
+                "接口明确定义",
+                "依赖注入模式",
+                "插件化架构"
+            ]
+        },
+        "performance": {
+            "principle": "性能优先，资源优化",
+            "implementation": [
+                "异步处理",
+                "内存池管理",
+                "GPU加速",
+                "智能缓存"
+            ]
+        },
+        "reliability": {
+            "principle": "容错设计，优雅降级",
+            "implementation": [
+                "异常处理机制",
+                "回退策略",
+                "健康检查",
+                "状态监控"
+            ]
+        },
+        "usability": {
+            "principle": "用户中心设计",
+            "implementation": [
+                "直观的用户界面",
+                "实时进度反馈",
+                "友好的错误提示",
+                "上下文帮助"
+            ]
+        }
+    },
+    "tradeOffs": {
+        "performanceVsUsability": {
+            "decision": "平衡性能和易用性",
+            "rationale": "在保证核心性能的同时，提供良好的用户体验",
+            "implementation": [
+                "提供多种质量预设",
+                "智能参数推荐",
+                "后台处理机制"
+            ]
+        },
+        "featuresVsComplexity": {
+            "decision": "控制功能范围，避免过度复杂",
+            "rationale": "专注于核心人脸合成能力，避免功能膨胀",
+            "implementation": [
+                "清晰的功能边界",
+                "模块化的功能组织",
+                "渐进式功能发布"
+            ]
+        },
+        "compatibilityVsInnovation": {
+            "decision": "保证兼容性前提下的创新",
+            "rationale": "在保持系统稳定的同时引入新技术",
+            "implementation": [
+                "版本兼容性保证",
+                "渐进式升级策略",
+                "回退机制"
+            ]
+        }
+    },
+    "riskMitigation": {
+        "technicalRisks": [
+            {
+                "risk": "GPU内存不足",
+                "mitigation": "CPU回退机制，内存监控，智能批处理"
+            },
+            {
+                "risk": "第三方引擎不稳定",
+                "mitigation": "多引擎备用，健康检查，异常处理"
+            },
+            {
+                "risk": "模型加载失败",
+                "mitigation": "模型验证，备用模型，轻量级回退"
+            }
+        ],
+        "operationalRisks": [
+            {
+                "risk": "配置错误",
+                "mitigation": "配置验证，自动修复，详细文档"
+            },
+            {
+                "risk": "磁盘空间不足",
+                "mitigation": "空间监控，自动清理，警告机制"
+            },
+            {
+                "risk": "网络连接问题",
+                "mitigation": "离线优先，本地缓存，重试机制"
+            }
+        ]
+    },
+    "futureConsiderations": {
+        "scalability": {
+            "considerations": [
+                "分布式处理支持",
+                "云端扩展选项",
+                "批量处理优化"
+            ]
+        },
+        "extensibility": {
+            "considerations": [
+                "插件API标准化",
+                "新引擎集成框架",
+                "自定义模型支持"
+            ]
+        },
+        "maintainability": {
+            "considerations": [
+                "自动化测试覆盖",
+                "文档标准化",
+                "代码质量监控"
+            ]
+        }
+    }
+}

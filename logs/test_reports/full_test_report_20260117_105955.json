@@ -1,0 +1,318 @@
+{
+  "timestamp": "2026-01-17T10:59:55.364299",
+  "test_results": {
+    "launch_config": {
+      "timestamp": "2026-01-17T10:59:55.059165",
+      "tests": {
+        "python_version": {
+          "name": "Python版本",
+          "status": "pass",
+          "version": "3.10.12 (main, Jan  8 2026, 06:52:19) [GCC 11.4.0]",
+          "executable": "/usr/local/python/current/bin/python3"
+        },
+        "vscode_launch": {
+          "name": "VSCode调试配置",
+          "config_path": ".vscode/launch.json",
+          "status": "ready",
+          "configurations": [
+            {
+              "name": "Launch Microsoft Edge",
+              "type": "pwa-msedge",
+              "request": "launch",
+              "program": null,
+              "group": null
+            },
+            {
+              "name": "启动全项目监控健康 (Web界面)",
+              "type": "python",
+              "request": "launch",
+              "program": "${workspaceFolder}/web/app.py",
+              "group": "web"
+            },
+            {
+              "name": "启动后端API服务",
+              "type": "python",
+              "request": "launch",
+              "program": "${workspaceFolder}/src/backend/control_core/server.py",
+              "group": "backend"
+            },
+            {
+              "name": "启动用户前端功能窗口 (GUI)",
+              "type": "python",
+              "request": "launch",
+              "program": "${workspaceFolder}/scripts/start_gui_py.py",
+              "group": "frontend"
+            },
+            {
+              "name": "启动前后端联动监控 (复合启动)",
+              "type": "python",
+              "request": "launch",
+              "program": "${workspaceFolder}/scripts/start_health_monitor.py",
+              "group": "compound"
+            }
+          ],
+          "config_exists": true
+        },
+        "backend_api": {
+          "name": "后端API服务",
+          "config_path": "src/backend/control_core/server.py",
+          "default_port": 8000,
+          "status": "ready",
+          "config_exists": true,
+          "port_status": "available"
+        },
+        "web_interface": {
+          "name": "Web界面服务",
+          "config_path": "web/app.py",
+          "default_port": 8080,
+          "status": "ready",
+          "config_exists": true,
+          "port_status": "available"
+        },
+        "gui": {
+          "name": "GUI前端",
+          "config_path": "scripts/start_gui_py.py",
+          "status": "ready",
+          "config_exists": true,
+          "pyqt5": "installed",
+          "pyqt6": "installed"
+        },
+        "health_monitor": {
+          "name": "健康监控",
+          "config_path": "scripts/start_health_monitor.py",
+          "status": "ready",
+          "config_exists": true
+        }
+      },
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "warnings": 0
+      },
+      "overall_status": "pass"
+    },
+    "dependencies": {
+      "overall_status": "error",
+      "error": "'dict' object has no attribute 'python_version'"
+    },
+    "error_handling": {
+      "timestamp": "2026-01-17T10:59:55.066649",
+      "tests": {
+        "port_conflict": {
+          "name": "端口冲突处理",
+          "status": "pass",
+          "tests": [
+            {
+              "port": 8000,
+              "in_use": false,
+              "expected": "available"
+            },
+            {
+              "port": 8080,
+              "in_use": false,
+              "expected": "available"
+            }
+          ]
+        },
+        "dependency_error": {
+          "name": "依赖缺失处理",
+          "status": "pass",
+          "missing_deps": [],
+          "optional_deps": [
+            "torch",
+            "insightface",
+            "ollama"
+          ]
+        },
+        "environment_error": {
+          "name": "环境错误处理",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "PYTHONPATH",
+              "status": "not_set"
+            },
+            {
+              "name": "DISPLAY",
+              "status": "set",
+              "value": ":0"
+            },
+            {
+              "name": "PATH",
+              "status": "set",
+              "value": "/home/vscode/.vscode-server/data/User/globalStorag..."
+            }
+          ]
+        },
+        "file_access": {
+          "name": "文件访问错误处理",
+          "status": "pass",
+          "file_checks": [
+            {
+              "path": "project_config.json",
+              "exists": true
+            },
+            {
+              "path": "requirements.txt",
+              "exists": true
+            },
+            {
+              "path": "src/backend/control_core/server.py",
+              "exists": true
+            },
+            {
+              "path": "web/app.py",
+              "exists": true
+            },
+            {
+              "path": "scripts/start_gui_py.py",
+              "exists": true
+            },
+            {
+              "path": "src",
+              "exists": true,
+              "is_dir": true
+            },
+            {
+              "path": "web",
+              "exists": true,
+              "is_dir": true
+            },
+            {
+              "path": "scripts",
+              "exists": true,
+              "is_dir": true
+            },
+            {
+              "path": "logs",
+              "exists": true,
+              "is_dir": true
+            },
+            {
+              "path": "docs",
+              "exists": true,
+              "is_dir": true
+            }
+          ]
+        },
+        "startup_sequence": {
+          "name": "启动顺序",
+          "status": "pass",
+          "sequence": [
+            {
+              "order": 1,
+              "service": "后端API服务",
+              "port": 8000,
+              "description": "先启动后端API",
+              "running": false
+            },
+            {
+              "order": 2,
+              "service": "Web界面服务",
+              "port": 8080,
+              "description": "再启动Web界面",
+              "running": false
+            },
+            {
+              "order": 3,
+              "service": "GUI前端",
+              "port": null,
+              "description": "最后启动GUI",
+              "running": null
+            }
+          ]
+        },
+        "error_recovery": {
+          "name": "错误恢复",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "logs目录",
+              "writable": true,
+              "path": "/workspaces/my_ai_popup_project/logs"
+            },
+            {
+              "name": "health_reports目录",
+              "writable": true,
+              "path": "/workspaces/my_ai_popup_project/logs/health_reports"
+            }
+          ]
+        }
+      },
+      "summary": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "warnings": 0
+      },
+      "overall_status": "pass"
+    },
+    "frontend_backend": {
+      "timestamp": "2026-01-17T10:59:55.363296",
+      "tests": {
+        "backend_api_health": {
+          "name": "后端API健康检查",
+          "endpoint": "/api/health",
+          "port": 8000,
+          "status": "skip",
+          "message": "后端服务未启动，跳过测试"
+        },
+        "backend_api_endpoints": {
+          "name": "后端API端点",
+          "endpoints": [],
+          "status": "skip",
+          "message": "后端服务未启动，跳过测试"
+        },
+        "web_interface_health": {
+          "name": "Web界面健康检查",
+          "endpoint": "/api/health",
+          "port": 8080,
+          "status": "skip",
+          "message": "Web服务未启动，跳过测试"
+        },
+        "web_interface_endpoints": {
+          "name": "Web界面API端点",
+          "endpoints": [],
+          "status": "skip",
+          "message": "Web服务未启动，跳过测试"
+        },
+        "websocket_connection": {
+          "name": "WebSocket连接",
+          "endpoint": "/ws/monitoring",
+          "port": 8080,
+          "status": "skip",
+          "message": "Web服务未启动，跳过测试"
+        },
+        "script_execution_api": {
+          "name": "脚本执行API",
+          "endpoints": [],
+          "status": "skip",
+          "message": "Web服务未启动，跳过测试"
+        },
+        "system_resources_api": {
+          "name": "系统资源API",
+          "endpoint": "/api/system/resources",
+          "status": "skip",
+          "message": "Web服务未启动，跳过测试"
+        }
+      },
+      "summary": {
+        "total": 7,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 7,
+        "warnings": 0
+      },
+      "overall_status": "skip"
+    }
+  },
+  "summary": {
+    "total_tests": 19,
+    "passed": 12,
+    "failed": 0,
+    "warnings": 0,
+    "skipped": 7
+  },
+  "overall_status": "pass"
+}
