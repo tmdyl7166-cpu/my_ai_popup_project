@@ -893,6 +893,12 @@
                 "memory": 85,
                 "disk": 90
             }
+        },
+        "sentry": {
+            "enabled": true,
+            "dsn": "https://4d6820ea296e34011b2e4db3e747b87d@o4510728365015040.ingest.us.sentry.io/4510728434483200",
+            "send_default_pii": true,
+            "environment": "production"
         }
     },
     "logging": {

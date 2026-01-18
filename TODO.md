@@ -117,3 +117,89 @@
   - 创建部署进度文档 32-统一启动器与launch配置优化-20260117.md
   - 更新文档索引说明
 
+- 2026-01-17: 完成 Sentry SDK 配置任务
+  - 添加 sentry-sdk>=2.0.0 依赖到 requirements.txt
+  - 在 web/app.py 中初始化 Sentry SDK（FastAPI 导入之前）
+  - 更新 project_config.json 添加 Sentry 配置项
+  - 创建部署进度文档 33-Sentry_SDK配置-20260117.md
+
+- 2026-01-18: 完成前后端热交互与实时监控部署任务
+  - 启动 Web 监控中心服务（端口8080）
+  - 验证前后端热交互功能（WebSocket实时通信）
+  - 验证自动轮询监控（每10秒健康检查、每5秒资源更新）
+  - 安装缺失依赖（python-socketio, schedule, sentry-sdk, pyyaml）
+  - 修复部署进度文件路径问题
+  - 创建部署进度文档 34-前后端热交互与实时监控部署-20260117.md
+  - 验证所有API端点正常工作
+
+- 2026-01-18: 完成统一启动器优化与全局联通性设计任务
+  - 创建统一启动器 scripts/unified_launcher.py
+  - 实现统一响应格式 (UnifiedResponse)
+  - 实现健康检查器 (HealthChecker)
+  - 实现进程管理器 (ProcessManager)
+  - 实现模块注册表 (ModuleRegistry)
+  - 支持依赖顺序启动
+  - 支持并行启动
+  - 支持健康检查和状态查询
+  - 创建部署进度文档 35-统一启动器优化与全局联通性-20260118.md
+
+- 2026-01-18: 完成安全增强与模块优化规划任务
+  - 创建部署进度文档 36-安全增强与模块优化-20260118.md
+  - 详细规划前端、后端、AI、媒体、集成、测试、文档和安全模块优化计划
+  - 实现输入验证方案
+  - 实现API密钥认证方案
+  - 实现速率限制日志方案
+  - 实现HTTPS安全中间件方案
+  - 实现CORS限制配置方案
+  - 添加部署检查清单
+  - 定义待办事项更新
+
+- 2026-01-18: 完成安全路由保护任务
+  - 修复 /sentry-debug 路由，仅在开发环境启用
+  - 添加环境变量检查 (APP_ENV, DEBUG)
+  - 避免生产环境暴露错误监控端点
+
+## 🚀 待执行任务
+
+### 核心功能实现
+- [x] 实现输入验证 (Pydantic模型)
+- [x] 实现API密钥认证中间件
+- [x] 添加速率限制日志记录
+- [x] 配置HTTPS安全头中间件
+- [x] 限制CORS方法和来源
+
+### 部署修复
+- [x] 修复部署进度文件路径问题
+- [x] 更新项目文档索引
+- [x] 验证所有API端点正常工作
+
+### 测试验证
+- [x] 安全功能测试 ✅
+- [x] 性能测试 ✅
+- [x] 集成测试 ✅
+
+## 🎉 新增已完成任务
+
+### [已完成] 安全增强实现
+- **优先级**: 高
+- **说明**: 实现Web安全中间件模块
+
+#### 任务完成清单:
+1. [x] 创建安全模块 web/security.py
+2. [x] 实现输入验证 (ScriptRunRequest, ConfigUpdateRequest)
+3. [x] 实现速率限制器 (RateLimiter)
+4. [x] 实现API密钥认证 (verify_api_key)
+5. [x] 实现安全头中间件 (SecurityHeadersMiddleware)
+6. [x] 实现主机验证中间件 (HostValidationMiddleware)
+7. [x] 实现速率限制中间件 (RateLimitMiddleware)
+8. [x] 实现请求日志中间件 (RequestLoggingMiddleware)
+9. [x] 集成安全中间件到 web/app.py
+10. [x] 添加安全配置检查工具 (check_security_config)
+
+#### 安全功能概要:
+- ✅ HTTP安全响应头 (X-Content-Type-Options, X-Frame-Options等)
+- ✅ 速率限制 (默认100请求/分钟)
+- ✅ 主机头验证
+- ✅ 请求日志记录
+- ✅ 输入验证 (Pydantic模型)
+

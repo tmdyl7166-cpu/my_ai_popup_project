@@ -15,23 +15,56 @@ from contextlib import asynccontextmanager
 from typing import Dict, Any, Optional, List
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect, Request, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, APIKeyHeader
+from pydantic import BaseModel, Field, validator
 import uvicorn
+import hashlib
+import hmac
+import secrets
+from typing import Optional
+import re
 
 from ...utils.logger import get_logger
 from .state_manager import state_manager
 from .pipeline_manager import pipeline_manager
 
 
+# 安全配置
+API_KEY_NAME = "X-API-Key"
+API_KEY = os.getenv("API_KEY", "your-secret-api-key-here")  # 在生产环境中应该从环境变量获取
+
+# 安全中间件
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+bearer_scheme = HTTPBearer(auto_error=False)
+
 # 请求/响应模型
 class TaskRequest(BaseModel):
     """任务请求"""
-    task_type: str = Field(..., description="任务类型")
+    task_type: str = Field(..., description="任务类型", min_length=1, max_length=50)
     parameters: Dict[str, Any] = Field(default_factory=dict, description="任务参数")
     priority: int = Field(1, description="任务优先级", ge=1, le=10)
+
+    @validator('task_type')
+    def validate_task_type(cls, v):
+        """验证任务类型"""
+        allowed_types = ['face_swap', 'video_process', 'image_enhance', 'batch_process']
+        if v not in allowed_types:
+            raise ValueError(f'任务类型必须是以下之一: {allowed_types}')
+        return v
+
+    @validator('parameters')
+    def validate_parameters(cls, v):
+        """验证参数"""
+        # 检查参数大小
+        param_str = json.dumps(v)
+        if len(param_str) > 1024 * 1024:  # 1MB限制
+            raise ValueError('参数大小超过限制')
+        return v
 
 
 class PipelineRequest(BaseModel):
@@ -51,6 +84,34 @@ class StatusResponse(BaseModel):
 # 全局变量
 logger = get_logger(__name__)
 active_connections: List[WebSocket] = []
+
+# 安全函数
+def verify_api_key(api_key: str = Security(api_key_header)) -> str:
+    """验证API密钥"""
+    if not api_key or api_key != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="无效的API密钥",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return api_key
+
+def sanitize_input(text: str) -> str:
+    """清理输入，防止注入攻击"""
+    if not text:
+        return text
+
+    # 移除潜在的危险字符
+    text = re.sub(r'[<>]', '', text)
+    # 限制长度
+    return text[:1000] if len(text) > 1000 else text
+
+def rate_limit_check(request: Request) -> None:
+    """简单的速率限制检查"""
+    client_ip = request.client.host
+    # 这里可以实现更复杂的速率限制逻辑
+    # 暂时只是记录IP
+    logger.info(f"请求来自IP: {client_ip}")
 
 
 @asynccontextmanager
@@ -111,12 +172,19 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# 添加安全中间件
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.local"])
+
+# 添加HTTPS重定向中间件（生产环境）
+if os.getenv("ENVIRONMENT") == "production":
+    app.add_middleware(HTTPSRedirectMiddleware)
+
 # 添加CORS中间件
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 在生产环境中应该设置具体的域名
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # 限制为前端域名
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -133,8 +201,11 @@ async def root():
 
 
 @app.get("/health")
-async def health_check():
+async def health_check(request: Request):
     """健康检查"""
+    # 记录请求信息用于安全审计
+    rate_limit_check(request)
+
     system_info = state_manager.get_system_info()
 
     return StatusResponse(

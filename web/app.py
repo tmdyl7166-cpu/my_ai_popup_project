@@ -17,26 +17,53 @@ import subprocess
 import threading
 import schedule
 
+# ========================================
+# Sentry SDK 初始化 (必须在 FastAPI 导入之前)
+# ========================================
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://4d6820ea296e34011b2e4db3e747b87d@o4510728365015040.ingest.us.sentry.io/4510728434483200",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
+
+# ========================================
+# FastAPI 和相关导入
+# ========================================
+import os
 import uvicorn
 from fastapi import FastAPI, Request, BackgroundTasks, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import socketio
 import psutil
 
+# 导入安全模块
 try:
-    # 当作为模块运行时使用相对导入
-    from .config_manager import ConfigManager
+    from .security import (
+        SecurityHeadersMiddleware,
+        HostValidationMiddleware,
+        RateLimitMiddleware,
+        RequestLoggingMiddleware,
+        verify_api_key,
+        ScriptRunRequest,
+        ConfigUpdateRequest,
+        check_security_config
+    )
 except ImportError:
-    # 当直接运行时使用绝对导入
-    # 确保项目根目录在Python路径中
-    import sys
-    from pathlib import Path
-    project_root = Path(__file__).parent.parent.resolve()
-    if str(project_root) not in sys.path:
-        sys.path.insert(0, str(project_root))
-    from config_manager import ConfigManager
+    from security import (
+        SecurityHeadersMiddleware,
+        HostValidationMiddleware,
+        RateLimitMiddleware,
+        RequestLoggingMiddleware,
+        verify_api_key,
+        ScriptRunRequest,
+        ConfigUpdateRequest,
+        check_security_config
+    )
 
 # 配置日志
 logging.basicConfig(
@@ -63,6 +90,12 @@ class WebMonitorApp:
 
         # 初始化FastAPI应用
         self.app = FastAPI(title="AI弹窗项目监控中心", version="1.0.0")
+
+        # 添加安全中间件（按顺序：先日志，再速率限制，然后主机验证，最后安全头）
+        self.app.add_middleware(RequestLoggingMiddleware)
+        self.app.add_middleware(RateLimitMiddleware)
+        self.app.add_middleware(HostValidationMiddleware)
+        self.app.add_middleware(SecurityHeadersMiddleware)
 
         # Socket.IO for real-time updates
         self.sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
@@ -151,6 +184,14 @@ class WebMonitorApp:
         async def system_resources():
             """系统资源使用情况"""
             return self.get_system_resources()
+
+        # 仅在调试/开发环境暴露 Sentry 测试路由，避免在生产环境中增加攻击面和污染 Sentry 数据
+        if os.getenv("APP_ENV", "development") in {"development", "dev", "local"} or os.getenv("DEBUG", "0") == "1":
+            @self.app.get("/sentry-debug")
+            async def trigger_error():
+                """Sentry SDK 验证路由 - 故意触发错误以测试监控（仅开发环境启用）"""
+                # 故意触发异常，用于验证 Sentry 捕获能力
+                1 / 0
 
         @self.app.websocket("/ws/monitoring")
         async def monitoring_websocket(websocket: WebSocket):
@@ -395,16 +436,29 @@ class WebMonitorApp:
 
     def get_deployment_progress(self) -> Dict[str, Any]:
         """获取部署进度"""
-        progress_file = self.project_root / 'docs' / 'deployment_progress' / '03-current-deployment-progress.md'
-        if progress_file.exists():
+        progress_dir = self.project_root / 'docs' / 'deployment_progress'
+
+        if not progress_dir.exists():
+            return {'status': 'not_found', 'message': '部署进度目录不存在'}
+
+        # 查找所有以数字序号开头的部署进度文件
+        progress_files = list(progress_dir.glob('[0-9][0-9]-*.md'))
+
+        if progress_files:
+            # 使用最新的文件（按修改时间排序）
+            latest_file = max(progress_files, key=lambda f: f.stat().st_mtime)
             try:
-                with open(progress_file, 'r', encoding='utf-8') as f:
+                with open(latest_file, 'r', encoding='utf-8') as f:
                     content = f.read()
-                return {'status': 'success', 'content': content}
+                return {
+                    'status': 'success',
+                    'content': content,
+                    'file': latest_file.name
+                }
             except Exception as e:
                 return {'status': 'error', 'message': str(e)}
 
-        return {'status': 'not_found', 'message': '部署进度文件不存在'}
+        return {'status': 'not_found', 'message': '未找到部署进度文件'}
 
     def get_system_resources(self) -> Dict[str, Any]:
         """获取系统资源使用情况"""

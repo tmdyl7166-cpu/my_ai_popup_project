@@ -18,19 +18,80 @@ echo "============================================"
 VENV_PATH="$SCRIPT_DIR/.venv"
 PYTHON_CMD=""
 
-# 优先使用虚拟环境
-if [ -f "$VENV_PATH/bin/python3" ]; then
-    PYTHON_CMD="$VENV_PATH/bin/python3"
-    echo "使用虚拟环境 Python: $PYTHON_CMD"
-elif [ -f "$VENV_PATH/bin/python" ]; then
-    PYTHON_CMD="$VENV_PATH/bin/python"
-    echo "使用虚拟环境 Python: $PYTHON_CMD"
-elif command -v python3 &> /dev/null; then
-    PYTHON_CMD="python3"
-    echo "警告: 未找到虚拟环境，使用系统 Python: $PYTHON_CMD"
+# 优先使用虚拟环境 - 增强检测逻辑
+detect_venv_python() {
+    local venv_path="$1"
+    
+    # 检查虚拟环境是否存在且有效
+    if [ ! -d "$venv_path" ]; then
+        return 1
+    fi
+    
+    # 检查必要的目录结构
+    if [ ! -d "$venv_path/lib" ]; then
+        return 1
+    fi
+    
+    # 查找 Python 解释器
+    if [ -f "$venv_path/bin/python3" ]; then
+        PYTHON_CMD="$venv_path/bin/python3"
+        return 0
+    fi
+    
+    if [ -f "$venv_path/bin/python" ]; then
+        PYTHON_CMD="$venv_path/bin/python"
+        return 0
+    fi
+    
+    # 尝试查找版本目录下的 python
+    local python_versions=$(ls -d "$venv_path/lib/python"* 2>/dev/null | head -1)
+    if [ -n "$python_versions" ] && [ -f "$python_versions/bin/python3" ]; then
+        PYTHON_CMD="$python_versions/bin/python3"
+        return 0
+    fi
+    
+    return 2
+}
+
+# 尝试使用虚拟环境
+if detect_venv_python "$VENV_PATH"; then
+    echo "✓ 使用虚拟环境 Python: $PYTHON_CMD"
 else
-    echo "错误: 未找到python3，请安装Python 3.10或更高版本"
-    exit 1
+    # 虚拟环境无效，尝试修复
+    echo "⚠ 虚拟环境无效或损坏，尝试重新创建..."
+    
+    # 备份现有虚拟环境（如果存在）
+    if [ -d "$VENV_PATH" ]; then
+        mv "$VENV_PATH" "${VENV_PATH}_backup_$(date +%s)"
+    fi
+    
+    # 创建新的虚拟环境
+    if command -v python3 &> /dev/null; then
+        echo "正在创建新的虚拟环境..."
+        python3 -m venv "$VENV_PATH"
+        
+        if detect_venv_python "$VENV_PATH"; then
+            echo "✓ 虚拟环境已重新创建"
+            echo "正在升级 pip..."
+            "$PYTHON_CMD" -m pip install --upgrade pip -q
+        else
+            echo "❌ 虚拟环境创建失败"
+        fi
+    else
+        echo "错误: 未找到 python3，无法创建虚拟环境"
+    fi
+fi
+
+# 如果虚拟环境仍然不可用，使用系统 Python
+if [ -z "$PYTHON_CMD" ] || [ ! -f "$PYTHON_CMD" ]; then
+    echo "⚠ 使用系统 Python 作为后备"
+    if command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+        echo "使用系统 Python: $PYTHON_CMD"
+    else
+        echo "错误: 未找到 python3，请安装 Python 3.10 或更高版本"
+        exit 1
+    fi
 fi
 
 echo "Python版本: $($PYTHON_CMD --version)"

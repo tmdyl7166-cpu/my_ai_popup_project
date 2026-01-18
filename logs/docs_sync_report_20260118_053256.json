@@ -1,0 +1,393 @@
+{
+  "timestamp": "2026-01-18T05:32:56.598674",
+  "checks": {
+    "structure": {
+      "status": "fail",
+      "details": {
+        "root/README.md": "exists",
+        "root/TODO.md": "exists",
+        "docs/docs_README.md": "exists",
+        "docs/docs_config.json": "exists"
+      },
+      "issues": [
+        "缺少project_docs文档: 01-project-architecture.md",
+        "缺少project_docs文档: 02-runtime-logic.md",
+        "缺少project_docs文档: 03-dependencies-config.md",
+        "缺少project_docs文档: 04-frontend-backend-api.md",
+        "缺少project_docs文档: 05-automation-scripts.md",
+        "缺少deployment_docs文档: 01-overall-progress.md",
+        "缺少deployment_docs文档: 02-optimization-opportunities.md",
+        "缺少deployment_docs文档: 03-current-deployment-progress.md",
+        "缺少deployment_docs文档: 04-task-tracking.md"
+      ],
+      "warnings": []
+    },
+    "freshness": {
+      "status": "fail",
+      "details": {
+        "README.md": {
+          "last_modified": "2026-01-17T21:49:08.654266",
+          "age_days": 0,
+          "priority": "normal",
+          "status": "fresh"
+        },
+        "TODO.md": {
+          "last_modified": "2026-01-18T00:03:35.643541",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/docs_README.md": {
+          "last_modified": "2026-01-17T17:27:00.547902",
+          "age_days": 0,
+          "priority": "normal",
+          "status": "fresh"
+        },
+        "docs/docs_config.json": {
+          "last_modified": "2026-01-17T17:34:57.357285",
+          "age_days": 0,
+          "priority": "normal",
+          "status": "fresh"
+        },
+        "docs/project_docs/配置管理说明.md": {
+          "last_modified": "2026-01-17T17:12:00.189821",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/09-启动配置说明.md": {
+          "last_modified": "2026-01-17T23:03:35.749268",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/API接口说明.md": {
+          "last_modified": "2026-01-17T17:12:19.506781",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/TODO.md": {
+          "last_modified": "2026-01-17T17:15:11.018740",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/自动化脚本说明.md": {
+          "last_modified": "2026-01-17T17:12:48.394297",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/开发环境说明.md": {
+          "last_modified": "2026-01-17T17:14:01.303485",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/project_docs/项目架构说明.md": {
+          "last_modified": "2026-01-17T17:11:22.197816",
+          "age_days": 0,
+          "priority": "important",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/01-整体进度.md": {
+          "last_modified": "2026-01-16T06:43:26",
+          "age_days": 1,
+          "priority": "critical",
+          "status": "stale"
+        },
+        "docs/deployment_progress/11-摄像头与视频流部署.md": {
+          "last_modified": "2026-01-17T07:32:52.999577",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/20-脚本部署任务清单.md": {
+          "last_modified": "2026-01-17T08:55:40.251367",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/04-任务跟踪.md": {
+          "last_modified": "2026-01-17T16:45:06.953382",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/31-前后端启动修复-20260117.md": {
+          "last_modified": "2026-01-17T22:50:33.581823",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/05-环境配置管理.md": {
+          "last_modified": "2026-01-17T07:28:37.031139",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/10-性能优化部署.md": {
+          "last_modified": "2026-01-17T07:30:43.756117",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/22-Web-API接口映射创建-20260117.md": {
+          "last_modified": "2026-01-17T17:24:52.969305",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/28-scripts文档更新-20260117.md": {
+          "last_modified": "2026-01-17T20:45:05.211918",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/06-安全与权限管理.md": {
+          "last_modified": "2026-01-17T07:28:52.414457",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/02-优化机会.md": {
+          "last_modified": "2026-01-16T06:35:32",
+          "age_days": 1,
+          "priority": "critical",
+          "status": "stale"
+        },
+        "docs/deployment_progress/13-第三方引擎集成部署.md": {
+          "last_modified": "2026-01-17T08:29:44.646494",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/07-监控与健康检查.md": {
+          "last_modified": "2026-01-17T07:31:54.454107",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/21-脚本验证与修复-20260117.md": {
+          "last_modified": "2026-01-17T17:03:55.122603",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/09-回滚与灾难恢复.md": {
+          "last_modified": "2026-01-17T07:33:44.420883",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/23-配置重组.md": {
+          "last_modified": "2026-01-17T11:30:43.118089",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/21-前端UI结构.md": {
+          "last_modified": "2026-01-17T11:29:27.243727",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/04-自动化部署脚本优化.md": {
+          "last_modified": "2026-01-17T07:28:21.798064",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/29-README文档更新-20260117.md": {
+          "last_modified": "2026-01-17T21:50:03.144737",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/34-前后端热交互与实时监控部署-20260117.md": {
+          "last_modified": "2026-01-18T05:32:49.511630",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/03-当前部署进度.md": {
+          "last_modified": "2026-01-16T06:58:12",
+          "age_days": 1,
+          "priority": "critical",
+          "status": "stale"
+        },
+        "docs/deployment_progress/24-前端用户模块文档.md": {
+          "last_modified": "2026-01-17T11:31:21.416493",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/2026-01-16-environment-fix.md": {
+          "last_modified": "2026-01-17T06:09:42.905475",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/12-AISP部署经验整合优化.md": {
+          "last_modified": "2026-01-17T08:24:57.788344",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/19-整体部署指南.md": {
+          "last_modified": "2026-01-17T08:54:43.168958",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/27-文档索引同步.md": {
+          "last_modified": "2026-01-17T16:59:24.044809",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/30-前后端配置修复-20260117.md": {
+          "last_modified": "2026-01-17T22:36:54.839241",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/25-脚本重构.md": {
+          "last_modified": "2026-01-17T11:32:22.221781",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/32-统一启动器与launch配置优化-20260117.md": {
+          "last_modified": "2026-01-17T22:57:53.252042",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/22-自动化部署脚本重构.md": {
+          "last_modified": "2026-01-17T11:30:10.691906",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/33-Sentry_SDK配置-20260117.md": {
+          "last_modified": "2026-01-18T00:03:48.753510",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/05-Blackbox规则部署.md": {
+          "last_modified": "2026-01-16T14:21:34",
+          "age_days": 1,
+          "priority": "critical",
+          "status": "stale"
+        },
+        "docs/deployment_progress/26-其他优化.md": {
+          "last_modified": "2026-01-17T11:33:48.621306",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        },
+        "docs/deployment_progress/08-测试与验证策略.md": {
+          "last_modified": "2026-01-17T07:29:50.334266",
+          "age_days": 0,
+          "priority": "critical",
+          "status": "fresh"
+        }
+      },
+      "issues": [
+        "紧急文档过期: docs/deployment_progress/01-整体进度.md (1天未更新)",
+        "紧急文档过期: docs/deployment_progress/02-优化机会.md (1天未更新)",
+        "紧急文档过期: docs/deployment_progress/03-当前部署进度.md (1天未更新)",
+        "紧急文档过期: docs/deployment_progress/05-Blackbox规则部署.md (1天未更新)"
+      ],
+      "warnings": []
+    },
+    "code_sync": {
+      "status": "pass",
+      "details": {},
+      "issues": [],
+      "warnings": [
+        "README.md未提及配置文件: src/src_config.json",
+        "README.md未提及配置文件: scripts/scripts_config.json"
+      ]
+    },
+    "cross_refs": {
+      "status": "pass",
+      "details": {},
+      "issues": [],
+      "warnings": [
+        "TODO.md 缺少对以下内容的引用: docs/deployment_progress/"
+      ]
+    },
+    "update_suggestions": {
+      "status": "pass",
+      "details": {
+        "suggestions": [
+          {
+            "type": "code_changes",
+            "directory": "src",
+            "recent_files": [
+              "src/main.py",
+              "src/__init__.py",
+              "src/entry.py",
+              "src/integrations/__init__.py",
+              "src/backend/scheduler.py"
+            ],
+            "suggestion": "检查src目录的近期代码变更是否需要文档更新"
+          },
+          {
+            "type": "code_changes",
+            "directory": "scripts",
+            "recent_files": [
+              "scripts/start_backend_simple.py",
+              "scripts/health_check.py",
+              "scripts/main_launcher.py",
+              "scripts/validate_configs.py",
+              "scripts/check_pylance_version.py"
+            ],
+            "suggestion": "检查scripts目录的近期代码变更是否需要文档更新"
+          }
+        ]
+      },
+      "issues": [],
+      "warnings": []
+    }
+  },
+  "issues": [
+    "缺少project_docs文档: 01-project-architecture.md",
+    "缺少project_docs文档: 02-runtime-logic.md",
+    "缺少project_docs文档: 03-dependencies-config.md",
+    "缺少project_docs文档: 04-frontend-backend-api.md",
+    "缺少project_docs文档: 05-automation-scripts.md",
+    "缺少deployment_docs文档: 01-overall-progress.md",
+    "缺少deployment_docs文档: 02-optimization-opportunities.md",
+    "缺少deployment_docs文档: 03-current-deployment-progress.md",
+    "缺少deployment_docs文档: 04-task-tracking.md",
+    "紧急文档过期: docs/deployment_progress/01-整体进度.md (1天未更新)",
+    "紧急文档过期: docs/deployment_progress/02-优化机会.md (1天未更新)",
+    "紧急文档过期: docs/deployment_progress/03-当前部署进度.md (1天未更新)",
+    "紧急文档过期: docs/deployment_progress/05-Blackbox规则部署.md (1天未更新)"
+  ],
+  "warnings": [
+    "README.md未提及配置文件: src/src_config.json",
+    "README.md未提及配置文件: scripts/scripts_config.json",
+    "TODO.md 缺少对以下内容的引用: docs/deployment_progress/"
+  ],
+  "recommendations": [
+    "检查src目录的近期代码变更是否需要文档更新",
+    "检查scripts目录的近期代码变更是否需要文档更新"
+  ],
+  "summary": {
+    "total_checks": 5,
+    "passed_checks": 3,
+    "failed_checks": 2,
+    "warning_checks": 0,
+    "total_issues": 13,
+    "total_warnings": 3,
+    "total_recommendations": 2,
+    "sync_score": 60.0
+  },
+  "duration": 0.003981113433837891
+}

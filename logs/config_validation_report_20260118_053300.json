@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-01-18T05:33:00.670639",
+  "validations": {
+    "project_config": {
+      "status": "pass",
+      "details": {
+        "config_version": "2.0.0"
+      },
+      "issues": [],
+      "warnings": [
+        "子项目 src 缺少规则链接",
+        "子项目 assets 缺少规则链接",
+        "子项目 rules 缺少规则链接",
+        "子项目 scripts 缺少规则链接",
+        "子项目 docs 缺少规则链接"
+      ]
+    },
+    "docs_config": {
+      "status": "fail",
+      "details": {},
+      "issues": [
+        "缺少文档文件: project_docs/01-project-architecture.md",
+        "缺少文档文件: deployment_progress/01-overall-progress.md"
+      ],
+      "warnings": []
+    },
+    "scripts_config": {
+      "status": "pass",
+      "details": {},
+      "issues": [],
+      "warnings": []
+    },
+    "rules_config": {
+      "status": "pass",
+      "details": {},
+      "issues": [],
+      "warnings": []
+    },
+    "cross_config": {
+      "status": "pass",
+      "details": {},
+      "issues": [],
+      "warnings": [
+        "配置版本不一致: {'project_config': '2.0.0', 'docs_config': '2.0.0', 'scripts_config': '1.1.0'}"
+      ]
+    }
+  },
+  "issues": [
+    "缺少文档文件: project_docs/01-project-architecture.md",
+    "缺少文档文件: deployment_progress/01-overall-progress.md"
+  ],
+  "warnings": [
+    "子项目 src 缺少规则链接",
+    "子项目 assets 缺少规则链接",
+    "子项目 rules 缺少规则链接",
+    "子项目 scripts 缺少规则链接",
+    "子项目 docs 缺少规则链接",
+    "配置版本不一致: {'project_config': '2.0.0', 'docs_config': '2.0.0', 'scripts_config': '1.1.0'}"
+  ],
+  "summary": {
+    "total_validations": 5,
+    "passed_validations": 4,
+    "failed_validations": 1,
+    "warning_validations": 0,
+    "total_issues": 2,
+    "total_warnings": 6,
+    "consistency_score": 80.0
+  },
+  "duration": 0.002870798110961914
+}

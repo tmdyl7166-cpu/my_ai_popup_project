@@ -1,12 +1,89 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for more information:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-# https://containers.dev/guide/dependabot
-
+# Dependabot 依赖自动更新配置
 version: 2
 updates:
- - package-ecosystem: "devcontainers"
-   directory: "/"
-   schedule:
-     interval: weekly
+  # Dev Containers 更新
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+
+  # Python 依赖更新
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    allow:
+      - dependency-type: all
+    groups:
+      web-frameworks:
+        patterns:
+          - fastapi*
+          - uvicorn*
+          - jinja2
+          - python-multipart
+          - python-socketio*
+          - websockets
+      gui-frameworks:
+        patterns:
+          - PyQt5*
+      ai-ml:
+        patterns:
+          - torch*
+          - torchvision*
+          - torchaudio*
+          - insightface
+          - face-recognition
+          - dlib
+          - deepface
+          - mediapipe
+          - transformers
+          - diffusers
+          - onnxruntime*
+      image-processing:
+        patterns:
+          - opencv*
+          - Pillow
+          - numpy
+          - scipy
+          - scikit-image
+          - imageio*
+          - moviepy
+      utilities:
+        patterns:
+          - loguru
+          - colorlog
+          - psutil
+          - watchdog
+          - pyyaml
+          - python-dotenv
+          - orjson
+          - tqdm
+          - click
+          - rich
+          - typer
+          - schedule
+      async-network:
+        patterns:
+          - aiofiles
+          - aiohttp
+          - httpx
+      testing:
+        patterns:
+          - pytest*
+          - coverage
+      security:
+        patterns:
+          - cryptography
+          - bcrypt
+          - passlib
+          - sentry-sdk
+
+  # GitHub Actions 更新
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+
