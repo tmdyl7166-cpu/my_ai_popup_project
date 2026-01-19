@@ -47,7 +47,7 @@ class Logger:
         )
         
         # 文件输出 - 使用路径解析器获取日志目录
-        log_dir = PathResolver.get_logs_dir()
+        log_dir = PathResolver().get_logs_dir()
         
         log_file = log_dir / f"app_{datetime.now().strftime('%Y%m%d')}.log"
         

@@ -7,10 +7,15 @@
         "lastModified": "2026-01-16T00:00:00Z"
     },
     "models": {
-        "path": "./models",
+        "path": "./assets/models",
         "autoDownload": true,
         "cacheEnabled": true,
-        "supportedFormats": [".onnx", ".pth", ".pt", ".bin"],
+        "supportedFormats": [
+            ".onnx",
+            ".pth",
+            ".pt",
+            ".bin"
+        ],
         "defaultModels": {
             "face_detector": "retinaface",
             "face_recognizer": "arcface",
@@ -19,19 +24,29 @@
     },
     "images": {
         "source": {
-            "path": "./images/source",
+            "path": "./assets/images/source",
             "maxFileSize": "50MB",
-            "supportedFormats": [".jpg", ".jpeg", ".png", ".bmp", ".webp"],
+            "supportedFormats": [
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".bmp",
+                ".webp"
+            ],
             "autoCleanup": false
         },
         "templates": {
-            "path": "./images/templates",
+            "path": "./assets/images/templates",
             "maxFileSize": "20MB",
-            "supportedFormats": [".jpg", ".jpeg", ".png"],
+            "supportedFormats": [
+                ".jpg",
+                ".jpeg",
+                ".png"
+            ],
             "autoCleanup": false
         },
         "output": {
-            "path": "./images/output",
+            "path": "./assets/images/output",
             "autoCleanup": {
                 "enabled": true,
                 "maxAge": 30,
@@ -41,13 +56,18 @@
     },
     "videos": {
         "source": {
-            "path": "./videos/source",
+            "path": "./assets/videos/source",
             "maxFileSize": "2GB",
-            "supportedFormats": [".mp4", ".avi", ".mov", ".mkv"],
+            "supportedFormats": [
+                ".mp4",
+                ".avi",
+                ".mov",
+                ".mkv"
+            ],
             "autoCleanup": false
         },
         "output": {
-            "path": "./videos/output",
+            "path": "./assets/videos/output",
             "autoCleanup": {
                 "enabled": true,
                 "maxAge": 7,
@@ -57,39 +77,39 @@
     },
     "thirdParty": {
         "deep-live-cam": {
-            "path": "./Deep-Live-Cam-main",
+            "path": "./assets/Deep-Live-Cam-main",
             "version": "latest",
-            "config": "./Deep-Live-Cam-main/mypi.ini",
+            "config": "./assets/Deep-Live-Cam-main/mypi.ini",
             "healthCheck": "python run.py --version"
         },
         "facefusion": {
-            "path": "./facefusion-master",
+            "path": "./assets/facefusion-master",
             "version": "latest",
-            "config": "./facefusion-master/facefusion.ini",
+            "config": "./assets/facefusion-master/facefusion.ini",
             "healthCheck": "python facefusion.py --version"
         },
         "iroop": {
-            "path": "./iRoopDeepFaceCam-main",
+            "path": "./assets/iRoopDeepFaceCam-main",
             "version": "latest",
-            "config": "./iRoopDeepFaceCam-main/mypi.ini",
+            "config": "./assets/iRoopDeepFaceCam-main/mypi.ini",
             "healthCheck": "python run.py --help"
         },
         "obs-studio": {
-            "path": "./obs-studio-master",
+            "path": "./assets/obs-studio-master",
             "version": "latest",
-            "config": "./obs-studio-master/CMakeLists.txt",
+            "config": "./assets/obs-studio-master/CMakeLists.txt",
             "healthCheck": "cmake --version"
         }
     },
     "cache": {
         "enabled": true,
-        "path": "./cache",
+        "path": "./assets/cache",
         "maxSize": "2GB",
         "ttl": 86400,
         "compression": "gzip"
     },
     "temp": {
-        "path": "./temp",
+        "path": "./assets/temp",
         "autoCleanup": {
             "enabled": true,
             "maxAge": 1,

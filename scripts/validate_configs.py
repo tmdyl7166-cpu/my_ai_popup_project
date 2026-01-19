@@ -118,16 +118,11 @@ class ConfigValidator:
             required=True
         ))
 
-        # 项目配置文件
+        # 项目配置文件 (JSON格式)
         files.append(ConfigFile(
             path="project_config.json",
             level=ConfigLevel.PROJECT,
             required=True
-        ))
-        files.append(ConfigFile(
-            path="requirements.txt",
-            level=ConfigLevel.PROJECT,
-            required=False
         ))
 
         # src配置
@@ -211,25 +206,33 @@ class ConfigValidator:
             if 'goals' not in content and 'project_goals' not in content:
                 errors.append("缺少 goals/project_goals 字段")
 
-        # L2配置应该有understanding
+        # L2配置应该有核心架构字段
         if level == ConfigLevel.LEVEL_2:
-            if 'understanding' not in content and 'global_understanding' not in content:
-                errors.append("缺少 understanding/global_understanding 字段")
+            required_fields = ['architecture', 'modules', 'relationships']
+            for field in required_fields:
+                if field not in content:
+                    errors.append(f"缺少 {field} 字段")
 
-        # L3配置应该有constraints
+        # L3配置应该有约束相关字段
         if level == ConfigLevel.LEVEL_3:
-            if 'constraints' not in content:
-                errors.append("缺少 constraints 字段")
+            required_fields = ['dependencies', 'python', 'performanceConstraints']
+            for field in required_fields:
+                if field not in content:
+                    errors.append(f"缺少 {field} 字段")
 
-        # L4配置应该有decisions
+        # L4配置应该有决策相关字段
         if level == ConfigLevel.LEVEL_4:
-            if 'decisions' not in content:
-                errors.append("缺少 decisions 字段")
+            required_fields = ['architectureDecisions', 'technologyChoices']
+            for field in required_fields:
+                if field not in content:
+                    errors.append(f"缺少 {field} 字段")
 
-        # L5配置应该有execution
+        # L5配置应该有执行相关字段
         if level == ConfigLevel.LEVEL_5:
-            if 'execution' not in content:
-                errors.append("缺少 execution 字段")
+            required_fields = ['executionPlan', 'implementationDetails']
+            for field in required_fields:
+                if field not in content:
+                    errors.append(f"缺少 {field} 字段")
 
         return errors
 

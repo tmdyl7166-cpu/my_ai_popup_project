@@ -50,42 +50,59 @@
                     "title": "项目架构说明",
                     "content": "项目整体架构设计、分层架构图、模块关系图、目录结构详解、数据流向、部署架构、启动流程、运行时序、AI执行逻辑、任务状态机、交互协议、性能优化、错误处理、监控日志",
                     "updateTrigger": "架构变更",
-                    "syncTargets": ["README.md", "src/src_config.json"],
+                    "syncTargets": [
+                        "README.md",
+                        "src/src_config.json"
+                    ],
                     "status": "completed"
                 },
                 "配置管理说明.md": {
                     "title": "配置管理说明",
                     "content": "配置层次结构、配置项详细说明、配置验证规则、配置继承关系、环境特定配置",
                     "updateTrigger": "配置变更",
-                    "syncTargets": ["project_config.json", "src/src_config.json"],
+                    "syncTargets": [
+                        "project_config.json",
+                        "src/src_config.json"
+                    ],
                     "status": "completed"
                 },
                 "开发环境说明.md": {
                     "title": "开发环境说明",
                     "content": "开发环境搭建步骤、依赖安装、工具配置、IDE配置、开发规范",
                     "updateTrigger": "环境变更",
-                    "syncTargets": ["requirements.txt", "README.md"],
+                    "syncTargets": [
+                        "requirements.txt",
+                        "README.md"
+                    ],
                     "status": "completed"
                 },
                 "自动化脚本说明.md": {
                     "title": "自动化脚本说明",
                     "content": "自动化脚本功能表、脚本分类、执行条件、监控指标、脚本间依赖",
                     "updateTrigger": "脚本变更",
-                    "syncTargets": ["scripts/", "health_monitor/"],
+                    "syncTargets": [
+                        "scripts/",
+                        "health_monitor/"
+                    ],
                     "status": "completed"
                 },
                 "API接口说明.md": {
                     "title": "API接口说明",
                     "content": "REST API接口定义、数据契约、前后端通信协议、WebSocket事件、错误码定义",
                     "updateTrigger": "接口变更",
-                    "syncTargets": ["src/src_config.json", "rules/L5-execution.json"],
+                    "syncTargets": [
+                        "src/src_config.json",
+                        "rules/L5-execution.json"
+                    ],
                     "status": "completed"
                 },
                 "TODO.md": {
                     "title": "项目开发任务跟踪",
                     "content": "项目开发任务跟踪清单、功能开发进度、Bug修复跟踪、优化任务",
                     "updateTrigger": "任务状态变更",
-                    "syncTargets": ["TODO.md"],
+                    "syncTargets": [
+                        "TODO.md"
+                    ],
                     "status": "in_progress"
                 }
             }
@@ -101,168 +118,227 @@
                     "title": "整体项目部署进度",
                     "content": "总体部署进度、完成百分比、各阶段里程碑",
                     "updateTrigger": "部署完成",
-                    "syncTargets": ["TODO.md"],
+                    "syncTargets": [
+                        "TODO.md"
+                    ],
                     "status": "completed"
                 },
                 "02-优化机会.md": {
                     "title": "优化机会识别",
                     "content": "各模块优化建议、性能提升点、技术债务识别",
                     "updateTrigger": "优化识别",
-                    "syncTargets": ["TODO.md"],
+                    "syncTargets": [
+                        "TODO.md"
+                    ],
                     "status": "completed"
                 },
                 "03-当前部署进度.md": {
                     "title": "当前部署进度详情",
                     "content": "当前任务详情、进度百分比、关联模块、风险点",
                     "updateTrigger": "任务状态变更",
-                    "syncTargets": ["TODO.md", "相关模块文档"],
+                    "syncTargets": [
+                        "TODO.md",
+                        "相关模块文档"
+                    ],
                     "status": "completed"
                 },
                 "04-自动化部署脚本优化.md": {
                     "title": "自动化部署脚本优化",
                     "content": "自动化脚本优化、功能增强、错误处理、脚本重构",
                     "updateTrigger": "脚本优化",
-                    "syncTargets": ["scripts/"],
+                    "syncTargets": [
+                        "scripts/"
+                    ],
                     "status": "completed"
                 },
                 "04-任务跟踪.md": {
                     "title": "任务跟踪管理",
                     "content": "任务清单、状态跟踪、依赖关系、完成标准",
                     "updateTrigger": "新任务创建",
-                    "syncTargets": ["TODO.md"],
+                    "syncTargets": [
+                        "TODO.md"
+                    ],
                     "status": "completed"
                 },
                 "05-环境配置管理.md": {
                     "title": "环境配置管理",
                     "content": "环境配置管理、依赖版本控制、配置验证",
                     "updateTrigger": "配置变更",
-                    "syncTargets": ["project_config.json", "requirements.txt"],
+                    "syncTargets": [
+                        "project_config.json",
+                        "requirements.txt"
+                    ],
                     "status": "completed"
                 },
                 "05-Blackbox规则部署.md": {
                     "title": "Blackbox规则部署",
                     "content": "AI执行规则部署、规则系统配置、规则优先级",
                     "updateTrigger": "规则变更",
-                    "syncTargets": ["rules/"],
+                    "syncTargets": [
+                        "rules/"
+                    ],
                     "status": "completed"
                 },
                 "06-安全与权限管理.md": {
                     "title": "安全与权限管理",
                     "content": "安全策略、权限控制、访问管理、安全审计",
                     "updateTrigger": "安全变更",
-                    "syncTargets": ["src/config/"],
+                    "syncTargets": [
+                        "src/config/"
+                    ],
                     "status": "completed"
                 },
                 "07-监控与健康检查.md": {
                     "title": "监控与健康检查",
                     "content": "监控系统搭建、健康检查机制、性能监控、告警策略",
                     "updateTrigger": "监控变更",
-                    "syncTargets": ["health_monitor/", "logs/"],
+                    "syncTargets": [
+                        "health_monitor/",
+                        "logs/"
+                    ],
                     "status": "completed"
                 },
                 "08-测试与验证策略.md": {
                     "title": "测试与验证策略",
                     "content": "测试策略、验证方法、质量保障、测试覆盖率",
                     "updateTrigger": "测试变更",
-                    "syncTargets": ["tests/"],
+                    "syncTargets": [
+                        "tests/"
+                    ],
                     "status": "completed"
                 },
                 "09-回滚与灾难恢复.md": {
                     "title": "回滚与灾难恢复",
                     "content": "回滚策略、灾难恢复计划、数据备份、恢复演练",
                     "updateTrigger": "恢复变更",
-                    "syncTargets": ["backup/", "scripts/"],
+                    "syncTargets": [
+                        "backup/",
+                        "scripts/"
+                    ],
                     "status": "completed"
                 },
                 "10-性能优化部署.md": {
                     "title": "性能优化部署",
                     "content": "性能优化方案、资源利用优化、响应速度提升、并发处理",
                     "updateTrigger": "性能优化",
-                    "syncTargets": ["src/processing/", "src/ai/"],
+                    "syncTargets": [
+                        "src/processing/",
+                        "src/ai/"
+                    ],
                     "status": "completed"
                 },
                 "11-摄像头与视频流部署.md": {
                     "title": "摄像头与视频流部署",
                     "content": "摄像头配置、视频流处理、实时预览优化",
                     "updateTrigger": "待实施",
-                    "syncTargets": ["src/processing/"],
+                    "syncTargets": [
+                        "src/processing/"
+                    ],
                     "status": "pending"
                 },
                 "12-AISP部署经验整合优化.md": {
                     "title": "AISP部署经验整合",
                     "content": "AISP项目部署经验整合、最佳实践迁移",
                     "updateTrigger": "待实施",
-                    "syncTargets": ["assets/", "src/"],
+                    "syncTargets": [
+                        "assets/",
+                        "src/"
+                    ],
                     "status": "pending"
                 },
                 "13-第三方引擎集成部署.md": {
                     "title": "第三方引擎集成部署",
                     "content": "Deep-Live-Cam、FaceFusion、iRoop等第三方引擎集成",
                     "updateTrigger": "待实施",
-                    "syncTargets": ["src/integrations/", "assets/"],
+                    "syncTargets": [
+                        "src/integrations/",
+                        "assets/"
+                    ],
                     "status": "pending"
                 },
                 "19-整体部署指南.md": {
                     "title": "整体部署指南",
                     "content": "完整部署指南、部署步骤、配置说明、故障排除",
                     "updateTrigger": "待实施",
-                    "syncTargets": ["README.md"],
+                    "syncTargets": [
+                        "README.md"
+                    ],
                     "status": "pending"
                 },
                 "20-脚本部署任务清单.md": {
                     "title": "脚本部署任务清单",
                     "content": "脚本部署任务清单、依赖关系、执行顺序、验证步骤",
                     "updateTrigger": "待实施",
-                    "syncTargets": ["scripts/"],
+                    "syncTargets": [
+                        "scripts/"
+                    ],
                     "status": "pending"
                 },
                 "21-前端UI结构.md": {
                     "title": "前端UI结构",
                     "content": "前端窗口框架、功能模块划分、UI组件设计、交互逻辑",
                     "updateTrigger": "前端变更",
-                    "syncTargets": ["src/frontend/"],
+                    "syncTargets": [
+                        "src/frontend/"
+                    ],
                     "status": "completed"
                 },
                 "22-自动化部署脚本重构.md": {
                     "title": "自动化部署脚本重构",
                     "content": "脚本模块化重构、统一入口设计、配置标准化",
                     "updateTrigger": "脚本重构",
-                    "syncTargets": ["scripts/"],
+                    "syncTargets": [
+                        "scripts/"
+                    ],
                     "status": "completed"
                 },
                 "23-配置重组.md": {
                     "title": "配置重组",
                     "content": "配置合并优化、文档同步更新、配置继承",
                     "updateTrigger": "配置重组",
-                    "syncTargets": ["src/config/", "scripts/config/"],
+                    "syncTargets": [
+                        "src/config/",
+                        "scripts/config/"
+                    ],
                     "status": "completed"
                 },
                 "24-前端用户模块文档.md": {
                     "title": "前端用户模块文档",
                     "content": "前端模块API文档、组件接口定义、事件处理",
                     "updateTrigger": "前端文档",
-                    "syncTargets": ["src/frontend/", "web/"],
+                    "syncTargets": [
+                        "src/frontend/",
+                        "web/"
+                    ],
                     "status": "completed"
                 },
                 "25-脚本重构.md": {
                     "title": "脚本重构",
                     "content": "脚本拆分标准化、代码结构优化、函数模块化",
                     "updateTrigger": "脚本重构",
-                    "syncTargets": ["scripts/"],
+                    "syncTargets": [
+                        "scripts/"
+                    ],
                     "status": "completed"
                 },
                 "26-其他优化.md": {
                     "title": "其他优化",
                     "content": "UI优化、安全增强、测试补充、文档完善",
                     "updateTrigger": "优化变更",
-                    "syncTargets": ["src/", "web/"],
+                    "syncTargets": [
+                        "src/",
+                        "web/"
+                    ],
                     "status": "completed"
                 },
                 "27-文档索引同步.md": {
                     "title": "文档索引同步",
                     "content": "文档索引同步、索引验证、格式规范、状态更新",
                     "updateTrigger": "文档同步",
-                    "syncTargets": ["docs_config.json", "docs_README.md"],
+                    "syncTargets": [
+                        "docs_config.json",
+                        "docs_README.md"
+                    ],
                     "status": "completed"
                 }
             },
@@ -331,7 +407,7 @@
         "backup": {
             "enabled": true,
             "frequency": "每周",
-            "location": "../backup/docs"
+            "location": "./backup/docs"
         }
     },
     "integration": {
@@ -355,4 +431,3 @@
         }
     }
 }
-

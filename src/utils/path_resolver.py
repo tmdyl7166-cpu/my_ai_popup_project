@@ -1,233 +1,272 @@
+#!/usr/bin/env python3
 """
-路径解析工具模块
-提供统一的路径解析功能，确保所有路径都相对于项目根目录 my_ai_popup_project
+AI弹窗项目路径解析器
+提供统一的路径管理和解析功能
 """
+
 import os
+import sys
 from pathlib import Path
-from typing import Optional
+from typing import Dict
 
 
 class PathResolver:
-    """
-    路径解析器类
-    确保项目中的所有路径都相对于项目根目录
-    """
-    
-    # 项目根目录（my_ai_popup_project）
-    PROJECT_ROOT: Optional[Path] = None
-    
-    @classmethod
-    def initialize(cls, project_root: Optional[Path] = None) -> None:
-        """
-        初始化路径解析器
-        
-        Args:
-            project_root: 项目根目录路径，如果为None则自动检测
-        """
-        if project_root is not None:
-            cls.PROJECT_ROOT = Path(project_root)
-            return
-        
-        # 自动检测项目根目录
-        # 向上查找直到找到 my_ai_popup_project 目录
-        current_path = Path(__file__).resolve()
-        
-        # 从当前文件位置向上查找
-        for parent in current_path.parents:
-            if parent.name == 'my_ai_popup_project':
-                cls.PROJECT_ROOT = parent
-                break
-        else:
-            # 如果没找到，使用默认逻辑
-            # 假设当前文件位于 my_ai_popup_project/src/utils/ 中
-            cls.PROJECT_ROOT = current_path.parent.parent.parent
-    
-    @classmethod
-    def get_project_root(cls) -> Path:
+    """路径解析器 - 统一管理项目路径"""
+
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if not self._initialized:
+            self._project_root = self._get_project_root()
+            self._paths = {}
+            self._init_paths()
+            self.__class__._initialized = True
+
+    @staticmethod
+    def _get_project_root() -> Path:
         """获取项目根目录"""
-        if cls.PROJECT_ROOT is None:
-            cls.initialize()
-        assert cls.PROJECT_ROOT is not None, "项目根目录未初始化"
-        return cls.PROJECT_ROOT
-    
-    @classmethod
-    def get_assets_dir(cls) -> Path:
-        """获取资源目录"""
-        return cls.get_project_root() / 'assets'
-    
-    @classmethod
-    def get_models_dir(cls) -> Path:
-        """获取模型目录"""
-        return cls.get_assets_dir() / 'models'
-    
-    @classmethod
-    def get_images_dir(cls) -> Path:
-        """获取图片资源目录"""
-        return cls.get_assets_dir() / 'images'
-    
-    @classmethod
-    def get_videos_dir(cls) -> Path:
-        """获取视频资源目录"""
-        return cls.get_assets_dir() / 'videos'
-    
-    @classmethod
-    def get_output_dir(cls) -> Path:
-        """获取输出目录"""
-        return cls.get_videos_dir() / 'output'
-    
-    @classmethod
-    def get_logs_dir(cls) -> Path:
-        """获取日志目录"""
-        return cls.get_project_root() / 'logs'
-    
-    @classmethod
-    def get_src_dir(cls) -> Path:
+        # 尝试多种方式确定项目根目录
+        current_file = Path(__file__).resolve()
+
+        # 方法1: 通过当前文件位置向上查找
+        for parent in current_file.parents:
+            if (parent / 'project_config.json').exists() or (parent / '.blackboxrules').exists():
+                return parent
+
+        # 方法2: 通过环境变量
+        env_root = os.getenv('AI_POPUP_PROJECT_ROOT')
+        if env_root and Path(env_root).exists():
+            return Path(env_root)
+
+        # 方法3: 通过PYTHONPATH
+        for path_str in sys.path:
+            path = Path(path_str)
+            if (path / 'project_config.json').exists():
+                return path
+
+        # 方法4: 默认使用当前工作目录
+        cwd = Path.cwd()
+        if (cwd / 'project_config.json').exists():
+            return cwd
+
+        # 最后的后备方案
+        return current_file.parent.parent.parent
+
+    def _init_paths(self):
+        """初始化所有路径"""
+        root = self._project_root
+
+        # 基础目录
+        self._paths.update({
+            'project_root': root,
+            'src': root / 'src',
+            'scripts': root / 'scripts',
+            'web': root / 'web',
+            'docs': root / 'docs',
+            'assets': root / 'assets',
+            'logs': root / 'logs',
+            'tests': root / 'tests',
+            'build': root / 'build',
+            'backup': root / 'backup',
+        })
+
+        # 子模块目录
+        self._paths.update({
+            'backend': root / 'src' / 'backend',
+            'frontend': root / 'src' / 'frontend',
+            'ai': root / 'src' / 'ai',
+            'processing': root / 'src' / 'processing',
+            'integrations': root / 'src' / 'integrations',
+            'utils': root / 'src' / 'utils',
+            'config': root / 'src' / 'config',
+        })
+
+        # 资产子目录
+        self._paths.update({
+            'deep_live_cam': root / 'assets' / 'Deep-Live-Cam-main',
+            'facefusion': root / 'assets' / 'facefusion-master',
+            'iroop_deepfacecam': root / 'assets' / 'iRoopDeepFaceCam-main',
+            'obs_studio': root / 'assets' / 'obs-studio-master',
+        })
+
+        # 动态目录（运行时创建）
+        self._paths.update({
+            'temp': root / 'temp',
+            'output': root / 'output',
+            'cache': root / 'cache',
+            'models': root / 'models',
+            'images': root / 'images',
+            'videos': root / 'videos',
+        })
+
+    @property
+    def project_root(self) -> Path:
+        """获取项目根目录"""
+        return self._project_root
+
+    def get_path(self, name: str) -> Path:
+        """获取指定路径"""
+        if name not in self._paths:
+            raise ValueError(f"未知路径名称: {name}")
+        return self._paths[name]
+
+    def get_project_root(self) -> Path:
+        """获取项目根目录"""
+        return self.get_path('project_root')
+
+    def get_src_dir(self) -> Path:
         """获取源代码目录"""
-        return cls.get_project_root() / 'src'
-    
-    @classmethod
-    def get_config_dir(cls) -> Path:
-        """获取配置目录"""
-        return cls.get_src_dir() / 'config'
-    
-    @classmethod
-    def get_deep_live_cam_dir(cls) -> Path:
-        """获取 Deep-Live-Cam 目录"""
-        return cls.get_project_root() / 'assets' / 'Deep-Live-Cam-main'
-    
-    @classmethod
-    def get_facefusion_dir(cls) -> Path:
-        """获取 Facefusion 目录"""
-        return cls.get_project_root() / 'assets' / 'facefusion-master'
-    
-    @classmethod
-    def get_iroop_deepfacecam_dir(cls) -> Path:
-        """获取 iRoopDeepFaceCam 目录"""
-        return cls.get_project_root() / 'assets' / 'iRoopDeepFaceCam-main'
-    
-    @classmethod
-    def resolve(cls, *paths: str) -> Path:
-        """
-        解析相对于项目根目录的路径
-        
-        Args:
-            *paths: 路径部分
-            
-        Returns:
-            完整的绝对路径
-        """
-        return cls.get_project_root().joinpath(*paths)
-    
-    @classmethod
-    def resolve_assets(cls, *paths: str) -> Path:
-        """
-        解析相对于资源目录的路径
-        
-        Args:
-            *paths: 路径部分
-            
-        Returns:
-            完整的绝对路径
-        """
-        return cls.get_assets_dir().joinpath(*paths)
-    
-    @classmethod
-    def resolve_models(cls, *paths: str) -> Path:
-        """
-        解析相对于模型目录的路径
-        
-        Args:
-            *paths: 路径部分
-            
-        Returns:
-            完整的绝对路径
-        """
-        return cls.get_models_dir().joinpath(*paths)
-    
-    @classmethod
-    def resolve_output(cls, *paths: str) -> Path:
-        """
-        解析相对于输出目录的路径
-        
-        Args:
-            *paths: 路径部分
-            
-        Returns:
-            完整的绝对路径
-        """
-        return cls.get_output_dir().joinpath(*paths)
-    
-    @classmethod
-    def resolve_logs(cls, *paths: str) -> Path:
-        """
-        解析相对于日志目录的路径
-        
-        Args:
-            *paths: 路径部分
-            
-        Returns:
-            完整的绝对路径
-        """
-        return cls.get_logs_dir().joinpath(*paths)
-    
-    @classmethod
-    def get_temp_dir(cls) -> Path:
-        """获取临时文件目录"""
-        temp_dir = cls.get_project_root() / 'temp'
-        temp_dir.mkdir(parents=True, exist_ok=True)
-        return temp_dir
-    
-    @classmethod
-    def ensure_dir_exists(cls, path: Path) -> Path:
-        """
-        确保目录存在
-        
-        Args:
-            path: 目录路径
-            
-        Returns:
-            创建的目录路径
-        """
+        return self.get_path('src')
+
+    def get_scripts_dir(self) -> Path:
+        """获取脚本目录"""
+        return self.get_path('scripts')
+
+    def get_assets_dir(self) -> Path:
+        """获取资产目录"""
+        return self.get_path('assets')
+
+    def get_models_dir(self) -> Path:
+        """获取模型目录"""
+        return self.get_path('models')
+
+    def get_images_dir(self) -> Path:
+        """获取图片目录"""
+        return self.get_path('images')
+
+    def get_videos_dir(self) -> Path:
+        """获取视频目录"""
+        return self.get_path('videos')
+
+    def get_output_dir(self) -> Path:
+        """获取输出目录"""
+        return self.get_path('output')
+
+    def get_logs_dir(self) -> Path:
+        """获取日志目录"""
+        return self.get_path('logs')
+
+    def get_temp_dir(self) -> Path:
+        """获取临时目录"""
+        return self.get_path('temp')
+
+    def get_deep_live_cam_dir(self) -> Path:
+        """获取Deep-Live-Cam目录"""
+        return self.get_path('deep_live_cam')
+
+    def get_facefusion_dir(self) -> Path:
+        """获取FaceFusion目录"""
+        return self.get_path('facefusion')
+
+    def get_iroop_deepfacecam_dir(self) -> Path:
+        """获取iRoopDeepFaceCam目录"""
+        return self.get_path('iroop_deepfacecam')
+
+    def get_obs_studio_dir(self) -> Path:
+        """获取OBS Studio目录"""
+        return self.get_path('obs_studio')
+
+    def ensure_path_exists(self, name: str) -> Path:
+        """确保路径存在，如果不存在则创建"""
+        path = self.get_path(name)
         path.mkdir(parents=True, exist_ok=True)
         return path
-    
-    @classmethod
-    def get_test_data_dir(cls) -> Path:
-        """获取测试数据目录"""
-        return cls.get_project_root() / 'tests' / 'test_data'
 
+    def get_config_file(self, name: str) -> Path:
+        """获取配置文件路径"""
+        config_files = {
+            'project': self.project_root / 'project_config.json',
+            'src': self.project_root / 'src' / 'src_config.json',
+            'scripts': self.project_root / 'scripts' / 'scripts_config.json',
+            'web': self.project_root / 'web' / 'web_config.json',
+            'docs': self.project_root / 'docs' / 'docs_config.json',
+            'assets': self.project_root / 'assets' / 'assets_config.json',
+        }
+
+        if name not in config_files:
+            raise ValueError(f"未知配置文件: {name}")
+
+        return config_files[name]
+
+    def get_all_paths(self) -> Dict[str, Path]:
+        """获取所有路径"""
+        return self._paths.copy()
+
+    def validate_paths(self) -> Dict[str, bool]:
+        """验证路径存在性"""
+        results = {}
+        for name, path in self._paths.items():
+            results[name] = path.exists()
+        return results
+
+
+def ensure_project_structure():
+    """确保项目结构完整"""
+    resolver = PathResolver()
+
+    # 需要确保存在的关键目录
+    critical_dirs = [
+        'logs', 'temp', 'output', 'cache',
+        'models', 'images', 'videos'
+    ]
+
+    for dir_name in critical_dirs:
+        try:
+            resolver.ensure_path_exists(dir_name)
+        except Exception as e:
+            print(f"警告: 无法创建目录 {dir_name}: {e}")
+
+    # 验证关键路径
+    validation = resolver.validate_paths()
+    missing_paths = [name for name, exists in validation.items() if not exists]
+
+    if missing_paths:
+        print(f"警告: 以下路径不存在: {missing_paths}")
+        return False
+
+    return True
+
+
+# 全局实例
+path_resolver = PathResolver()
 
 # 便捷函数
 def get_project_root() -> Path:
-    """获取项目根目录"""
-    return PathResolver.get_project_root()
+    return path_resolver.get_project_root()
 
 
-def resolve_path(*paths: str) -> Path:
-    """解析相对于项目根目录的路径"""
-    return PathResolver.resolve(*paths)
+def get_src_dir() -> Path:
+    return path_resolver.get_src_dir()
 
 
-def ensure_project_structure() -> None:
-    """
-    确保项目目录结构完整
-    """
-    required_dirs = [
-        PathResolver.get_assets_dir(),
-        PathResolver.get_models_dir(),
-        PathResolver.get_images_dir(),
-        PathResolver.get_videos_dir(),
-        PathResolver.get_output_dir(),
-        PathResolver.get_logs_dir(),
-        PathResolver.get_src_dir(),
-        PathResolver.get_config_dir(),
-        PathResolver.get_temp_dir(),
-    ]
-    
-    for dir_path in required_dirs:
-        PathResolver.ensure_dir_exists(dir_path)
+def get_assets_dir() -> Path:
+    return path_resolver.get_assets_dir()
 
 
-# 初始化路径解析器
-PathResolver.initialize()
+def get_logs_dir() -> Path:
+    return path_resolver.get_logs_dir()
 
+
+if __name__ == "__main__":
+    # 测试路径解析器
+    resolver = PathResolver()
+
+    print("项目路径解析器测试:")
+    print(f"项目根目录: {resolver.get_project_root()}")
+    print(f"源代码目录: {resolver.get_src_dir()}")
+    print(f"资产目录: {resolver.get_assets_dir()}")
+    print(f"日志目录: {resolver.get_logs_dir()}")
+
+    print("\n路径验证:")
+    validation = resolver.validate_paths()
+    for name, exists in validation.items():
+        status = "✓" if exists else "✗"
+        print(f"  {status} {name}: {resolver.get_path(name)}")
+
+    print(f"\n项目结构完整性: {'✓' if ensure_project_structure() else '✗'}")

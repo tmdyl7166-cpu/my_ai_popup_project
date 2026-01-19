@@ -7,10 +7,22 @@ import sys
 from pathlib import Path
 
 # 确保项目根目录在Python路径中
-PROJECT_ROOT = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / 'src'))
 
-from src.utils.path_resolver import PathResolver, ensure_project_structure
+try:
+    from src.utils.path_resolver import PathResolver, ensure_project_structure
+    path_resolver = PathResolver()
+except ImportError:
+    # 如果导入失败，尝试直接导入
+    import importlib.util
+    path_resolver_path = PROJECT_ROOT / 'src' / 'utils' / 'path_resolver.py'
+    spec = importlib.util.spec_from_file_location("path_resolver", path_resolver_path)
+    path_resolver_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(path_resolver_module)
+    path_resolver = path_resolver_module.PathResolver()
+    ensure_project_structure = path_resolver_module.ensure_project_structure
 
 def main():
     """主函数"""
@@ -19,7 +31,7 @@ def main():
     print("=" * 60)
     
     # 获取项目根目录
-    project_root = PathResolver.get_project_root()
+    project_root = path_resolver.get_project_root()
     print(f"\n项目根目录: {project_root}")
     print(f"项目名称: {project_root.name}")
     
@@ -35,30 +47,29 @@ def main():
     
     # 显示所有关键路径
     print("\n关键路径:")
-    print(f"  项目根目录: {PathResolver.get_project_root()}")
-    print(f"  资源目录: {PathResolver.get_assets_dir()}")
-    print(f"  模型目录: {PathResolver.get_models_dir()}")
-    print(f"  图片目录: {PathResolver.get_images_dir()}")
-    print(f"  视频目录: {PathResolver.get_videos_dir()}")
-    print(f"  输出目录: {PathResolver.get_output_dir()}")
-    print(f"  日志目录: {PathResolver.get_logs_dir()}")
-    print(f"  源代码目录: {PathResolver.get_src_dir()}")
-    print(f"  配置目录: {PathResolver.get_config_dir()}")
-    print(f"  临时目录: {PathResolver.get_temp_dir()}")
+    print(f"  项目根目录: {path_resolver.get_project_root()}")
+    print(f"  资源目录: {path_resolver.get_assets_dir()}")
+    print(f"  模型目录: {path_resolver.get_models_dir()}")
+    print(f"  图片目录: {path_resolver.get_images_dir()}")
+    print(f"  视频目录: {path_resolver.get_videos_dir()}")
+    print(f"  输出目录: {path_resolver.get_output_dir()}")
+    print(f"  日志目录: {path_resolver.get_logs_dir()}")
+    print(f"  源代码目录: {path_resolver.get_src_dir()}")
+    print(f"  临时目录: {path_resolver.get_temp_dir()}")
     
     # 检查子模块目录
     print("\n子模块路径:")
-    print(f"  Deep-Live-Cam: {PathResolver.get_deep_live_cam_dir()}")
-    print(f"  FaceFusion: {PathResolver.get_facefusion_dir()}")
-    print(f"  iRoopDeepFaceCam: {PathResolver.get_iroop_deepfacecam_dir()}")
+    print(f"  Deep-Live-Cam: {path_resolver.get_deep_live_cam_dir()}")
+    print(f"  FaceFusion: {path_resolver.get_facefusion_dir()}")
+    print(f"  iRoopDeepFaceCam: {path_resolver.get_iroop_deepfacecam_dir()}")
     
     # 验证关键目录是否存在
     print("\n验证目录存在性...")
     critical_dirs = [
-        ("资源目录", PathResolver.get_assets_dir()),
-        ("模型目录", PathResolver.get_models_dir()),
-        ("日志目录", PathResolver.get_logs_dir()),
-        ("源代码目录", PathResolver.get_src_dir()),
+        ("资源目录", path_resolver.get_assets_dir()),
+        ("模型目录", path_resolver.get_models_dir()),
+        ("日志目录", path_resolver.get_logs_dir()),
+        ("源代码目录", path_resolver.get_src_dir()),
     ]
     
     all_ok = True

@@ -19,9 +19,18 @@
             "autoPort": true,
             "cors": {
                 "enabled": true,
-                "origins": ["*"],
-                "methods": ["GET", "POST", "PUT", "DELETE"],
-                "headers": ["*"]
+                "origins": [
+                    "*"
+                ],
+                "methods": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE"
+                ],
+                "headers": [
+                    "*"
+                ]
             },
             "staticFiles": {
                 "enabled": true,
@@ -34,7 +43,10 @@
                 "enabled": true,
                 "path": "modules/dashboard.js",
                 "css": "modules/dashboard.css",
-                "dependencies": ["system", "scripts"],
+                "dependencies": [
+                    "system",
+                    "scripts"
+                ],
                 "config": {
                     "refreshInterval": 5000,
                     "showCharts": true,
@@ -45,7 +57,9 @@
                 "enabled": true,
                 "path": "modules/scripts.js",
                 "css": "modules/scripts.css",
-                "dependencies": ["api"],
+                "dependencies": [
+                    "api"
+                ],
                 "config": {
                     "autoRefresh": true,
                     "showLogs": true,
@@ -57,7 +71,9 @@
                 "enabled": true,
                 "path": "modules/deployment.js",
                 "css": "modules/deployment.css",
-                "dependencies": ["docs"],
+                "dependencies": [
+                    "docs"
+                ],
                 "config": {
                     "trackProgress": true,
                     "showDetails": true,
@@ -68,7 +84,9 @@
                 "enabled": true,
                 "path": "modules/config.js",
                 "css": "modules/config.css",
-                "dependencies": ["api"],
+                "dependencies": [
+                    "api"
+                ],
                 "config": {
                     "editable": true,
                     "validateOnSave": true,
@@ -79,7 +97,9 @@
                 "enabled": true,
                 "path": "modules/logs.js",
                 "css": "modules/logs.css",
-                "dependencies": ["api"],
+                "dependencies": [
+                    "api"
+                ],
                 "config": {
                     "maxLines": 1000,
                     "autoScroll": true,
@@ -117,7 +137,9 @@
                 "enabled": true,
                 "path": "modules/docs.js",
                 "css": "modules/docs.css",
-                "dependencies": ["api"],
+                "dependencies": [
+                    "api"
+                ],
                 "config": {
                     "syncInterval": 300000,
                     "showProgress": true,
@@ -210,8 +232,17 @@
             },
             "alerts": {
                 "enabled": true,
-                "levels": ["info", "warning", "error", "critical"],
-                "channels": ["ui", "console", "log"],
+                "levels": [
+                    "info",
+                    "warning",
+                    "error",
+                    "critical"
+                ],
+                "channels": [
+                    "ui",
+                    "console",
+                    "log"
+                ],
                 "throttling": {
                     "enabled": true,
                     "window": 60000,
@@ -220,7 +251,11 @@
             },
             "metrics": {
                 "enabled": true,
-                "collection": ["performance", "errors", "usage"],
+                "collection": [
+                    "performance",
+                    "errors",
+                    "usage"
+                ],
                 "retention": 86400000,
                 "export": {
                     "enabled": true,
@@ -249,7 +284,10 @@
             },
             "cors": {
                 "enabled": true,
-                "origins": ["localhost", "127.0.0.1"],
+                "origins": [
+                    "localhost",
+                    "127.0.0.1"
+                ],
                 "credentials": false
             }
         },
@@ -263,12 +301,19 @@
             "compression": {
                 "enabled": true,
                 "level": 6,
-                "types": ["text/*", "application/json", "application/javascript"]
+                "types": [
+                    "text/*",
+                    "application/json",
+                    "application/javascript"
+                ]
             },
             "optimization": {
                 "minify": false,
                 "bundle": false,
-                "preload": ["critical.css", "main.js"]
+                "preload": [
+                    "critical.css",
+                    "main.js"
+                ]
             }
         },
         "logging": {
@@ -319,13 +364,27 @@
                 "enabled": false,
                 "output": "./dist",
                 "source": "./src",
-                "exclude": ["node_modules", ".git", "logs"]
+                "exclude": [
+                    "node_modules",
+                    ".git",
+                    "logs"
+                ]
             },
             "packaging": {
                 "enabled": false,
                 "format": "zip",
-                "include": ["*.py", "*.html", "*.js", "*.css", "*.json"],
-                "exclude": ["__pycache__", "*.log", ".git"]
+                "include": [
+                    "*.py",
+                    "*.html",
+                    "*.js",
+                    "*.css",
+                    "*.json"
+                ],
+                "exclude": [
+                    "__pycache__",
+                    "*.log",
+                    ".git"
+                ]
             }
         }
     },
@@ -347,7 +406,12 @@
         },
         "websocket": {
             "url": "/ws/monitoring",
-            "events": ["status_update", "script_result", "script_completed", "script_error"]
+            "events": [
+                "status_update",
+                "script_result",
+                "script_completed",
+                "script_error"
+            ]
         }
     }
 }

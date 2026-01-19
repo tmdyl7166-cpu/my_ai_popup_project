@@ -10,7 +10,10 @@
         "frontend": {
             "enabled": true,
             "priority": 1,
-            "dependencies": ["backend", "config"],
+            "dependencies": [
+                "backend",
+                "config"
+            ],
             "entryPoint": "main_window.py",
             "configFile": "src/frontend/frontend_config.json",
             "config": {
@@ -23,7 +26,11 @@
         "backend": {
             "enabled": true,
             "priority": 2,
-            "dependencies": ["ai", "processing", "utils"],
+            "dependencies": [
+                "ai",
+                "processing",
+                "utils"
+            ],
             "entryPoint": "api_server.py",
             "configFile": "src/backend/backend_config.json",
             "config": {
@@ -36,7 +43,11 @@
         "ai": {
             "enabled": true,
             "priority": 3,
-            "dependencies": ["config", "integrations", "utils"],
+            "dependencies": [
+                "config",
+                "integrations",
+                "utils"
+            ],
             "entryPoint": "ollama_client.py",
             "configFile": "src/ai/ai_config.json",
             "config": {
@@ -48,7 +59,11 @@
         "processing": {
             "enabled": true,
             "priority": 4,
-            "dependencies": ["ai", "utils", "integrations"],
+            "dependencies": [
+                "ai",
+                "utils",
+                "integrations"
+            ],
             "entryPoint": "batch_processor.py",
             "configFile": "src/processing/processing_config.json",
             "config": {
@@ -60,7 +75,9 @@
         "integrations": {
             "enabled": true,
             "priority": 5,
-            "dependencies": ["utils"],
+            "dependencies": [
+                "utils"
+            ],
             "entryPoint": "deep_live_cam.py",
             "configFile": "src/integrations/integrations_config.json",
             "config": {
@@ -95,7 +112,15 @@
         }
     },
     "startup": {
-        "order": ["config", "utils", "integrations", "ai", "processing", "backend", "frontend"],
+        "order": [
+            "config",
+            "utils",
+            "integrations",
+            "ai",
+            "processing",
+            "backend",
+            "frontend"
+        ],
         "parallelStart": false,
         "healthChecks": true,
         "timeout": 300
@@ -114,14 +139,22 @@
     },
     "monitoring": {
         "enabled": true,
-        "metrics": ["cpu", "memory", "disk", "network"],
+        "metrics": [
+            "cpu",
+            "memory",
+            "disk",
+            "network"
+        ],
         "interval": 5,
         "retention": 3600
     },
     "logging": {
         "level": "INFO",
         "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        "handlers": ["console", "file"],
+        "handlers": [
+            "console",
+            "file"
+        ],
         "file": "../logs/src.log"
     }
 }

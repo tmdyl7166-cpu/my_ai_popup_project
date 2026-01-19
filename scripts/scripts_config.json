@@ -80,8 +80,13 @@
                         "timeout": 300,
                         "required": true
                     },
-                    "dependencies": ["config_monitor.py"],
-                    "outputs": ["health_report.json", "logs/health_check.log"]
+                    "dependencies": [
+                        "config_monitor.py"
+                    ],
+                    "outputs": [
+                        "health_report.json",
+                        "logs/health_check.log"
+                    ]
                 },
                 "config_monitor.py": {
                     "name": "配置监控脚本",
@@ -93,7 +98,9 @@
                         "required": false
                     },
                     "dependencies": [],
-                    "outputs": ["config_monitor_report.json"]
+                    "outputs": [
+                        "config_monitor_report.json"
+                    ]
                 },
                 "config_validator.py": {
                     "name": "配置一致性验证脚本",
@@ -105,7 +112,10 @@
                         "required": true
                     },
                     "dependencies": [],
-                    "outputs": ["config_validation_report.json", "logs/config_validator.log"]
+                    "outputs": [
+                        "config_validation_report.json",
+                        "logs/config_validator.log"
+                    ]
                 },
                 "docs_sync_monitor.py": {
                     "name": "文档同步监控脚本",
@@ -117,7 +127,10 @@
                         "required": true
                     },
                     "dependencies": [],
-                    "outputs": ["docs_sync_report.json", "logs/docs_sync_monitor.log"]
+                    "outputs": [
+                        "docs_sync_report.json",
+                        "logs/docs_sync_monitor.log"
+                    ]
                 },
                 "ui_interaction_monitor.py": {
                     "name": "UI交互健康检测脚本",
@@ -128,8 +141,13 @@
                         "timeout": 120,
                         "required": true
                     },
-                    "dependencies": ["health_monitor.py"],
-                    "outputs": ["ui", "logs/ui_interaction_report.json_interaction_monitor.log"]
+                    "dependencies": [
+                        "health_monitor.py"
+                    ],
+                    "outputs": [
+                        "ui",
+                        "logs/ui_interaction_report.json_interaction_monitor.log"
+                    ]
                 }
             }
         },
@@ -196,17 +214,23 @@
         "scheduling": {
             "daily": {
                 "time": "02:00",
-                "scripts": ["health_monitor.py"],
+                "scripts": [
+                    "health_monitor.py"
+                ],
                 "enabled": true
             },
             "weekly": {
                 "day": "sunday",
                 "time": "03:00",
-                "scripts": ["config_monitor.py"],
+                "scripts": [
+                    "config_monitor.py"
+                ],
                 "enabled": true
             },
             "onDemand": {
-                "scripts": ["all"],
+                "scripts": [
+                    "all"
+                ],
                 "enabled": true
             }
         },
@@ -230,8 +254,12 @@
             },
             "failureNotification": {
                 "enabled": true,
-                "channels": ["log"],
-                "recipients": ["admin@project.local"]
+                "channels": [
+                    "log"
+                ],
+                "recipients": [
+                    "admin@project.local"
+                ]
             },
             "fallbackActions": {
                 "health_check_failed": "send_alert",
@@ -314,8 +342,15 @@
             "enabled": true,
             "frequency": "weekly",
             "location": "../backup/scripts",
-            "include": ["*.py", "*.json", "*.md"],
-            "exclude": ["*.log", "*.tmp"]
+            "include": [
+                "*.py",
+                "*.json",
+                "*.md"
+            ],
+            "exclude": [
+                "*.log",
+                "*.tmp"
+            ]
         },
         "update": {
             "autoUpdate": true,
@@ -340,8 +375,14 @@
         "withCI": {
             "enabled": true,
             "pipeline": "automation-scripts",
-            "triggers": ["push", "schedule"],
-            "artifacts": ["reports/", "logs/"]
+            "triggers": [
+                "push",
+                "schedule"
+            ],
+            "artifacts": [
+                "reports/",
+                "logs/"
+            ]
         }
     },
     "rulesCompliance": {
@@ -366,4 +407,3 @@
         "test": "python -m scripts.test.test_runner"
     }
 }
-

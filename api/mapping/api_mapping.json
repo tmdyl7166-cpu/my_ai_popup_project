@@ -1,0 +1,138 @@
+{
+    "version": "1.0.0",
+    "last_updated": "2026-01-19",
+    "base_url": "http://localhost:8080",
+    "endpoints": {
+        "health": {
+            "path": "/api/health",
+            "method": "GET",
+            "description": "System health check"
+        },
+        "project_status": {
+            "path": "/api/project/status",
+            "method": "GET",
+            "description": "Project overall status"
+        },
+        "scripts_list": {
+            "path": "/api/scripts/list",
+            "method": "GET",
+            "description": "Get script list"
+        },
+        "scripts_status": {
+            "path": "/api/scripts/status",
+            "method": "GET",
+            "description": "Get script running status"
+        },
+        "system_resources": {
+            "path": "/api/system/resources",
+            "method": "GET",
+            "description": "System resource usage"
+        },
+        "system_gpu": {
+            "path": "/api/system/gpu",
+            "method": "GET",
+            "description": "GPU resource usage"
+        },
+        "ports": {
+            "path": "/api/ports",
+            "method": "GET",
+            "description": "Port status list"
+        },
+        "subprojects": {
+            "path": "/api/subprojects",
+            "method": "GET",
+            "description": "Subproject status"
+        },
+        "bubbles": {
+            "path": "/api/bubbles",
+            "method": "GET",
+            "description": "Real-time bubble data"
+        },
+        "audit_logs": {
+            "path": "/api/audit/logs",
+            "method": "GET",
+            "description": "Audit log query"
+        },
+        "audit_export": {
+            "path": "/api/audit/export",
+            "method": "GET",
+            "description": "Audit log export"
+        },
+        "performance": {
+            "path": "/api/performance",
+            "method": "GET",
+            "description": "Performance monitoring overview"
+        },
+        "performance_metrics": {
+            "path": "/api/performance/metrics",
+            "method": "GET",
+            "description": "Performance metrics data"
+        },
+        "performance_optimize": {
+            "path": "/api/performance/optimize",
+            "method": "POST",
+            "description": "Performance optimization execution"
+        },
+        "video": {
+            "path": "/api/video",
+            "method": "GET",
+            "description": "Video stream overview"
+        },
+        "video_cameras": {
+            "path": "/api/video/cameras",
+            "method": "GET",
+            "description": "Camera devices"
+        },
+        "video_streams": {
+            "path": "/api/video/streams",
+            "method": "GET",
+            "description": "Video stream data"
+        },
+        "video_engines": {
+            "path": "/api/video/engines",
+            "method": "GET",
+            "description": "Engine status"
+        },
+        "engines": {
+            "path": "/api/engines",
+            "method": "GET",
+            "description": "Engine list"
+        },
+        "engine_status": {
+            "path": "/api/engines/{name}/status",
+            "method": "GET",
+            "description": "Engine status"
+        },
+        "engine_start": {
+            "path": "/api/engines/{name}/start",
+            "method": "POST",
+            "description": "Start engine"
+        },
+        "engine_stop": {
+            "path": "/api/engines/{name}/stop",
+            "method": "POST",
+            "description": "Stop engine"
+        }
+    },
+    "websocket": {
+        "path": "/ws",
+        "channels": [
+            "progress",
+            "log",
+            "data",
+            "heartbeat"
+        ]
+    },
+    "response_format": {
+        "success": {
+            "status": "success",
+            "data": "any",
+            "timestamp": "ISO 8601"
+        },
+        "error": {
+            "status": "error",
+            "message": "string",
+            "code": "number"
+        }
+    }
+}

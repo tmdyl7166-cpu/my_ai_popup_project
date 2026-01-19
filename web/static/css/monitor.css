@@ -1,0 +1,849 @@
+/**
+ * Monitor CSS - 监控页面专用样式
+ * 用于美化健康监控页面的视觉效果
+ */
+
+/* ========== 冒泡监测样式 ========== */
+
+.bubble-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 380px;
+    pointer-events: none;
+}
+
+.bubble {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+}
+
+.bubble:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bubble-success .bubble-icon {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.bubble-error .bubble-icon {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.bubble-warning .bubble-icon {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: white;
+}
+
+.bubble-info .bubble-icon {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.bubble-progress .bubble-icon {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.bubble-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.bubble-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.bubble-message {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.bubble-meta {
+    margin-top: 6px;
+    font-size: 11px;
+}
+
+.bubble-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.bubble-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.bubble-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.bubble-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #00d4ff);
+    width: 100%;
+    animation-name: progress;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* 动画效果 */
+.bubble.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.bubble.fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+/* ========== 端口映射表样式 ========== */
+
+.port-mapping-container .summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.port-mapping-container .summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.summary-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+}
+
+.summary-label {
+    font-size: 13px;
+    color: #666;
+}
+
+.port-table thead th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.port-table tbody tr {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.port-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.port-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #007bff;
+    background: #e7f1ff;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.config-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.config-section h6 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* ========== 子项目监测样式 ========== */
+
+.subproject-monitor-container .summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.subproject-monitor-container .summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.project-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.project-card-header {
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.project-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.project-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.project-status {
+    margin-top: 4px;
+}
+
+.project-card-body {
+    padding: 20px;
+}
+
+.project-description {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.resource-usage {
+    margin-bottom: 15px;
+}
+
+.resource-item {
+    margin-bottom: 8px;
+}
+
+.project-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.feature-tag {
+    background: #f0f0f0;
+    color: #555;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.project-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.project-card-footer {
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+/* ========== 脚本运行器样式 ========== */
+
+.script-runner-container .summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.script-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.script-card.script-running {
+    border: 2px solid #ffc107;
+}
+
+.script-card-header {
+    padding: 15px 20px;
+    color: white;
+}
+
+.script-name {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.script-category {
+    margin-top: 4px;
+}
+
+.script-description {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.script-meta {
+    font-size: 12px;
+}
+
+.script-card-footer {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.script-categories .nav-pills {
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.script-categories .nav-link {
+    color: #555;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.script-categories .nav-link.active {
+    background: #007bff;
+    color: white;
+}
+
+.running-scripts-panel .list-group-item {
+    border: none;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #fff3cd;
+}
+
+/* ========== 全局监控增强样式 ========== */
+
+.monitor-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.monitor-card .card-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.monitor-card .card-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.monitor-card .card-body {
+    padding: 20px;
+}
+
+.metric-item {
+    margin-bottom: 15px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.metric-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.component-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.component-item:hover {
+    background: #e9ecef;
+}
+
+.component-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.component-time {
+    font-size: 12px;
+    color: #888;
+}
+
+/* ========== 部署进度增强样式 ========== */
+
+.overall-stats .stat-item {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #007bff;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.task-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.task-item:hover {
+    background: #e9ecef;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.task-name {
+    font-weight: 600;
+}
+
+.task-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.task-meta {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+/* ========== 模块状态增强样式 ========== */
+
+.module-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.module-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.module-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #555;
+}
+
+.module-name {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.module-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.module-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.config-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.config-section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.config-section-content {
+    font-size: 13px;
+    color: #555;
+}
+
+.config-section-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* ========== 日志查看增强样式 ========== */
+
+.log-entries {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.log-entry {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+}
+
+.log-time {
+    color: #888;
+    min-width: 140px;
+}
+
+.log-level {
+    min-width: 70px;
+}
+
+.log-module {
+    color: #666;
+    min-width: 100px;
+}
+
+.log-message {
+    flex: 1;
+    color: #333;
+    word-break: break-all;
+}
+
+.log-ERROR {
+    background: #ffeaea;
+}
+
+.log-WARNING {
+    background: #fff8e6;
+}
+
+.log-INFO {
+    background: #e8f4fd;
+}
+
+.log-DEBUG {
+    background: #f5f5f5;
+}
+
+.log-stats {
+    margin-bottom: 10px;
+}
+
+/* ========== 动画效果 ========== */
+
+/* 脉冲动画 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotate {
+    animation: rotate 1s linear infinite;
+}
+
+/* 摇晃动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* ========== 响应式设计 ========== */
+
+@media (max-width: 768px) {
+    .bubble-container {
+        top: auto;
+        bottom: 20px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .port-table {
+        font-size: 12px;
+    }
+    
+    .port-table th,
+    .port-table td {
+        padding: 8px;
+    }
+}
+
+/* ========== 滚动条美化 ========== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* ========== 加载动画 ========== */
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ========== 工具类 ========== */
+
+.text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shadow-hover {
+    transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ========== 卡片交互效果 ========== */
+
+.card-interactive {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-interactive:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ========== 按钮悬停效果 ========== */
+
+.btn-hover-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-hover-effect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.btn-hover-effect:active::after {
+    width: 200px;
+    height: 200px;
+}
+

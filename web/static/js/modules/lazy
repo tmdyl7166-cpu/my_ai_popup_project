@@ -1,0 +1,329 @@
+/**
+ * Lazy Loader Module - 懒加载管理器
+ * 负责动态加载和懒加载功能
+ * 单一职责：资源懒加载、按需加载
+ */
+
+const LazyLoader = {
+    // 状态
+    state: {
+        loadedModules: new Map(),
+        loadingQueue: [],
+        observer: null,
+        moduleLoader: null
+    },
+
+    // 配置
+    config: {
+        rootMargin: '100px',
+        threshold: 0.1,
+        modulePath: '/static/js/modules/',
+        cssPath: '/static/css/'
+    },
+
+    /**
+     * 初始化懒加载管理器
+     */
+    init: function() {
+        console.log('Lazy Loader initializing...');
+        this.setupIntersectionObserver();
+        this.setupClickListener();
+    },
+
+    /**
+     * 设置Intersection Observer
+     */
+    setupIntersectionObserver: function() {
+        if ('IntersectionObserver' in window) {
+            this.state.observer = new IntersectionObserver(
+                (entries) => this.handleIntersection(entries),
+                {
+                    rootMargin: this.config.rootMargin,
+                    threshold: this.config.threshold
+                }
+            );
+            console.log('Intersection Observer initialized');
+        } else {
+            console.warn('Intersection Observer not supported, loading all immediately');
+        }
+    },
+
+    /**
+     * 设置点击监听器（用于导航懒加载）
+     */
+    setupClickListener: function() {
+        document.addEventListener('click', (event) => {
+            const lazyLink = event.target.closest('[data-lazy-load]');
+            if (lazyLink) {
+                event.preventDefault();
+                this.loadOnClick(lazyLink);
+            }
+        });
+    },
+
+    /**
+     * 处理Intersection事件
+     */
+    handleIntersection: function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                const target = element.getAttribute('data-lazy-load');
+                
+                if (target) {
+                    this.loadResource(target, element.getAttribute('data-type') || 'module')
+                        .then(() => {
+                            element.removeAttribute('data-lazy-load');
+                            this.state.observer.unobserve(element);
+                        })
+                        .catch(error => {
+                            console.error(`Failed to lazy load ${target}:`, error);
+                        });
+                }
+            }
+        });
+    },
+
+    /**
+     * 点击加载
+     */
+    loadOnClick: async function(element) {
+        const target = element.getAttribute('data-lazy-load');
+        const type = element.getAttribute('data-type') || 'module';
+
+        // 显示加载状态
+        element.classList.add('loading');
+        
+        try {
+            await this.loadResource(target, type);
+            element.classList.remove('loading');
+            element.classList.add('loaded');
+            
+            // 触发自定义事件
+            element.dispatchEvent(new CustomEvent('lazyloaded', {
+                detail: { target, type }
+            }));
+        } catch (error) {
+            element.classList.remove('loading');
+            element.classList.add('error');
+            console.error(`Failed to load ${target}:`, error);
+        }
+    },
+
+    /**
+     * 加载资源
+     */
+    loadResource: function(target, type) {
+        // 检查是否已加载
+        if (this.state.loadedModules.has(target)) {
+            console.log(`Resource already loaded: ${target}`);
+            return Promise.resolve(this.state.loadedModules.get(target));
+        }
+
+        // 添加到加载队列
+        const loader = this.createLoader(target, type);
+        this.state.loadingQueue.push(loader);
+
+        switch (type) {
+            case 'module':
+                return this.loadScript(target);
+            case 'css':
+                return this.loadStylesheet(target);
+            case 'component':
+                return this.loadComponent(target);
+            case 'template':
+                return this.loadTemplate(target);
+            default:
+                return this.loadScript(target);
+        }
+    },
+
+    /**
+     * 创建加载器
+     */
+    createLoader: function(target, type) {
+        return {
+            target,
+            type,
+            status: 'pending',
+            startTime: Date.now()
+        };
+    },
+
+    /**
+     * 动态加载JavaScript模块
+     */
+    loadScript: function(moduleName) {
+        return new Promise((resolve, reject) => {
+            // 检查是否已加载
+            if (this.state.loadedModules.has(moduleName)) {
+                resolve(this.state.loadedModules.get(moduleName));
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = this.config.modulePath + moduleName + '.js';
+            script.async = true;
+            script.onload = () => {
+                this.state.loadedModules.set(moduleName, true);
+                this.removeFromQueue(moduleName);
+                console.log(`Script loaded: ${moduleName}`);
+                resolve(true);
+            };
+            script.onerror = (error) => {
+                this.removeFromQueue(moduleName);
+                console.error(`Failed to load script: ${moduleName}`);
+                reject(new Error(`Failed to load ${moduleName}`));
+            };
+
+            document.head.appendChild(script);
+        });
+    },
+
+    /**
+     * 动态加载CSS样式表
+     */
+    loadStylesheet: function(cssName) {
+        return new Promise((resolve, reject) => {
+            // 检查是否已加载
+            const linkId = `lazy-css-${cssName}`;
+            if (document.getElementById(linkId)) {
+                resolve(true);
+                return;
+            }
+
+            const link = document.createElement('link');
+            link.id = linkId;
+            link.rel = 'stylesheet';
+            link.href = this.config.cssPath + cssName + '.css';
+            link.onload = () => {
+                this.state.loadedModules.set(cssName, true);
+                this.removeFromQueue(cssName);
+                console.log(`Stylesheet loaded: ${cssName}`);
+                resolve(true);
+            };
+            link.onerror = (error) => {
+                this.removeFromQueue(cssName);
+                console.error(`Failed to load stylesheet: ${cssName}`);
+                reject(new Error(`Failed to load ${cssName}`));
+            };
+
+            document.head.appendChild(link);
+        });
+    },
+
+    /**
+     * 加载组件
+     */
+    loadComponent: async function(componentName) {
+        // 加载组件脚本和样式
+        await this.loadScript(`components/${componentName}`);
+        await this.loadStylesheet(`components/${componentName}`);
+        return true;
+    },
+
+    /**
+     * 加载模板
+     */
+    loadTemplate: async function(templateName) {
+        const response = await fetch(`/templates/${templateName}.html`);
+        if (!response.ok) {
+            throw new Error(`Failed to load template: ${templateName}`);
+        }
+        const html = await response.text();
+        this.state.loadedModules.set(templateName, html);
+        return html;
+    },
+
+    /**
+     * 从队列中移除
+     */
+    removeFromQueue: function(target) {
+        const index = this.state.loadingQueue.findIndex(item => item.target === target);
+        if (index > -1) {
+            this.state.loadingQueue.splice(index, 1);
+        }
+    },
+
+    /**
+     * 观察元素（用于懒加载）
+     */
+    observe: function(element) {
+        if (this.state.observer) {
+            this.state.observer.observe(element);
+        } else {
+            // 如果不支持IntersectionObserver，直接加载
+            this.loadResource(
+                element.getAttribute('data-lazy-load'),
+                element.getAttribute('data-type') || 'module'
+            );
+        }
+    },
+
+    /**
+     * 取消观察
+     */
+    unobserve: function(element) {
+        if (this.state.observer) {
+            this.state.observer.unobserve(element);
+        }
+    },
+
+    /**
+     * 预加载资源
+     */
+    preload: function(targets) {
+        if (typeof targets === 'string') {
+            targets = [targets];
+        }
+        
+        return Promise.all(
+            targets.map(target => this.loadResource(target, 'module').catch(() => {}))
+        );
+    },
+
+    /**
+     * 获取已加载模块列表
+     */
+    getLoadedModules: function() {
+        return Array.from(this.state.loadedModules.keys());
+    },
+
+    /**
+     * 检查模块是否已加载
+     */
+    isLoaded: function(moduleName) {
+        return this.state.loadedModules.has(moduleName);
+    },
+
+    /**
+     * 获取加载队列状态
+     */
+    getLoadingStatus: function() {
+        return {
+            queueLength: this.state.loadingQueue.length,
+            loadedCount: this.state.loadedModules.size,
+            loading: this.state.loadingQueue.map(item => ({
+                target: item.target,
+                type: item.type,
+                duration: Date.now() - item.startTime
+            }))
+        };
+    },
+
+    /**
+     * 销毁模块
+     */
+    destroy: function() {
+        console.log('Lazy Loader destroying...');
+        if (this.state.observer) {
+            this.state.observer.disconnect();
+            this.state.observer = null;
+        }
+        this.state.loadedModules.clear();
+        this.state.loadingQueue = [];
+    }
+};
+
+// 导出到全局
+window.LazyLoader = LazyLoader;

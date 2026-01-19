@@ -21,16 +21,15 @@ import argparse
 import subprocess
 import signal
 import time
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional
-from datetime import datetime
 
 # 确保项目根目录在Python路径中
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # 配置日志
-import logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -57,8 +56,14 @@ class ProcessManager:
             return str(venv_python)
         return sys.executable
     
-    def start_process(self, name: str, script: str, args: List[str] = None, 
-                      env: Dict[str, str] = None, cwd: Path = None) -> bool:
+    def start_process(
+        self,
+        name: str,
+        script: str,
+        args: Optional[List[str]] = None,
+        env: Optional[Dict[str, str]] = None,
+        cwd: Optional[Path] = None
+    ) -> bool:
         """启动一个进程"""
         try:
             # 构建命令
@@ -66,7 +71,9 @@ class ProcessManager:
             
             # 设置环境变量
             process_env = os.environ.copy()
-            process_env['PYTHONPATH'] = f"{self.project_root}:{self.project_root}/src"
+            process_env['PYTHONPATH'] = (
+                f"{self.project_root}:{self.project_root}/src"
+            )
             process_env['AI_POPUP_ENV'] = 'development'
             if env:
                 process_env.update(env)
@@ -183,7 +190,8 @@ class ModuleRunner:
         self.project_root = project_root
         self.process_manager = ProcessManager(project_root)
     
-    def run_module(self, module_name: str, args: Dict = None) -> bool:
+    def run_module(self, module_name: str,
+                       args: Optional[Dict] = None) -> bool:
         """运行单个模块"""
         if module_name not in self.MODULES:
             logger.error(f"未知模块: {module_name}")
@@ -216,7 +224,7 @@ class ModuleRunner:
             cmd_args
         )
     
-    def run_all(self, exclude: List[str] = None) -> bool:
+    def run_all(self, exclude: Optional[List[str]] = None) -> bool:
         """运行所有模块"""
         exclude = exclude or []
         success = True
@@ -242,9 +250,11 @@ class ModuleRunner:
         print("\n可用模块:")
         print("-" * 60)
         for key, module in self.MODULES.items():
-            print(f"  {key:15} | {module['name']:20} | {module['description']}")
+            print(
+                f"  {key:15} | {module['name']:20} | {module['description']}"
+            )
         print("-" * 60)
-        print("  all            | 所有模块             | 启动所有功能模块")
+        print("  all            | 所有模块     | 启动所有模块")
         print("-" * 60)
 
 
@@ -341,10 +351,12 @@ class UnifiedLauncher:
         elif module in self.module_runner.MODULES:
             # 构建模块参数，只包含非空值
             module_args = {}
-            if args.host and args.host != '0.0.0.0':
-                module_args['host'] = args.host
-            if args.port and args.port != 8080:
-                module_args['port'] = args.port
+            host = args.host
+            if host and host != '0.0.0.0':
+                module_args['host'] = host
+            port = args.port
+            if port and port != 8080:
+                module_args['port'] = port
             if args.auto_fix:
                 module_args['auto_fix'] = args.auto_fix
             if args.output:

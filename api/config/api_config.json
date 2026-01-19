@@ -1,0 +1,138 @@
+{
+    "version": "1.0.0",
+    "last_updated": "2026-01-19",
+    "base_url": "http://localhost:8080",
+    "endpoints": {
+        "health": {
+            "path": "/api/health",
+            "method": "GET",
+            "description": "系统健康检查"
+        },
+        "project_status": {
+            "path": "/api/project/status",
+            "method": "GET",
+            "description": "项目整体状态"
+        },
+        "scripts_list": {
+            "path": "/api/scripts/list",
+            "method": "GET",
+            "description": "获取脚本列表"
+        },
+        "scripts_status": {
+            "path": "/api/scripts/status",
+            "method": "GET",
+            "description": "获取脚本运行状态"
+        },
+        "system_resources": {
+            "path": "/api/system/resources",
+            "method": "GET",
+            "description": "系统资源使用情况"
+        },
+        "system_gpu": {
+            "path": "/api/system/gpu",
+            "method": "GET",
+            "description": "GPU资源使用情况"
+        },
+        "ports": {
+            "path": "/api/ports",
+            "method": "GET",
+            "description": "端口状态列表"
+        },
+        "subprojects": {
+            "path": "/api/subprojects",
+            "method": "GET",
+            "description": "子项目状态"
+        },
+        "bubbles": {
+            "path": "/api/bubbles",
+            "method": "GET",
+            "description": "实时冒泡数据"
+        },
+        "audit_logs": {
+            "path": "/api/audit/logs",
+            "method": "GET",
+            "description": "审计日志查询"
+        },
+        "audit_export": {
+            "path": "/api/audit/export",
+            "method": "GET",
+            "description": "审计日志导出"
+        },
+        "performance": {
+            "path": "/api/performance",
+            "method": "GET",
+            "description": "性能监控概览"
+        },
+        "performance_metrics": {
+            "path": "/api/performance/metrics",
+            "method": "GET",
+            "description": "性能指标数据"
+        },
+        "performance_optimize": {
+            "path": "/api/performance/optimize",
+            "method": "POST",
+            "description": "性能优化执行"
+        },
+        "video": {
+            "path": "/api/video",
+            "method": "GET",
+            "description": "视频流概览"
+        },
+        "video_cameras": {
+            "path": "/api/video/cameras",
+            "method": "GET",
+            "description": "摄像头设备"
+        },
+        "video_streams": {
+            "path": "/api/video/streams",
+            "method": "GET",
+            "description": "视频流数据"
+        },
+        "video_engines": {
+            "path": "/api/video/engines",
+            "method": "GET",
+            "description": "引擎状态"
+        },
+        "engines": {
+            "path": "/api/engines",
+            "method": "GET",
+            "description": "引擎列表"
+        },
+        "engine_status": {
+            "path": "/api/engines/{name}/status",
+            "method": "GET",
+            "description": "引擎状态"
+        },
+        "engine_start": {
+            "path": "/api/engines/{name}/start",
+            "method": "POST",
+            "description": "启动引擎"
+        },
+        "engine_stop": {
+            "path": "/api/engines/{name}/stop",
+            "method": "POST",
+            "description": "停止引擎"
+        }
+    },
+    "websocket": {
+        "path": "/ws",
+        "channels": [
+            "progress",
+            "log",
+            "data",
+            "heartbeat"
+        ]
+    },
+    "response_format": {
+        "success": {
+            "status": "success",
+            "data": "any",
+            "timestamp": "ISO 8601"
+        },
+        "error": {
+            "status": "error",
+            "message": "string",
+            "code": "number"
+        }
+    }
+}

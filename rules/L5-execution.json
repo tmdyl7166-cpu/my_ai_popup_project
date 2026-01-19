@@ -1,12 +1,132 @@
- {
+{
     "meta": {
         "layer": "L5",
         "name": "执行层",
         "description": "具体的执行规则、操作指南和任务分配",
-        "dependsOn": ["L1", "L2", "L3", "L4"],
+        "dependsOn": [
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+        ],
         "createdAt": "2026-01-16T00:00:00Z",
         "lastModified": "2026-01-16T00:00:00Z",
         "version": "1.0.0"
+    },
+    "executionPlan": {
+        "phases": [
+            {
+                "phase": "initialization",
+                "description": "系统初始化阶段",
+                "steps": [
+                    "加载配置",
+                    "初始化日志系统",
+                    "检查依赖",
+                    "准备工作目录"
+                ],
+                "timeout": 30000
+            },
+            {
+                "phase": "validation",
+                "description": "输入验证阶段",
+                "steps": [
+                    "验证文件格式",
+                    "检查文件完整性",
+                    "验证参数范围",
+                    "确认资源可用性"
+                ],
+                "timeout": 10000
+            },
+            {
+                "phase": "processing",
+                "description": "核心处理阶段",
+                "steps": [
+                    "加载AI模型",
+                    "执行人脸检测",
+                    "进行特征提取",
+                    "执行人脸替换",
+                    "后处理优化"
+                ],
+                "timeout": 300000
+            },
+            {
+                "phase": "output",
+                "description": "输出生成阶段",
+                "steps": [
+                    "编码输出文件",
+                    "保存到指定路径",
+                    "生成预览",
+                    "清理临时文件"
+                ],
+                "timeout": 60000
+            }
+        ],
+        "rollbackStrategy": {
+            "enabled": true,
+            "checkpoints": [
+                "validation",
+                "processing"
+            ],
+            "cleanupActions": [
+                "删除临时文件",
+                "释放GPU内存",
+                "关闭文件句柄"
+            ]
+        }
+    },
+    "implementationDetails": {
+        "engineSelection": {
+            "primary": "deep-live-cam",
+            "fallback": [
+                "facefusion",
+                "iroop"
+            ],
+            "criteria": {
+                "realtime": "deep-live-cam",
+                "quality": "facefusion",
+                "compatibility": "iroop"
+            }
+        },
+        "resourceAllocation": {
+            "cpu": {
+                "threads": 4,
+                "priority": "normal"
+            },
+            "gpu": {
+                "memoryFraction": 0.8,
+                "allowGrowth": true
+            },
+            "memory": {
+                "softLimit": "8GB",
+                "hardLimit": "12GB"
+            }
+        },
+        "errorRecovery": {
+            "automaticRetry": {
+                "maxAttempts": 3,
+                "delayMs": 1000,
+                "backoffMultiplier": 2
+            },
+            "gracefulDegradation": {
+                "cpuFallback": true,
+                "qualityReduction": true,
+                "batchSizeReduction": true
+            }
+        },
+        "monitoring": {
+            "metrics": [
+                "processing_time",
+                "memory_usage",
+                "gpu_utilization",
+                "frame_rate",
+                "error_rate"
+            ],
+            "alerts": {
+                "memory_threshold": 0.9,
+                "gpu_memory_threshold": 0.95,
+                "processing_timeout": 300000
+            }
+        }
     },
     "taskWorkflows": {
         "image_to_camera": {
@@ -30,7 +150,9 @@
                     "name": "load_source_image",
                     "description": "加载源图片",
                     "action": "读取图片文件，转换为numpy数组",
-                    "outputs": ["source_image"],
+                    "outputs": [
+                        "source_image"
+                    ],
                     "errorHandling": {
                         "file_not_found": "错误：文件不存在",
                         "permission_denied": "错误：无权限读取文件"
@@ -41,7 +163,10 @@
                     "name": "extract_face_features",
                     "description": "提取人脸特征",
                     "action": "使用InsightFace提取源图片人脸特征和关键点",
-                    "outputs": ["source_embedding", "face_landmarks"],
+                    "outputs": [
+                        "source_embedding",
+                        "face_landmarks"
+                    ],
                     "engine": "insightface",
                     "gpuPreferred": true
                 },
@@ -50,7 +175,9 @@
                     "name": "initialize_camera",
                     "description": "初始化摄像头",
                     "action": "打开摄像头，获取视频流",
-                    "outputs": ["camera_stream"],
+                    "outputs": [
+                        "camera_stream"
+                    ],
                     "errorHandling": {
                         "camera_not_found": "错误：未检测到摄像头",
                         "camera_busy": "错误：摄像头被其他程序占用"
@@ -61,7 +188,9 @@
                     "name": "start_realtime_loop",
                     "description": "开始实时处理循环",
                     "action": "循环获取帧，检测人脸，替换人脸，输出到虚拟摄像头",
-                    "outputs": ["processed_stream"],
+                    "outputs": [
+                        "processed_stream"
+                    ],
                     "performance": {
                         "targetFps": 25,
                         "maxLatency": 100
@@ -106,14 +235,19 @@
                     "name": "load_source",
                     "description": "加载源图片",
                     "action": "读取并预处理源图片",
-                    "outputs": ["source_image"]
+                    "outputs": [
+                        "source_image"
+                    ]
                 },
                 {
                     "step": 3,
                     "name": "load_target_video",
                     "description": "加载目标视频",
                     "action": "读取视频文件，提取帧列表",
-                    "outputs": ["video_frames", "video_metadata"],
+                    "outputs": [
+                        "video_frames",
+                        "video_metadata"
+                    ],
                     "progressReporting": {
                         "start": 10,
                         "end": 30
@@ -124,7 +258,9 @@
                     "name": "extract_face_features",
                     "description": "提取人脸特征",
                     "action": "从源图片提取人脸特征",
-                    "outputs": ["face_embedding"],
+                    "outputs": [
+                        "face_embedding"
+                    ],
                     "progressReporting": {
                         "start": 30,
                         "end": 40
@@ -135,7 +271,9 @@
                     "name": "process_frames",
                     "description": "逐帧处理视频",
                     "action": "遍历每帧，检测人脸，替换人脸",
-                    "outputs": ["processed_frames"],
+                    "outputs": [
+                        "processed_frames"
+                    ],
                     "engine": "deep-live-cam",
                     "progressReporting": {
                         "start": 40,
@@ -158,7 +296,9 @@
                     "name": "save_output",
                     "description": "保存输出",
                     "action": "保存视频到指定路径",
-                    "outputs": ["output_path"],
+                    "outputs": [
+                        "output_path"
+                    ],
                     "progressReporting": {
                         "start": 90,
                         "end": 100
@@ -276,79 +416,120 @@
         "states": {
             "IDLE": {
                 "description": "空闲状态",
-                "allowedTransitions": ["SELECTING_SOURCE"],
+                "allowedTransitions": [
+                    "SELECTING_SOURCE"
+                ],
                 "onEnter": "清除状态，重置计数器",
                 "onExit": ""
             },
             "SELECTING_SOURCE": {
                 "description": "选择源文件",
-                "allowedTransitions": ["SOURCE_SELECTED", "IDLE"],
+                "allowedTransitions": [
+                    "SOURCE_SELECTED",
+                    "IDLE"
+                ],
                 "onEnter": "打开文件选择对话框",
                 "onExit": ""
             },
             "SOURCE_SELECTED": {
                 "description": "已选择源文件",
-                "allowedTransitions": ["SELECTING_TARGET", "PROCESSING", "IDLE"],
+                "allowedTransitions": [
+                    "SELECTING_TARGET",
+                    "PROCESSING",
+                    "IDLE"
+                ],
                 "onEnter": "预览源文件",
                 "onExit": ""
             },
             "SELECTING_TARGET": {
                 "description": "选择目标",
-                "allowedTransitions": ["READY", "IDLE"],
+                "allowedTransitions": [
+                    "READY",
+                    "IDLE"
+                ],
                 "onEnter": "打开目标选择对话框",
                 "onExit": ""
             },
             "READY": {
                 "description": "就绪",
-                "allowedTransitions": ["PROCESSING", "IDLE"],
+                "allowedTransitions": [
+                    "PROCESSING",
+                    "IDLE"
+                ],
                 "onEnter": "显示参数确认界面",
                 "onExit": ""
             },
             "PROCESSING": {
                 "description": "处理中",
-                "allowedTransitions": ["PAUSED", "COMPLETED", "FAILED", "CANCELLED"],
+                "allowedTransitions": [
+                    "PAUSED",
+                    "COMPLETED",
+                    "FAILED",
+                    "CANCELLED"
+                ],
                 "onEnter": "启动处理任务",
                 "onExit": "保存中间结果"
             },
             "PAUSED": {
                 "description": "暂停",
-                "allowedTransitions": ["PROCESSING", "CANCELLED"],
+                "allowedTransitions": [
+                    "PROCESSING",
+                    "CANCELLED"
+                ],
                 "onEnter": "暂停处理任务",
                 "onExit": ""
             },
             "COMPLETED": {
                 "description": "完成",
-                "allowedTransitions": ["IDLE", "EXPORTING"],
+                "allowedTransitions": [
+                    "IDLE",
+                    "EXPORTING"
+                ],
                 "onEnter": "显示结果预览",
                 "onExit": ""
             },
             "EXPORTING": {
                 "description": "导出中",
-                "allowedTransitions": ["COMPLETED", "IDLE"],
+                "allowedTransitions": [
+                    "COMPLETED",
+                    "IDLE"
+                ],
                 "onEnter": "开始导出",
                 "onExit": ""
             },
             "FAILED": {
                 "description": "失败",
-                "allowedTransitions": ["IDLE", "RETRY"],
+                "allowedTransitions": [
+                    "IDLE",
+                    "RETRY"
+                ],
                 "onEnter": "显示错误信息",
                 "onExit": ""
             },
             "RETRY": {
                 "description": "重试",
-                "allowedTransitions": ["PROCESSING", "IDLE"],
+                "allowedTransitions": [
+                    "PROCESSING",
+                    "IDLE"
+                ],
                 "onEnter": "重置参数后重新处理",
                 "onExit": ""
             },
             "CANCELLED": {
                 "description": "已取消",
-                "allowedTransitions": ["IDLE"],
+                "allowedTransitions": [
+                    "IDLE"
+                ],
                 "onEnter": "清理临时文件",
                 "onExit": ""
             }
         },
         "initialState": "IDLE",
-        "finalStates": ["COMPLETED", "CANCELLED", "FAILED"]
+        "finalStates": [
+            "COMPLETED",
+            "CANCELLED",
+            "FAILED"
+        ]
     },
     "callbacks": {
         "onTaskStart": {
@@ -479,7 +660,10 @@
             },
             "modelWeights": {
                 "enabled": true,
-                "preload": ["insightface", "face_recognition"]
+                "preload": [
+                    "insightface",
+                    "face_recognition"
+                ]
             }
         },
         "parallelization": {
@@ -513,7 +697,10 @@
             "description": "创建新任务",
             "requestBody": {
                 "type": "TaskRequest",
-                "required": ["taskType", "sourcePath"]
+                "required": [
+                    "taskType",
+                    "sourcePath"
+                ]
             },
             "responses": {
                 "201": {
@@ -733,4 +920,3 @@
         }
     }
 }
-

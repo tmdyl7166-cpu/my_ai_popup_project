@@ -1,6 +1,6 @@
 # =======================
 # AI弹窗项目 - 依赖清单
-# 最后更新: 2026-04-15
+# 最后更新: 2026-01-19
 # 状态: 生产就绪 ✅
 # Python版本要求: >=3.10.0 (请确保Python版本符合要求)
 # =======================
@@ -187,3 +187,44 @@ pyobjc>=10.0; sys_platform == 'darwin'
 pip-tools>=7.4.0
 pre-commit>=4.0.0
 ipykernel>=6.30.0
+
+# =======================
+# 子项目特有依赖 (Deep-Live-Cam, iRoopDeepFaceCam, FaceFusion)
+# =======================
+# GUI组件
+customtkinter>=5.2.2
+tk>=0.1.0
+
+# 摄像头枚举
+cv2_enumerate_cameras>=1.1.15
+
+# NSFW检测
+opennsfw2>=0.13.0
+
+# 协议缓冲
+protobuf>=5.28.0
+
+# GFPGAN人脸增强
+gfpgan>=1.3.8
+
+# 符号计算
+sympy>=1.7
+
+# Web服务器
+flask>=3.0.0
+flask-cors>=4.0.0
+waitress>=2.1.2
+
+# 浏览器自动化
+selenium>=4.15.2
+webdriver-manager>=4.0.1
+
+# YouTube下载
+yt-dlp>=2023.11.16
+
+# Gradio Web界面
+gradio>=5.44.1
+gradio-rangeslider>=0.0.8
+
+# 摄像头工具
+pygrabber>=0.1.0

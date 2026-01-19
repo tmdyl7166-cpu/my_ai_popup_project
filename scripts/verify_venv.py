@@ -15,6 +15,25 @@ for _ in range(3):
         break
     PROJECT_ROOT = PROJECT_ROOT.parent
 
+# 添加项目路径到 sys.path 以支持模块导入
+project_paths = [
+    str(PROJECT_ROOT),                    # 项目根目录
+    str(PROJECT_ROOT / 'src'),            # src 目录
+    str(PROJECT_ROOT / 'scripts'),        # scripts 目录
+    str(PROJECT_ROOT / 'web'),            # web 目录
+]
+for p in project_paths:
+    if p and p not in sys.path:
+        sys.path.insert(0, p)
+
+# 同时设置环境变量 PYTHONPATH
+current_pythonpath = os.environ.get('PYTHONPATH', '')
+pythonpath_parts = [p for p in project_paths if p]
+new_pythonpath = ':'.join(pythonpath_parts)
+if current_pythonpath:
+    new_pythonpath = f"{new_pythonpath}:{current_pythonpath}"
+os.environ['PYTHONPATH'] = new_pythonpath
+
 
 def check_venv_structure():
     """Check virtual environment structure"""
