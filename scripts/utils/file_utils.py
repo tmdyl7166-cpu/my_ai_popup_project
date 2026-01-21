@@ -1,191 +1,222 @@
 #!/usr/bin/env python3
 """
-文件操作工具模块
-提供统一的文件操作接口
+文件工具模块
+提供文件操作的统一接口
 """
 
 import os
 import json
 import yaml
-import shutil
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
-from datetime import datetime
 import hashlib
+from pathlib import Path
+from typing import Dict, Any, Optional, Union, List
+import shutil
+import tempfile
 
-class FileUtils:
-    """文件操作工具类"""
 
-    @staticmethod
-    def ensure_dir(path: Union[str, Path]) -> Path:
-        """确保目录存在"""
-        path = Path(path)
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-
-    @staticmethod
-    def read_json(path: Union[str, Path], encoding: str = 'utf-8') -> Dict[str, Any]:
-        """读取JSON文件"""
-        with open(path, 'r', encoding=encoding) as f:
-            return json.load(f)
-
-    @staticmethod
-    def write_json(path: Union[str, Path], data: Dict[str, Any], encoding: str = 'utf-8') -> None:
-        """写入JSON文件"""
-        FileUtils.ensure_dir(Path(path).parent)
-        with open(path, 'w', encoding=encoding) as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-
-    @staticmethod
-    def read_yaml(path: Union[str, Path], encoding: str = 'utf-8') -> Dict[str, Any]:
-        """读取YAML文件"""
-        try:
-            import yaml
-            with open(path, 'r', encoding=encoding) as f:
-                return yaml.safe_load(f)
-        except ImportError:
-            raise ImportError("需要安装PyYAML: pip install PyYAML")
-
-    @staticmethod
-    def write_yaml(path: Union[str, Path], data: Dict[str, Any], encoding: str = 'utf-8') -> None:
-        """写入YAML文件"""
-        try:
-            import yaml
-            FileUtils.ensure_dir(Path(path).parent)
-            with open(path, 'w', encoding=encoding) as f:
-                yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
-        except ImportError:
-            raise ImportError("需要安装PyYAML: pip install PyYAML")
-
-    @staticmethod
-    def read_text(path: Union[str, Path], encoding: str = 'utf-8') -> str:
-        """读取文本文件"""
-        with open(path, 'r', encoding=encoding) as f:
-            return f.read()
-
-    @staticmethod
-    def write_text(path: Union[str, Path], content: str, encoding: str = 'utf-8') -> None:
-        """写入文本文件"""
-        FileUtils.ensure_dir(Path(path).parent)
-        with open(path, 'w', encoding=encoding) as f:
-            f.write(content)
-
-    @staticmethod
-    def list_files(path: Union[str, Path], pattern: str = "*", recursive: bool = False) -> List[Path]:
-        """列出文件"""
-        path = Path(path)
-        if recursive:
-            return list(path.rglob(pattern))
-        else:
-            return list(path.glob(pattern))
-
-    @staticmethod
-    def get_file_info(path: Union[str, Path]) -> Dict[str, Any]:
-        """获取文件信息"""
-        path = Path(path)
-        stat = path.stat()
-
-        return {
-            'name': path.name,
-            'path': str(path),
-            'size': stat.st_size,
-            'modified': datetime.fromtimestamp(stat.st_mtime).isoformat(),
-            'is_file': path.is_file(),
-            'is_dir': path.is_dir(),
-            'exists': path.exists()
-        }
-
-    @staticmethod
-    def calculate_hash(path: Union[str, Path], algorithm: str = 'md5') -> str:
-        """计算文件哈希"""
-        hash_func = getattr(hashlib, algorithm)()
-        with open(path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_func.update(chunk)
-        return hash_func.hexdigest()
-
-    @staticmethod
-    def copy_file(src: Union[str, Path], dst: Union[str, Path]) -> None:
-        """复制文件"""
-        FileUtils.ensure_dir(Path(dst).parent)
-        shutil.copy2(src, dst)
-
-    @staticmethod
-    def move_file(src: Union[str, Path], dst: Union[str, Path]) -> None:
-        """移动文件"""
-        FileUtils.ensure_dir(Path(dst).parent)
-        shutil.move(src, dst)
-
-    @staticmethod
-    def remove_file(path: Union[str, Path]) -> None:
-        """删除文件或目录"""
-        path = Path(path)
-        if path.is_file():
-            path.unlink()
-        elif path.is_dir():
-            shutil.rmtree(path)
-
-    @staticmethod
-    def find_files_by_extension(path: Union[str, Path], extensions: List[str], recursive: bool = True) -> List[Path]:
-        """按扩展名查找文件"""
-        files = []
-        for ext in extensions:
-            pattern = f"*.{ext}" if not ext.startswith('.') else f"*{ext}"
-            files.extend(FileUtils.list_files(path, pattern, recursive))
-        return files
-
-    @staticmethod
-    def get_directory_tree(path: Union[str, Path], max_depth: int = 3) -> Dict[str, Any]:
-        """获取目录树结构"""
-        path = Path(path)
-
-        def _build_tree(current_path: Path, current_depth: int = 0) -> Dict[str, Any]:
-            if current_depth > max_depth:
-                return {'type': 'truncated'}
-
-            if current_path.is_file():
-                return {
-                    'type': 'file',
-                    'name': current_path.name,
-                    'size': current_path.stat().st_size,
-                    'modified': datetime.fromtimestamp(current_path.stat().st_mtime).isoformat()
-                }
-            elif current_path.is_dir():
-                children = {}
-                try:
-                    for item in sorted(current_path.iterdir()):
-                        if not item.name.startswith('.'):  # 跳过隐藏文件
-                            children[item.name] = _build_tree(item, current_depth + 1)
-                except PermissionError:
-                    pass
-
-                return {
-                    'type': 'directory',
-                    'name': current_path.name,
-                    'children': children
-                }
-            else:
-                return {'type': 'unknown', 'name': current_path.name}
-
-        return _build_tree(path)
-
-# 便捷函数
-def ensure_dir(path: Union[str, Path]) -> Path:
-    """确保目录存在"""
-    return FileUtils.ensure_dir(path)
-
-def read_json(path: Union[str, Path]) -> Dict[str, Any]:
+def read_json(file_path: Union[str, Path]) -> Dict[str, Any]:
     """读取JSON文件"""
-    return FileUtils.read_json(path)
+    file_path = Path(file_path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
 
-def write_json(path: Union[str, Path], data: Dict[str, Any]) -> None:
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def write_json(
+    file_path: Union[str, Path], data: Dict[str, Any], indent: int = 2
+) -> None:
     """写入JSON文件"""
-    FileUtils.write_json(path, data)
+    file_path = Path(file_path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
 
-def read_text(path: Union[str, Path]) -> str:
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=indent, ensure_ascii=False)
+
+
+def read_yaml(file_path: Union[str, Path]) -> Dict[str, Any]:
+    """读取YAML文件"""
+    try:
+        import yaml
+    except ImportError:
+        raise ImportError("需要安装 PyYAML: pip install PyYAML")
+
+    file_path = Path(file_path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def write_yaml(file_path: Union[str, Path], data: Dict[str, Any]) -> None:
+    """写入YAML文件"""
+    try:
+        import yaml
+    except ImportError:
+        raise ImportError("需要安装 PyYAML: pip install PyYAML")
+
+    file_path = Path(file_path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
+
+
+def read_text(file_path: Union[str, Path], encoding: str = "utf-8") -> str:
     """读取文本文件"""
-    return FileUtils.read_text(path)
+    file_path = Path(file_path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
 
-def write_text(path: Union[str, Path], content: str) -> None:
+    with open(file_path, "r", encoding=encoding) as f:
+        return f.read()
+
+
+def write_text(
+    file_path: Union[str, Path], content: str, encoding: str = "utf-8"
+) -> None:
     """写入文本文件"""
-    FileUtils.write_text(path, content)
+    file_path = Path(file_path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(file_path, "w", encoding=encoding) as f:
+        f.write(content)
+
+
+def calculate_file_hash(file_path: Union[str, Path], algorithm: str = "md5") -> str:
+    """计算文件哈希值"""
+    file_path = Path(file_path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
+
+    hash_func = getattr(hashlib, algorithm)()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_func.update(chunk)
+
+    return hash_func.hexdigest()
+
+
+def get_file_info(file_path: Union[str, Path]) -> Dict[str, Any]:
+    """获取文件信息"""
+    file_path = Path(file_path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
+
+    stat = file_path.stat()
+    return {
+        "path": str(file_path),
+        "name": file_path.name,
+        "size": stat.st_size,
+        "modified": stat.st_mtime,
+        "created": stat.st_ctime,
+        "is_file": file_path.is_file(),
+        "is_dir": file_path.is_dir(),
+        "extension": file_path.suffix,
+        "hash_md5": calculate_file_hash(file_path, "md5"),
+        "hash_sha256": calculate_file_hash(file_path, "sha256"),
+    }
+
+
+def find_files_by_pattern(
+    directory: Union[str, Path], pattern: str, recursive: bool = True
+) -> List[Path]:
+    """按模式查找文件"""
+    directory = Path(directory)
+    if not directory.exists():
+        return []
+
+    if recursive:
+        return list(directory.rglob(pattern))
+    else:
+        return list(directory.glob(pattern))
+
+
+def copy_file(src: Union[str, Path], dst: Union[str, Path]) -> None:
+    """复制文件"""
+    src, dst = Path(src), Path(dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+
+
+def move_file(src: Union[str, Path], dst: Union[str, Path]) -> None:
+    """移动文件"""
+    src, dst = Path(src), Path(dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(src, dst)
+
+
+def create_backup(file_path: Union[str, Path], suffix: str = ".backup") -> Path:
+    """创建文件备份"""
+    file_path = Path(file_path)
+    backup_path = file_path.with_suffix(f"{file_path.suffix}{suffix}")
+    copy_file(file_path, backup_path)
+    return backup_path
+
+
+def safe_write_file(
+    file_path: Union[str, Path], content: str, encoding: str = "utf-8"
+) -> None:
+    """安全写入文件（先写入临时文件再替换）"""
+    file_path = Path(file_path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # 创建临时文件
+    with tempfile.NamedTemporaryFile(
+        mode="w", dir=file_path.parent, encoding=encoding, delete=False, suffix=".tmp"
+    ) as temp_file:
+        temp_file.write(content)
+        temp_path = Path(temp_file.name)
+
+    # 原子性替换
+    temp_path.replace(file_path)
+
+
+def ensure_directory(path: Union[str, Path]) -> Path:
+    """确保目录存在"""
+    path = Path(path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def get_directory_size(directory: Union[str, Path]) -> int:
+    """计算目录大小"""
+    directory = Path(directory)
+    if not directory.exists():
+        return 0
+
+    total_size = 0
+    for file_path in directory.rglob("*"):
+        if file_path.is_file():
+            total_size += file_path.stat().st_size
+
+    return total_size
+
+
+def clean_directory(
+    directory: Union[str, Path], patterns: List[str] = None
+) -> Dict[str, int]:
+    """清理目录"""
+    if patterns is None:
+        patterns = ["*.tmp", "*.log", "__pycache__", "*.pyc"]
+
+    directory = Path(directory)
+    if not directory.exists():
+        return {}
+
+    cleaned = {}
+    for pattern in patterns:
+        for path in directory.rglob(pattern):
+            try:
+                if path.is_file():
+                    path.unlink()
+                    cleaned[pattern] = cleaned.get(pattern, 0) + 1
+                elif path.is_dir():
+                    shutil.rmtree(path)
+                    cleaned[pattern] = cleaned.get(pattern, 0) + 1
+            except Exception:
+                pass  # 忽略删除失败的文件
+
+    return cleaned

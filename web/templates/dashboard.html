@@ -4,468 +4,295 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI弹窗项目监控中心</title>
-
-    <!-- 核心CSS框架 -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet" />
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      rel="stylesheet" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"
-      rel="stylesheet" />
-
-    <!-- 第三方库 -->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-
-    <!-- 自定义样式 -->
-    <link href="/static/css/dashboard.css" rel="stylesheet" />
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <link href="/static/css/monitor.css" rel="stylesheet" />
   </head>
-  <body class="bg-gradient-primary">
-    <!-- 全局加载器 -->
-    <div id="globalLoader" class="global-loader">
-      <div class="loader-content">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">加载中...</span>
-        </div>
-        <div class="mt-3">
-          <h5>初始化监控中心</h5>
-          <div class="progress mt-3">
-            <div
-              class="progress-bar progress-bar-striped progress-bar-animated"
-              id="initProgress"
-              style="width: 0%"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 主导航栏 -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg">
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <i class="fas fa-cogs fa-spin text-warning me-2"></i>
-          <span class="fw-bold">AI弹窗项目监控中心</span>
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-cogs"></i> AI弹窗项目监控中心
         </a>
-
-        <div class="d-flex align-items-center">
-          <!-- 全局状态指示器 -->
-          <div class="me-3">
-            <span class="badge bg-success" id="globalStatus">
-              <i class="fas fa-circle me-1"></i>系统正常
-            </span>
-          </div>
-
-          <!-- 连接状态 -->
-          <div class="me-3" id="connectionStatus">
-            <i class="fas fa-wifi text-success"></i>
-            <small class="text-light ms-1">已连接</small>
-          </div>
-
-          <!-- 时间显示 -->
-          <div class="me-3">
-            <small class="text-light" id="currentTime">--:--:--</small>
-          </div>
-
-          <!-- 快速操作 -->
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-light btn-sm dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown">
-              <i class="fas fa-bolt me-1"></i>操作
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="#"
-                  onclick="globalActions.refreshAll()">
-                  <i class="fas fa-sync me-2"></i>刷新全部</a
-                >
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="#"
-                  onclick="globalActions.runHealthCheck()">
-                  <i class="fas fa-heartbeat me-2"></i>健康检查</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="#"
-                  onclick="globalActions.exportReport()">
-                  <i class="fas fa-download me-2"></i>导出报告</a
-                >
-              </li>
-            </ul>
-          </div>
+        <div class="d-flex">
+          <span class="navbar-text me-3" id="status-indicator">
+            <i class="fas fa-circle text-success"></i> 系统正常
+          </span>
+          <button class="btn btn-outline-light btn-sm" onclick="refreshAll()">
+            <i class="fas fa-sync-alt"></i> 刷新
+          </button>
         </div>
       </div>
     </nav>
 
-    <!-- 主容器 -->
     <div class="container-fluid mt-4">
       <div class="row">
-        <!-- 侧边栏 -->
-        <div class="col-lg-3">
-          <!-- 系统概览卡片 -->
-          <div class="card system-overview-card mb-4">
-            <div class="card-header bg-primary text-white">
-              <h6 class="mb-0">
-                <i class="fas fa-tachometer-alt me-2"></i>系统概览
-              </h6>
+        <!-- 系统状态卡片 -->
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-server"></i> 系统状态
+              </h5>
             </div>
             <div class="card-body">
-              <!-- 系统状态 -->
               <div class="mb-3">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-2">
-                  <small class="text-muted">整体状态</small>
-                  <span class="badge bg-success" id="systemHealthBadge"
-                    >健康</span
-                  >
-                </div>
-                <div class="progress" style="height: 8px">
+                <label class="form-label">CPU使用率</label>
+                <div class="progress">
                   <div
-                    class="progress-bar bg-success"
-                    id="systemHealthBar"
-                    style="width: 100%"></div>
+                    class="progress-bar"
+                    id="cpu-progress"
+                    role="progressbar"
+                    style="width: 0%"
+                  ></div>
                 </div>
+                <small class="text-muted" id="cpu-text">0%</small>
               </div>
-
-              <!-- 资源监控 -->
-              <div class="resource-monitor mb-3">
-                <div class="resource-item">
-                  <div class="d-flex justify-content-between">
-                    <small><i class="fas fa-microchip me-1"></i>CPU</small>
-                    <small id="cpuUsage">0%</small>
-                  </div>
-                  <div class="progress mt-1" style="height: 6px">
-                    <div
-                      class="progress-bar bg-info"
-                      id="cpuBar"
-                      style="width: 0%"></div>
-                  </div>
+              <div class="mb-3">
+                <label class="form-label">内存使用率</label>
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-info"
+                    id="memory-progress"
+                    role="progressbar"
+                    style="width: 0%"
+                  ></div>
                 </div>
-                <div class="resource-item">
-                  <div class="d-flex justify-content-between">
-                    <small><i class="fas fa-memory me-1"></i>内存</small>
-                    <small id="memoryUsage">0%</small>
-                  </div>
-                  <div class="progress mt-1" style="height: 6px">
-                    <div
-                      class="progress-bar bg-success"
-                      id="memoryBar"
-                      style="width: 0%"></div>
-                  </div>
-                </div>
-                <div class="resource-item">
-                  <div class="d-flex justify-content-between">
-                    <small><i class="fas fa-hdd me-1"></i>磁盘</small>
-                    <small id="diskUsage">0%</small>
-                  </div>
-                  <div class="progress mt-1" style="height: 6px">
-                    <div
-                      class="progress-bar bg-warning"
-                      id="diskBar"
-                      style="width: 0%"></div>
-                  </div>
-                </div>
+                <small class="text-muted" id="memory-text">0%</small>
               </div>
-
-              <!-- 服务状态 -->
-              <div class="service-status">
-                <small class="text-muted d-block mb-2">服务状态</small>
-                <div
-                  class="service-item d-flex justify-content-between align-items-center mb-1">
-                  <small>后端API</small>
-                  <span class="badge bg-secondary" id="backendStatus"
-                    >检测中</span
-                  >
+              <div class="mb-3">
+                <label class="form-label">磁盘使用率</label>
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-warning"
+                    id="disk-progress"
+                    role="progressbar"
+                    style="width: 0%"
+                  ></div>
                 </div>
-                <div
-                  class="service-item d-flex justify-content-between align-items-center mb-1">
-                  <small>Web监控</small>
-                  <span class="badge bg-secondary" id="webStatus">检测中</span>
-                </div>
-                <div
-                  class="service-item d-flex justify-content-between align-items-center">
-                  <small>数据库</small>
-                  <span class="badge bg-secondary" id="dbStatus">检测中</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 快速导航 -->
-          <div class="card quick-nav-card">
-            <div class="card-header bg-info text-white">
-              <h6 class="mb-0"><i class="fas fa-compass me-2"></i>快速导航</h6>
-            </div>
-            <div class="card-body p-0">
-              <div class="list-group list-group-flush">
-                <a
-                  href="#global-monitor"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-globe me-2"></i>全局监控
-                </a>
-                <a
-                  href="#deployment-progress"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-rocket me-2"></i>部署进度
-                </a>
-                <a
-                  href="#module-status"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-cubes me-2"></i>模块状态
-                </a>
-                <a
-                  href="#script-control"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-terminal me-2"></i>脚本控制
-                </a>
-                <a
-                  href="#config-management"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-cogs me-2"></i>配置管理
-                </a>
-                <a
-                  href="#logs-viewer"
-                  class="list-group-item list-group-item-action quick-nav-item">
-                  <i class="fas fa-file-alt me-2"></i>日志查看
-                </a>
+                <small class="text-muted" id="disk-text">0%</small>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 主内容区 -->
-        <div class="col-lg-9">
-          <!-- 全局监控面板 -->
-          <div id="global-monitor" class="content-section">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-globe me-2"></i>全局内容部署实时监控
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="globalMonitor.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="globalMonitor.export()">
-                    <i class="fas fa-download me-1"></i>导出
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="globalMonitorContent">
-                  <!-- 全局监控内容将在这里动态加载 -->
+        <!-- 项目状态卡片 -->
+        <div class="col-md-6">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="card-title mb-0">
+                <i class="fas fa-project-diagram"></i> 项目状态
+              </h5>
+              <button class="btn btn-primary btn-sm" onclick="runHealthCheck()">
+                <i class="fas fa-stethoscope"></i> 健康检查
+              </button>
+            </div>
+            <div class="card-body">
+              <div id="projects-container">
+                <!-- 项目卡片将在这里动态生成 -->
+                <div class="text-center text-muted">
+                  <i class="fas fa-spinner fa-spin"></i> 加载中...
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- 部署进度面板 -->
-          <div id="deployment-progress" class="content-section mt-4">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-chart-line me-2"></i>部署进度监控
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="deploymentProgress.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="deploymentProgressContent">
-                  <!-- 部署进度内容将在这里动态加载 -->
-                </div>
-              </div>
+        <!-- 脚本管理卡片 -->
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-terminal"></i> 脚本管理
+              </h5>
             </div>
-          </div>
-
-          <!-- 模块状态面板 -->
-          <div id="module-status" class="content-section mt-4">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-cubes me-2"></i>功能模块部署状态
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="moduleStatus.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="moduleStatusContent">
-                  <!-- 模块状态内容将在这里动态加载 -->
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 脚本控制面板 -->
-          <div id="script-control" class="content-section mt-4">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-warning text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-terminal me-2"></i>自动化脚本控制中心
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="scriptControl.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="scriptControl.runAll()">
-                    <i class="fas fa-play me-1"></i>全部运行
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="scriptControlContent">
-                  <!-- 脚本控制内容将在这里动态加载 -->
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 配置管理面板 -->
-          <div id="config-management" class="content-section mt-4">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-secondary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-cogs me-2"></i>配置管理中心
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="configManagement.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="configManagement.save()">
-                    <i class="fas fa-save me-1"></i>保存
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="configManagementContent">
-                  <!-- 配置管理内容将在这里动态加载 -->
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 日志查看面板 -->
-          <div id="logs-viewer" class="content-section mt-4">
-            <div class="card main-content-card">
-              <div
-                class="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-file-alt me-2"></i>日志查看器
-                </h5>
-                <div class="btn-group btn-group-sm">
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="logsViewer.refresh()">
-                    <i class="fas fa-sync me-1"></i>刷新
-                  </button>
-                  <button
-                    class="btn btn-outline-light"
-                    onclick="logsViewer.clear()">
-                    <i class="fas fa-trash me-1"></i>清空
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div id="logsViewerContent">
-                  <!-- 日志内容将在这里动态加载 -->
+            <div class="card-body">
+              <div id="scripts-container">
+                <!-- 脚本列表将在这里动态生成 -->
+                <div class="text-center text-muted">
+                  <i class="fas fa-spinner fa-spin"></i> 加载中...
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="row mt-4">
+        <!-- 日志查看 -->
+        <div class="col-md-8">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="card-title mb-0">
+                <i class="fas fa-list-alt"></i> 系统日志
+              </h5>
+              <div>
+                <select
+                  class="form-select form-select-sm d-inline-block w-auto me-2"
+                  id="log-lines"
+                >
+                  <option value="50">50行</option>
+                  <option value="100" selected>100行</option>
+                  <option value="200">200行</option>
+                </select>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  onclick="loadLogs()"
+                >
+                  <i class="fas fa-sync-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <pre
+                id="logs-container"
+                class="bg-dark text-light p-3 rounded"
+                style="height: 400px; overflow-y: auto; font-size: 0.8em"
+              >
+<!-- 日志内容将在这里显示 -->
+                        </pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- 快速操作 -->
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-bolt"></i> 快速操作
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button
+                  class="btn btn-success"
+                  onclick="runScript('health_check')"
+                >
+                  <i class="fas fa-heartbeat"></i> 运行健康检查
+                </button>
+                <button class="btn btn-info" onclick="runScript('config_sync')">
+                  <i class="fas fa-cog"></i> 同步配置
+                </button>
+                <button
+                  class="btn btn-warning"
+                  onclick="runScript('docs_update')"
+                >
+                  <i class="fas fa-file-alt"></i> 更新文档
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="runScript('cleanup')"
+                >
+                  <i class="fas fa-broom"></i> 清理缓存
+                </button>
+              </div>
+
+              <hr />
+
+              <div class="mb-3">
+                <label class="form-label">自定义脚本</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="custom-script"
+                    placeholder="脚本名称"
+                  />
+                  <button
+                    class="btn btn-outline-primary"
+                    onclick="runCustomScript()"
+                  >
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 健康评分 -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-chart-line"></i> 健康评分
+              </h5>
+            </div>
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <div class="display-4" id="health-score">0</div>
+                <div class="progress mt-2">
+                  <div
+                    class="progress-bar"
+                    id="health-progress"
+                    role="progressbar"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
+              <small class="text-muted" id="health-status">未检查</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- 全局模态框容器 -->
-    <div id="modalContainer"></div>
+    <!-- 加载动画 -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">加载中...</span>
+            </div>
+            <p class="mt-2" id="loading-text">正在执行操作...</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- 全局通知容器 -->
-    <div id="notificationContainer" class="notification-container"></div>
+    <!-- 结果模态框 -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="result-title">操作结果</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <pre
+              id="result-content"
+              style="max-height: 400px; overflow-y: auto"
+            ></pre>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              关闭
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- 核心JavaScript库 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- 工具模块 -->
-    <script src="/static/js/utils/eventBus.js"></script>
-    <script src="/static/js/utils/safeUtils.js"></script>
-    <script src="/static/js/utils/errorHandler.js"></script>
-    <script src="/static/js/utils/api.js"></script>
-    <script src="/static/js/utils/modalStack.js"></script>
-    <script src="/static/js/utils/themeManager.js"></script>
-    <script src="/static/js/utils/dynamicMenu.js"></script>
-
-    <!-- 组件模块 -->
-    <script src="/static/js/components/charting.js"></script>
-    <script src="/static/js/components/progress.js"></script>
-    <script src="/static/js/components/spinner.js"></script>
-    <script src="/static/js/components/toast.js"></script>
-    <script src="/static/js/components/ws.js"></script>
-
-    <!-- 模块化JavaScript文件 -->
-    <script src="/static/js/modules/core.js"></script>
-    <script src="/static/js/modules/globalMonitor.js"></script>
-    <script src="/static/js/modules/deploymentProgress.js"></script>
-    <script src="/static/js/modules/moduleStatus.js"></script>
-    <script src="/static/js/modules/scriptControl.js"></script>
-    <script src="/static/js/modules/configManagement.js"></script>
-    <script src="/static/js/modules/logsViewer.js"></script>
-    <script src="/static/js/modules/globalActions.js"></script>
-    <script src="/static/js/modules/notifications.js"></script>
-    <script src="/static/js/modules/modalManager.js"></script>
-    <script src="/static/js/modules/websocketManager.js"></script>
-    <script src="/static/js/modules/apiInterface.js"></script>
-    <script src="/static/js/modules/portMapping.js"></script>
-    <script src="/static/js/modules/bubbleMonitor.js"></script>
-    <script src="/static/js/modules/subProjectMonitor.js"></script>
-    <script src="/static/js/modules/scriptRunner.js"></script>
-    <script src="/static/js/modules/videoStreamMonitor.js"></script>
-    <script src="/static/js/modules/backupRecoveryMonitor.js"></script>
-    <script src="/static/js/modules/performanceMonitor.js"></script>
-    <script src="/static/js/modules/gpuMonitor.js"></script>
-    <script src="/static/js/modules/auditLogger.js"></script>
-    <script src="/static/js/modules/testRunner.js"></script>
-
-    <!-- 主应用初始化 -->
-    <script src="/static/js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="/static/js/monitor.js"></script>
   </body>
 </html>

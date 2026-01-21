@@ -1,565 +1,523 @@
 {
-    "version": "1.1.0",
-    "last_updated": "2026-01-19",
-    "description": "前后端API统一接口映射表 - 确保所有模块的API调用一致",
-    "base_url": "http://localhost:8080",
-    "api_version": "v1",
-    "websocket": {
-        "path": "/ws",
-        "channels": ["progress", "log", "data", "heartbeat", "status_update", "script_result"]
+    "meta": {
+        "name": "AI弹窗项目API映射配置",
+        "version": "1.0.0",
+        "description": "统一API接口映射，将前端请求映射到后端处理逻辑",
+        "created": "2026-01-21",
+        "updated": "2026-01-21"
     },
-    "endpoints": {
-        "health": {
-            "path": "/api/health",
-            "method": "GET",
-            "description": "系统健康检查",
-            "frontend_module": "dashboard",
-            "backend_handler": "api.backend.app.health_check",
-            "response": {
-                "status": "string",
-                "timestamp": "string",
-                "version": "string",
-                "services": "object"
+    "mappings": {
+        "system": {
+            "status": {
+                "endpoint": "/api/status",
+                "method": "GET",
+                "handler": "system_monitor.get_status",
+                "description": "获取系统整体状态",
+                "response_format": {
+                    "cpu_percent": "number",
+                    "memory_percent": "number",
+                    "disk_percent": "number",
+                    "services": "object",
+                    "last_update": "string"
+                }
             },
-            "caching": { "enabled": false, "ttl": 0 }
+            "health": {
+                "endpoint": "/api/health",
+                "method": "GET",
+                "handler": "health_monitor.check_health",
+                "description": "系统健康检查",
+                "response_format": {
+                    "status": "string",
+                    "timestamp": "string",
+                    "services": "object",
+                    "version": "string"
+                }
+            },
+            "resources": {
+                "endpoint": "/api/system/resources",
+                "method": "GET",
+                "handler": "system_monitor.get_resources",
+                "description": "获取系统资源使用情况",
+                "response_format": {
+                    "cpu": "object",
+                    "memory": "object",
+                    "disk": "object",
+                    "network": "object"
+                }
+            }
         },
-        "project_status": {
-            "path": "/api/project/status",
-            "method": "GET",
-            "description": "项目整体状态",
-            "frontend_module": "dashboard",
-            "backend_handler": "api.backend.app.project_status",
-            "response": {
-                "project_name": "string",
-                "version": "string",
-                "status": "string",
-                "components": "object",
-                "health_score": "number",
-                "last_updated": "string"
-            },
-            "caching": { "enabled": true, "ttl": 30 }
-        },
-        "scripts_list": {
-            "path": "/api/scripts/list",
-            "method": "GET",
-            "description": "获取脚本列表",
-            "frontend_module": "scriptManager",
-            "backend_handler": "api.backend.app.scripts_list",
-            "response": {
-                "scripts": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 60 }
-        },
-        "scripts_status": {
-            "path": "/api/scripts/status",
-            "method": "GET",
-            "description": "获取脚本运行状态",
-            "frontend_module": "scriptManager",
-            "backend_handler": "api.backend.app.scripts_status",
-            "response": {
-                "scripts": "object",
-                "monitoring_active": "boolean",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 10 }
-        },
-        "scripts_run": {
-            "path": "/api/scripts/run/{script_name}",
-            "method": "POST",
-            "description": "执行指定脚本",
-            "frontend_module": "scriptManager",
-            "backend_handler": "api.backend.app.run_script",
-            "parameters": { "script_name": "string" },
-            "request_body": {
-                "args": "array",
-                "timeout": "number"
-            },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "script": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "scripts_stop": {
-            "path": "/api/scripts/stop/{script_name}",
-            "method": "POST",
-            "description": "停止正在运行的脚本",
-            "frontend_module": "scriptManager",
-            "backend_handler": "api.backend.app.stop_script",
-            "parameters": { "script_name": "string" },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "script": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "logs_script": {
-            "path": "/api/logs/{script_name}",
-            "method": "GET",
-            "description": "获取指定脚本的执行日志",
-            "frontend_module": "logViewer",
-            "backend_handler": "api.backend.app.get_script_logs",
-            "parameters": { "script_name": "string" },
-            "query_params": { "lines": "number" },
-            "response": {
-                "status": "string",
-                "logs": "array",
-                "total_lines": "number",
-                "returned_lines": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "config_get": {
-            "path": "/api/config/{component}",
-            "method": "GET",
-            "description": "获取组件配置",
-            "frontend_module": "configEditor",
-            "backend_handler": "api.backend.app.get_component_config",
-            "parameters": { "component": "string" },
-            "response": {
-                "status": "string",
-                "component": "string",
-                "config": "object",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 300 }
-        },
-        "config_update": {
-            "path": "/api/config/{component}",
-            "method": "POST",
-            "description": "更新组件配置",
-            "frontend_module": "configEditor",
-            "backend_handler": "api.backend.app.update_component_config",
-            "parameters": { "component": "string" },
-            "request_body": { "config": "object" },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "component": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "system_resources": {
-            "path": "/api/system/resources",
-            "method": "GET",
-            "description": "获取系统资源使用情况",
-            "frontend_module": "dashboard",
-            "backend_handler": "api.backend.app.system_resources",
-            "response": {
-                "cpu_percent": "number",
-                "memory": {
+        "projects": {
+            "list": {
+                "endpoint": "/api/projects",
+                "method": "GET",
+                "handler": "project_manager.list_projects",
+                "description": "获取所有项目列表",
+                "response_format": {
+                    "projects": "array",
                     "total": "number",
-                    "available": "number",
-                    "percent": "number",
-                    "used": "number"
+                    "timestamp": "string"
+                }
+            },
+            "detail": {
+                "endpoint": "/api/projects/{id}",
+                "method": "GET",
+                "handler": "project_manager.get_project_detail",
+                "description": "获取项目详细信息",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "项目ID"
+                    }
                 },
-                "disk": {
+                "response_format": {
+                    "id": "string",
+                    "name": "string",
+                    "status": "string",
+                    "type": "string",
+                    "version": "string",
+                    "description": "string",
+                    "metrics": "object",
+                    "last_update": "string"
+                }
+            },
+            "action": {
+                "endpoint": "/api/projects/{id}/action",
+                "method": "POST",
+                "handler": "project_manager.execute_action",
+                "description": "执行项目操作",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "项目ID"
+                    },
+                    "action": {
+                        "type": "string",
+                        "required": true,
+                        "enum": [
+                            "start",
+                            "stop",
+                            "restart",
+                            "reload"
+                        ],
+                        "description": "执行的操作"
+                    }
+                },
+                "request_body": {
+                    "action": "string",
+                    "parameters": "object"
+                },
+                "response_format": {
+                    "success": "boolean",
+                    "message": "string",
+                    "timestamp": "string"
+                }
+            },
+            "logs": {
+                "endpoint": "/api/projects/{id}/logs",
+                "method": "GET",
+                "handler": "project_manager.get_logs",
+                "description": "获取项目日志",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "项目ID"
+                    },
+                    "lines": {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "返回的日志行数"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "DEBUG",
+                            "INFO",
+                            "WARNING",
+                            "ERROR"
+                        ],
+                        "description": "日志级别过滤"
+                    }
+                },
+                "response_format": {
+                    "logs": "array",
+                    "total_lines": "number",
+                    "timestamp": "string"
+                }
+            },
+            "metrics": {
+                "endpoint": "/api/projects/{id}/metrics",
+                "method": "GET",
+                "handler": "project_manager.get_metrics",
+                "description": "获取项目性能指标",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "项目ID"
+                    },
+                    "period": {
+                        "type": "string",
+                        "default": "1h",
+                        "enum": [
+                            "5m",
+                            "15m",
+                            "1h",
+                            "6h",
+                            "24h"
+                        ],
+                        "description": "时间周期"
+                    }
+                },
+                "response_format": {
+                    "metrics": "object",
+                    "period": "string",
+                    "timestamp": "string"
+                }
+            }
+        },
+        "scripts": {
+            "list": {
+                "endpoint": "/api/scripts",
+                "method": "GET",
+                "handler": "script_manager.list_scripts",
+                "description": "获取脚本列表",
+                "response_format": {
+                    "scripts": "array",
                     "total": "number",
-                    "free": "number",
-                    "percent": "number",
-                    "used": "number"
+                    "timestamp": "string"
+                }
+            },
+            "run": {
+                "endpoint": "/api/scripts/{name}/run",
+                "method": "POST",
+                "handler": "script_manager.run_script",
+                "description": "运行指定脚本",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "description": "脚本名称"
+                    }
                 },
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 5 }
-        },
-        "system_gpu": {
-            "path": "/api/system/gpu",
-            "method": "GET",
-            "description": "获取GPU资源使用情况",
-            "frontend_module": "gpuMonitor",
-            "backend_handler": "api.backend.app.system_gpu",
-            "response": {
-                "status": "string",
-                "has_gpu": "boolean",
-                "gpus": "array",
-                "message": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 10 }
-        },
-        "ports": {
-            "path": "/api/ports",
-            "method": "GET",
-            "description": "获取所有端口状态",
-            "frontend_module": "portMapping",
-            "backend_handler": "api.backend.app.ports",
-            "response": {
-                "status": "string",
-                "ports": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 30 }
-        },
-        "subprojects": {
-            "path": "/api/subprojects",
-            "method": "GET",
-            "description": "获取所有子项目状态",
-            "frontend_module": "subProjectMonitor",
-            "backend_handler": "api.backend.app.subprojects",
-            "response": {
-                "status": "string",
-                "projects": "object",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 60 }
-        },
-        "bubbles": {
-            "path": "/api/bubbles",
-            "method": "GET",
-            "description": "获取实时冒泡数据",
-            "frontend_module": "bubbleMonitor",
-            "backend_handler": "api.backend.app.bubbles",
-            "response": {
-                "status": "string",
-                "bubbles": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "bubbles_history": {
-            "path": "/api/bubbles/history",
-            "method": "GET",
-            "description": "获取历史冒泡记录",
-            "frontend_module": "bubbleMonitor",
-            "backend_handler": "api.backend.app.bubbles_history",
-            "query_params": { "page": "number", "limit": "number" },
-            "response": {
-                "status": "string",
-                "bubbles": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 60 }
-        },
-        "deployment_progress": {
-            "path": "/api/deployment/progress",
-            "method": "GET",
-            "description": "获取项目部署进度",
-            "frontend_module": "deploymentTracker",
-            "backend_handler": "api.backend.app.deployment_progress",
-            "response": {
-                "status": "string",
-                "content": "object",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 600 }
-        },
-        "audit_logs": {
-            "path": "/api/audit/logs",
-            "method": "GET",
-            "description": "获取审计日志",
-            "frontend_module": "auditLogger",
-            "backend_handler": "api.backend.app.audit_logs",
-            "query_params": { "page": "number", "limit": "number", "level": "string" },
-            "response": {
-                "status": "string",
-                "logs": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 60 }
-        },
-        "audit_export": {
-            "path": "/api/audit/export",
-            "method": "GET",
-            "description": "导出审计日志",
-            "frontend_module": "auditLogger",
-            "backend_handler": "api.backend.app.audit_export",
-            "query_params": { "format": "string", "limit": "number" },
-            "response": {
-                "status": "string",
-                "format": "string",
-                "data": "string",
-                "count": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "performance": {
-            "path": "/api/performance",
-            "method": "GET",
-            "description": "获取性能监控概览",
-            "frontend_module": "performanceMonitor",
-            "backend_handler": "api.backend.app.performance",
-            "response": {
-                "status": "string",
-                "overview": {
-                    "total_requests": "number",
-                    "avg_response_time": "number",
-                    "error_rate": "number",
-                    "throughput": "number",
-                    "active_connections": "number"
+                "request_body": {
+                    "parameters": "object",
+                    "async": "boolean"
                 },
-                "timestamp": "string"
+                "response_format": {
+                    "job_id": "string",
+                    "status": "string",
+                    "message": "string",
+                    "timestamp": "string"
+                }
             },
-            "caching": { "enabled": true, "ttl": 30 }
-        },
-        "performance_metrics": {
-            "path": "/api/performance/metrics",
-            "method": "GET",
-            "description": "获取性能指标数据",
-            "frontend_module": "performanceMonitor",
-            "backend_handler": "api.backend.app.performance_metrics",
-            "response": {
-                "status": "string",
-                "metrics": {
-                    "response_time": "object",
-                    "memory_usage": "object",
-                    "cpu_usage": "object",
-                    "active_connections": "number"
+            "status": {
+                "endpoint": "/api/scripts/{name}/status",
+                "method": "GET",
+                "handler": "script_manager.get_script_status",
+                "description": "获取脚本运行状态",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "description": "脚本名称"
+                    },
+                    "job_id": {
+                        "type": "string",
+                        "description": "任务ID"
+                    }
                 },
-                "timestamp": "string"
+                "response_format": {
+                    "name": "string",
+                    "status": "string",
+                    "job_id": "string",
+                    "start_time": "string",
+                    "duration": "number",
+                    "progress": "number"
+                }
             },
-            "caching": { "enabled": true, "ttl": 10 }
-        },
-        "performance_optimize": {
-            "path": "/api/performance/optimize",
-            "method": "POST",
-            "description": "执行性能优化",
-            "frontend_module": "performanceMonitor",
-            "backend_handler": "api.backend.app.performance_optimize",
-            "response": {
-                "status": "string",
-                "message": "string",
-                "actions": "array",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "video": {
-            "path": "/api/video",
-            "method": "GET",
-            "description": "获取视频流概览",
-            "frontend_module": "videoStreamMonitor",
-            "backend_handler": "api.backend.app.video",
-            "response": {
-                "status": "string",
-                "overview": {
-                    "cameraCount": "number",
-                    "activeStreams": "number",
-                    "engineCount": "number",
-                    "avgFps": "number"
+            "stop": {
+                "endpoint": "/api/scripts/{name}/stop",
+                "method": "POST",
+                "handler": "script_manager.stop_script",
+                "description": "停止脚本运行",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "description": "脚本名称"
+                    }
                 },
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 10 }
+                "request_body": {
+                    "job_id": "string",
+                    "force": "boolean"
+                },
+                "response_format": {
+                    "success": "boolean",
+                    "message": "string",
+                    "timestamp": "string"
+                }
+            }
         },
-        "video_cameras": {
-            "path": "/api/video/cameras",
-            "method": "GET",
-            "description": "获取摄像头设备列表",
-            "frontend_module": "cameraManager",
-            "backend_handler": "api.backend.app.video_cameras",
-            "response": {
-                "status": "string",
-                "cameras": "array",
-                "total": "number",
-                "timestamp": "string"
+        "logs": {
+            "system": {
+                "endpoint": "/api/logs",
+                "method": "GET",
+                "handler": "log_manager.get_system_logs",
+                "description": "获取系统日志",
+                "parameters": {
+                    "lines": {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "返回的日志行数"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "DEBUG",
+                            "INFO",
+                            "WARNING",
+                            "ERROR"
+                        ],
+                        "description": "日志级别过滤"
+                    },
+                    "service": {
+                        "type": "string",
+                        "description": "服务名称过滤"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "开始时间"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "结束时间"
+                    }
+                },
+                "response_format": {
+                    "logs": "array",
+                    "total": "number",
+                    "filtered": "number",
+                    "timestamp": "string"
+                }
             },
-            "caching": { "enabled": true, "ttl": 30 }
+            "export": {
+                "endpoint": "/api/logs/export",
+                "method": "GET",
+                "handler": "log_manager.export_logs",
+                "description": "导出日志",
+                "parameters": {
+                    "format": {
+                        "type": "string",
+                        "default": "json",
+                        "enum": [
+                            "json",
+                            "csv",
+                            "txt"
+                        ],
+                        "description": "导出格式"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "开始时间"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "结束时间"
+                    }
+                },
+                "response_format": {
+                    "file_url": "string",
+                    "file_size": "number",
+                    "format": "string",
+                    "timestamp": "string"
+                }
+            }
         },
-        "video_streams": {
-            "path": "/api/video/streams",
-            "method": "GET",
-            "description": "获取视频流数据",
-            "frontend_module": "videoStreamMonitor",
-            "backend_handler": "api.backend.app.video_streams",
-            "response": {
-                "status": "string",
-                "streams": "array",
-                "total": "number",
-                "timestamp": "string"
+        "config": {
+            "get": {
+                "endpoint": "/api/config",
+                "method": "GET",
+                "handler": "config_manager.get_config",
+                "description": "获取配置信息",
+                "parameters": {
+                    "section": {
+                        "type": "string",
+                        "description": "配置节名称"
+                    }
+                },
+                "response_format": {
+                    "config": "object",
+                    "timestamp": "string"
+                }
             },
-            "caching": { "enabled": true, "ttl": 5 }
+            "update": {
+                "endpoint": "/api/config",
+                "method": "PUT",
+                "handler": "config_manager.update_config",
+                "description": "更新配置",
+                "request_body": {
+                    "section": "string",
+                    "config": "object"
+                },
+                "response_format": {
+                    "success": "boolean",
+                    "message": "string",
+                    "timestamp": "string"
+                }
+            },
+            "validate": {
+                "endpoint": "/api/config/validate",
+                "method": "POST",
+                "handler": "config_manager.validate_config",
+                "description": "验证配置",
+                "request_body": {
+                    "config": "object"
+                },
+                "response_format": {
+                    "valid": "boolean",
+                    "errors": "array",
+                    "warnings": "array",
+                    "timestamp": "string"
+                }
+            }
         },
-        "video_engines": {
-            "path": "/api/video/engines",
-            "method": "GET",
-            "description": "获取视频处理引擎状态",
-            "frontend_module": "videoStreamMonitor",
-            "backend_handler": "api.backend.app.video_engines",
-            "response": {
-                "status": "string",
-                "engines": "array",
-                "timestamp": "string"
+        "plugins": {
+            "list": {
+                "endpoint": "/api/plugins",
+                "method": "GET",
+                "handler": "plugin_manager.list_plugins",
+                "description": "获取插件列表",
+                "response_format": {
+                    "plugins": "array",
+                    "total": "number",
+                    "timestamp": "string"
+                }
             },
-            "caching": { "enabled": true, "ttl": 10 }
-        },
-        "engines": {
-            "path": "/api/engines",
-            "method": "GET",
-            "description": "获取所有引擎状态",
-            "frontend_module": "engineManager",
-            "backend_handler": "api.backend.app.engines",
-            "response": {
-                "status": "string",
-                "engines": "array",
-                "total": "number",
-                "timestamp": "string"
+            "status": {
+                "endpoint": "/api/plugins/{id}/status",
+                "method": "GET",
+                "handler": "plugin_manager.get_plugin_status",
+                "description": "获取插件状态",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "插件ID"
+                    }
+                },
+                "response_format": {
+                    "id": "string",
+                    "name": "string",
+                    "status": "string",
+                    "version": "string",
+                    "description": "string",
+                    "metrics": "object"
+                }
             },
-            "caching": { "enabled": true, "ttl": 30 }
-        },
-        "engine_status": {
-            "path": "/api/engines/{name}/status",
-            "method": "GET",
-            "description": "获取指定引擎状态",
-            "frontend_module": "engineManager",
-            "backend_handler": "api.backend.app.engine_status",
-            "parameters": { "name": "string" },
-            "response": {
-                "status": "string",
-                "engine": "object",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 10 }
-        },
-        "engine_start": {
-            "path": "/api/engines/{name}/start",
-            "method": "POST",
-            "description": "启动指定引擎",
-            "frontend_module": "engineManager",
-            "backend_handler": "api.backend.app.engine_start",
-            "parameters": { "name": "string" },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "engine": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "engine_stop": {
-            "path": "/api/engines/{name}/stop",
-            "method": "POST",
-            "description": "停止指定引擎",
-            "frontend_module": "engineManager",
-            "backend_handler": "api.backend.app.engine_stop",
-            "parameters": { "name": "string" },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "engine": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "backup_list": {
-            "path": "/api/backup",
-            "method": "GET",
-            "description": "获取备份列表",
-            "frontend_module": "backupRecoveryMonitor",
-            "backend_handler": "api.backend.app.backup_list",
-            "response": {
-                "status": "string",
-                "backups": "array",
-                "total": "number",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": true, "ttl": 60 }
-        },
-        "backup_create": {
-            "path": "/api/backup/create",
-            "method": "POST",
-            "description": "创建新备份",
-            "frontend_module": "backupRecoveryMonitor",
-            "backend_handler": "api.backend.app.backup_create",
-            "response": {
-                "status": "string",
-                "message": "string",
-                "backup_id": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
-        },
-        "backup_restore": {
-            "path": "/api/backup/restore/{backup_id}",
-            "method": "POST",
-            "description": "从备份恢复",
-            "frontend_module": "backupRecoveryMonitor",
-            "backend_handler": "api.backend.app.backup_restore",
-            "parameters": { "backup_id": "string" },
-            "response": {
-                "status": "string",
-                "message": "string",
-                "backup_id": "string",
-                "timestamp": "string"
-            },
-            "caching": { "enabled": false, "ttl": 0 }
+            "control": {
+                "endpoint": "/api/plugins/{id}/control",
+                "method": "POST",
+                "handler": "plugin_manager.control_plugin",
+                "description": "控制插件",
+                "parameters": {
+                    "id": {
+                        "type": "string",
+                        "required": true,
+                        "description": "插件ID"
+                    }
+                },
+                "request_body": {
+                    "action": "string",
+                    "parameters": "object"
+                },
+                "response_format": {
+                    "success": "boolean",
+                    "message": "string",
+                    "timestamp": "string"
+                }
+            }
         }
     },
-    "response_format": {
-        "success": {
-            "success": true,
-            "status": "success",
-            "data": "any",
-            "message": "操作成功",
-            "timestamp": "ISO 8601"
+    "middleware": {
+        "auth": {
+            "enabled": false,
+            "type": "bearer",
+            "token_header": "Authorization"
         },
-        "error": {
-            "success": false,
-            "status": "error",
-            "error": "错误代码",
-            "message": "用户友好的错误描述",
-            "details": "详细错误信息",
-            "timestamp": "ISO 8601"
+        "cors": {
+            "enabled": true,
+            "origins": [
+                "*"
+            ],
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+            ],
+            "headers": [
+                "*"
+            ]
+        },
+        "rate_limit": {
+            "enabled": true,
+            "requests_per_minute": 60,
+            "burst_limit": 10
+        },
+        "logging": {
+            "enabled": true,
+            "level": "INFO",
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         }
     },
-    "websocket_events": {
-        "status_update": {
-            "description": "状态更新事件",
-            "data": {
-                "scripts": "object",
-                "monitoring_active": "boolean",
-                "timestamp": "string"
-            }
-        },
-        "script_result": {
-            "description": "脚本执行结果",
-            "data": {
-                "script": "string",
-                "return_code": "number",
-                "stdout": "string",
-                "stderr": "string",
-                "timestamp": "string"
-            }
-        },
-        "progress": {
-            "description": "进度更新",
-            "data": {
-                "task_id": "string",
-                "progress": "number",
+    "error_responses": {
+        "400": {
+            "description": "请求参数错误",
+            "schema": {
+                "error": "string",
                 "message": "string",
                 "timestamp": "string"
             }
         },
-        "log": {
-            "description": "日志推送",
-            "data": {
-                "script": "string",
-                "level": "string",
+        "401": {
+            "description": "未授权访问",
+            "schema": {
+                "error": "string",
                 "message": "string",
                 "timestamp": "string"
             }
         },
-        "heartbeat": {
-            "description": "心跳检测",
-            "data": {
-                "status": "string",
+        "403": {
+            "description": "禁止访问",
+            "schema": {
+                "error": "string",
+                "message": "string",
+                "timestamp": "string"
+            }
+        },
+        "404": {
+            "description": "资源不存在",
+            "schema": {
+                "error": "string",
+                "message": "string",
+                "timestamp": "string"
+            }
+        },
+        "500": {
+            "description": "服务器内部错误",
+            "schema": {
+                "error": "string",
+                "message": "string",
                 "timestamp": "string"
             }
         }
     }
 }
-
