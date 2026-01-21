@@ -1,0 +1,172 @@
+{
+    "meta": {
+        "name": "规则系统配置",
+        "description": "定义rules目录下所有规则文件的配置、验证规则和执行参数",
+        "version": "1.0.0",
+        "createdAt": "2026-01-19T00:00:00Z",
+        "lastModified": "2026-01-19T00:00:00Z"
+    },
+    "layers": {
+        "L1-meta-goal": {
+            "name": "元目标层",
+            "file": "L1-meta-goal.json",
+            "description": "定义项目的最高目标和约束条件，是项目的宏观指导思想",
+            "priority": 1,
+            "required": true,
+            "schema": {
+                "type": "object",
+                "required": [
+                    "meta",
+                    "project",
+                    "goals",
+                    "values",
+                    "constraints"
+                ]
+            },
+            "validations": [
+                "check_project_name",
+                "check_goals_structure",
+                "check_constraints_bounds"
+            ]
+        },
+        "L2-understanding": {
+            "name": "全局理解层",
+            "file": "L2-understanding.json",
+            "description": "描述项目的架构、模块关系和数据流",
+            "priority": 2,
+            "required": true,
+            "schema": {
+                "type": "object",
+                "required": [
+                    "meta",
+                    "architecture",
+                    "modules",
+                    "relationships"
+                ]
+            },
+            "validations": [
+                "check_architecture_style",
+                "check_modules_completeness",
+                "check_dependencies_no_cycle"
+            ]
+        },
+        "L3-constraints": {
+            "name": "约束层",
+            "file": "L3-constraints.json",
+            "description": "定义技术实现的约束、规范和依赖关系",
+            "priority": 3,
+            "required": true,
+            "schema": {
+                "type": "object",
+                "required": [
+                    "meta",
+                    "python",
+                    "dependencies"
+                ]
+            },
+            "validations": [
+                "check_python_version",
+                "check_dependencies_valid",
+                "check_api_contracts"
+            ]
+        },
+        "L4-decisions": {
+            "name": "决策层",
+            "file": "L4-decisions.json",
+            "description": "记录关键设计决策和权衡，以及为什么选择某种技术或架构",
+            "priority": 4,
+            "required": true,
+            "schema": {
+                "type": "object",
+                "required": [
+                    "meta",
+                    "architectureDecisions",
+                    "technologyChoices"
+                ]
+            },
+            "validations": [
+                "check_decision_rationale",
+                "check_alternatives_considered"
+            ]
+        },
+        "L5-execution": {
+            "name": "执行层",
+            "file": "L5-execution.json",
+            "description": "具体的执行规则、操作指南和任务分配",
+            "priority": 5,
+            "required": true,
+            "schema": {
+                "type": "object",
+                "required": [
+                    "meta",
+                    "executionPlan",
+                    "taskWorkflows"
+                ]
+            },
+            "validations": [
+                "check_workflow_completeness",
+                "check_error_handling"
+            ]
+        }
+    },
+    "dependencies": {
+        "L1": [],
+        "L2": [
+            "L1"
+        ],
+        "L3": [
+            "L1",
+            "L2"
+        ],
+        "L4": [
+            "L1",
+            "L2",
+            "L3"
+        ],
+        "L5": [
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+        ]
+    },
+    "validation": {
+        "strictMode": false,
+        "autoFix": false,
+        "checkLayerConsistency": true,
+        "checkVersionAlignment": true,
+        "checkDependenciesOrder": true
+    },
+    "caching": {
+        "enabled": true,
+        "ttl": 3600,
+        "maxEntries": 100
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "handlers": [
+            "console",
+            "file"
+        ],
+        "file": {
+            "enabled": true,
+            "path": "./logs/rules_validator.log",
+            "maxSize": "10MB",
+            "backupCount": 3
+        }
+    },
+    "integration": {
+        "withProject": {
+            "configPath": "../project_config.json",
+            "syncFields": [
+                "rules",
+                "validation"
+            ]
+        },
+        "withScripts": {
+            "healthCheckScript": "../scripts/health/rules_validator.py",
+            "configValidatorScript": "../scripts/health_monitor/config_validator.py"
+        }
+    }
+}

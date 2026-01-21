@@ -4,12 +4,13 @@
 """
 import asyncio
 import time
-from typing import List, Optional
+import heapq
+from typing import List, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor
 import logging
 
 from src.config.app_config import get_config
-from src.backend.task_manager import get_task_manager, Task, TaskPriority
+from src.backend.task_manager import get_task_manager, Task, TaskPriority, TaskStatus
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -24,6 +25,10 @@ class TaskScheduler:
         self.executor = ThreadPoolExecutor(max_workers=config.max_workers)
         self.running = False
         self.scheduler_task: Optional[asyncio.Task] = None
+
+        # 优先级队列：使用heapq实现优先级调度
+        self.priority_queue: List[Tuple[int, float, Task]] = []
+        self.queue_lock = asyncio.Lock()
 
         # 性能监控
         self.last_stats_time = time.time()
@@ -82,14 +87,16 @@ class TaskScheduler:
         if active_count >= config.max_concurrent_tasks:
             return  # 已达到最大并发数
 
-        # 尝试从队列获取任务
-        try:
-            task = self.task_manager.task_queue.get_nowait()
-        except asyncio.QueueEmpty:
-            return  # 队列为空
+        # 从优先级队列获取最高优先级任务
+        async with self.queue_lock:
+            if not self.priority_queue:
+                return  # 队列为空
+
+            # 弹出最高优先级任务（heapq是最小堆，负数优先级值越小优先级越高）
+            _, _, task = heapq.heappop(self.priority_queue)
 
         # 检查任务是否仍然有效
-        if task.status != task_manager.TaskStatus.PENDING:
+        if task.status != TaskStatus.PENDING:
             logger.debug(f"跳过无效任务: {task.id} 状态: {task.status}")
             return
 
@@ -97,7 +104,7 @@ class TaskScheduler:
         execution_task = asyncio.create_task(self.task_manager.execute_task(task))
         self.task_manager.active_tasks[task.id] = execution_task
 
-        logger.debug(f"启动任务执行: {task.id}")
+        logger.debug(f"启动任务执行: {task.id} 优先级: {task.priority.name}")
 
     async def _periodic_maintenance(self):
         """定期维护任务"""
@@ -118,6 +125,12 @@ class TaskScheduler:
     async def submit_task(self, task_type: str, priority: TaskPriority = TaskPriority.NORMAL, **kwargs) -> str:
         """提交任务到调度器"""
         task_id = await self.task_manager.create_task(task_type, priority=priority, **kwargs)
+
+        # 将任务加入优先级队列
+        async with self.queue_lock:
+            # 使用负数优先级值，因为heapq是最小堆，优先级数值越小优先级越高
+            heapq.heappush(self.priority_queue, (-priority.value, time.time(), self.task_manager.tasks[task_id]))
+
         logger.info(f"任务已提交: {task_id} 类型: {task_type} 优先级: {priority.name}")
         return task_id
 

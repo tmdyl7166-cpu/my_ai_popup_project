@@ -2,9 +2,9 @@
     "meta": {
         "name": "文档配置系统",
         "description": "定义docs目录下所有文档的内容指向和组织结构",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "createdAt": "2024-01-01T00:00:00Z",
-        "lastModified": "2026-01-17T00:00:00Z"
+        "lastModified": "2026-01-18T00:00:00Z"
     },
     "structure": {
         "docs/": {

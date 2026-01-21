@@ -2,9 +2,9 @@
     "meta": {
         "name": "资源和第三方项目配置",
         "description": "定义assets目录下模型、第三方项目和测试资源的配置",
-        "version": "1.0.0",
+        "version": "2.1.0",
         "createdAt": "2026-01-16T00:00:00Z",
-        "lastModified": "2026-01-16T00:00:00Z"
+        "lastModified": "2026-01-18T00:00:00Z"
     },
     "models": {
         "path": "./assets/models",

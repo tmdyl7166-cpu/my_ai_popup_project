@@ -92,11 +92,15 @@ class WebMonitorApp:
         self.sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
         self.socket_app = socketio.ASGIApp(self.sio, self.app)
 
-        # Templates and static files
-        self.templates = Jinja2Templates(directory=str(self.web_root / "templates"))
+        # Templates and static files (指向web目录)
+        templates_path = self.project_root / "web" / "templates"
+        static_path = self.project_root / "web" / "static"
+        
+        self.templates = Jinja2Templates(directory=str(templates_path))
 
-        # Mount static files
-        self.app.mount("/static", StaticFiles(directory=str(self.web_root / "static")), name="static")
+        # Mount static files (仅当目录存在时)
+        if static_path.exists():
+            self.app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
         # Register routes
         self.setup_routes()
@@ -912,6 +916,12 @@ class WebMonitorApp:
 
 # Create application instance
 app_instance = WebMonitorApp()
+
+# ============================================================
+# 导出 ASGI 应用供 uvicorn 等服务器使用
+# 使用方式: uvicorn api.backend.app:app --host 0.0.0.0 --port 8080
+# ============================================================
+app = app_instance.socket_app
 
 if __name__ == "__main__":
     import argparse

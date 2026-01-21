@@ -1,630 +1,607 @@
 /**
- * Main Application - 主应用
- * 负责初始化所有模块和应用启动
+ * AI弹窗项目 - 主应用入口
+ * 负责协调所有模块和应用生命周期管理
+ * 
+ * 版本: 1.0.0
+ * 更新日期: 2026-01-19
  */
 
-const App = {
-  // 状态
-  state: {
-    initialized: false,
+// 全局应用命名空间
+window.AIPopupApp = {
+    // 应用状态
+    state: {
+        initialized: false,
+        connected: false,
+        currentPage: 'dashboard',
+        user: null,
+        settings: {}
+    },
+
+    // 模块引用
     modules: {},
-    components: {},
-    utils: {},
-    startTime: null,
-  },
 
-  // 配置
-  config: {
-    initTimeout: 10000, // 初始化超时时间
-    heartbeatInterval: 30000, // 心跳间隔
-    initOrder: [
-      // 第一阶段：工具模块（无依赖）
-      "utils/eventBus",
-      "utils/safeUtils",
-      "utils/errorHandler",
-      // 第二阶段：基础组件
-      "components/charting",
-      "components/progress",
-      "components/spinner",
-      "components/toast",
-      // 第三阶段：核心工具
-      "utils/api",
-      "utils/modalStack",
-      "utils/themeManager",
-      "utils/dynamicMenu",
-      // 第四阶段：WebSocket
-      "components/ws",
-    ],
-  },
-
-  /**
-   * 应用初始化
-   */
-  init: function () {
-    console.log("AI弹窗项目监控中心 - 应用初始化开始...");
-
-    if (this.state.initialized) {
-      console.warn("应用已经初始化");
-      return;
+    // 配置
+    config: {
+        autoRefresh: true,
+        refreshInterval: 5000,
+        wsReconnectDelay: 3000,
+        maxRetries: 3
     }
-
-    this.state.startTime = Date.now();
-
-    try {
-      // 显示全局加载器
-      this.showGlobalLoader("正在初始化应用...");
-
-      // 初始化工具模块
-      this.initUtils();
-
-      // 初始化组件
-      this.initComponents();
-
-      // 初始化核心模块
-      this.initCoreModules();
-
-      // 初始化功能模块
-      this.initFeatureModules();
-
-      // 设置全局事件监听器
-      this.setupGlobalEventListeners();
-
-      // 启动心跳
-      this.startHeartbeat();
-
-      // 隐藏全局加载器
-      this.hideGlobalLoader();
-
-      this.state.initialized = true;
-      console.log("AI弹窗项目监控中心 - 应用初始化完成");
-
-      // 触发初始化完成事件
-      this.emit("app:initialized");
-    } catch (error) {
-      console.error("应用初始化失败:", error);
-      this.showInitError(error);
-    }
-  },
-
-  /**
-   * 初始化工具模块
-   */
-  initUtils: function () {
-    console.log("初始化工具模块...");
-
-    // 事件总线
-    if (typeof EventBus !== "undefined") {
-      EventBus.init();
-      this.state.utils.eventBus = EventBus;
-    }
-
-    // 安全工具
-    if (typeof SafeUtils !== "undefined") {
-      SafeUtils.init && SafeUtils.init();
-      this.state.utils.safeUtils = SafeUtils;
-    }
-
-    // 错误处理器
-    if (typeof ErrorHandler !== "undefined") {
-      ErrorHandler.init();
-      this.state.utils.errorHandler = ErrorHandler;
-    }
-
-    // API封装
-    if (typeof API !== "undefined") {
-      API.init();
-      this.state.utils.api = API;
-    }
-
-    // 弹窗堆栈
-    if (typeof ModalStack !== "undefined") {
-      ModalStack.init();
-      this.state.utils.modalStack = ModalStack;
-    }
-
-    // 主题管理
-    if (typeof ThemeManager !== "undefined") {
-      ThemeManager.init();
-      this.state.utils.themeManager = ThemeManager;
-    }
-
-    // 动态菜单
-    if (typeof DynamicMenu !== "undefined") {
-      DynamicMenu.init();
-      this.state.utils.dynamicMenu = DynamicMenu;
-    }
-
-    console.log("工具模块初始化完成");
-  },
-
-  /**
-   * 初始化组件
-   */
-  initComponents: function () {
-    console.log("初始化组件...");
-
-    // 图表组件
-    if (typeof Charting !== "undefined") {
-      Charting.init && Charting.init();
-      this.state.components.charting = Charting;
-    }
-
-    // 进度条组件
-    if (typeof Progress !== "undefined") {
-      Progress.init && Progress.init();
-      this.state.components.progress = Progress;
-    }
-
-    // 加载动画
-    if (typeof Spinner !== "undefined") {
-      Spinner.init && Spinner.init();
-      this.state.components.spinner = Spinner;
-    }
-
-    // 通知提示
-    if (typeof Toast !== "undefined") {
-      Toast.init && Toast.init();
-      this.state.components.toast = Toast;
-    }
-
-    // WebSocket
-    if (typeof WS !== "undefined") {
-      WS.init && WS.init();
-      this.state.components.ws = WS;
-    }
-
-    console.log("组件初始化完成");
-  },
-
-  /**
-   * 初始化核心模块
-   */
-  initCoreModules: function () {
-    console.log("初始化核心模块...");
-
-    // WebSocket管理器
-    if (typeof WebSocketManager !== "undefined") {
-      WebSocketManager.init();
-      this.state.modules.websocketManager = WebSocketManager;
-    } else {
-      throw new Error("WebSocketManager 模块未加载");
-    }
-
-    // 模态框管理器
-    if (typeof ModalManager !== "undefined") {
-      ModalManager.init();
-      this.state.modules.modalManager = ModalManager;
-    } else {
-      throw new Error("ModalManager 模块未加载");
-    }
-
-    // 通知管理器
-    if (typeof Notifications !== "undefined") {
-      Notifications.init();
-      this.state.modules.notifications = Notifications;
-    } else {
-      throw new Error("Notifications 模块未加载");
-    }
-
-    // 全局操作
-    if (typeof GlobalActions !== "undefined") {
-      GlobalActions.init();
-      this.state.modules.globalActions = GlobalActions;
-    } else {
-      throw new Error("GlobalActions 模块未加载");
-    }
-
-    console.log("核心模块初始化完成");
-  },
-
-  /**
-   * 初始化功能模块
-   */
-  initFeatureModules: function () {
-    console.log("初始化功能模块...");
-
-    // API接口管理（依赖WebSocket）
-    if (typeof APIInterface !== "undefined") {
-      APIInterface.init();
-      this.state.modules.apiInterface = APIInterface;
-    }
-
-    // 全局监控
-    if (typeof GlobalMonitor !== "undefined") {
-      GlobalMonitor.init();
-      this.state.modules.globalMonitor = GlobalMonitor;
-    }
-
-    // 部署进度
-    if (typeof DeploymentProgress !== "undefined") {
-      DeploymentProgress.init();
-      this.state.modules.deploymentProgress = DeploymentProgress;
-    }
-
-    // 模块状态
-    if (typeof ModuleStatus !== "undefined") {
-      ModuleStatus.init();
-      this.state.modules.moduleStatus = ModuleStatus;
-    }
-
-    // 脚本控制
-    if (typeof ScriptControl !== "undefined") {
-      ScriptControl.init();
-      this.state.modules.scriptControl = ScriptControl;
-    }
-
-    // 脚本运行器
-    if (typeof ScriptRunner !== "undefined") {
-      ScriptRunner.init();
-      this.state.modules.scriptRunner = ScriptRunner;
-    }
-
-    // 配置管理
-    if (typeof ConfigManagement !== "undefined") {
-      ConfigManagement.init();
-      this.state.modules.configManagement = ConfigManagement;
-    }
-
-    // 日志查看
-    if (typeof LogsViewer !== "undefined") {
-      LogsViewer.init();
-      this.state.modules.logsViewer = LogsViewer;
-    }
-
-    // 端口映射
-    if (typeof PortMapping !== "undefined") {
-      PortMapping.init();
-      this.state.modules.portMapping = PortMapping;
-    }
-
-    // 冒泡监测
-    if (typeof BubbleMonitor !== "undefined") {
-      BubbleMonitor.init();
-      this.state.modules.bubbleMonitor = BubbleMonitor;
-    }
-
-    // 视频流监控
-    if (typeof VideoStreamMonitor !== "undefined") {
-      VideoStreamMonitor.init();
-      this.state.modules.videoStreamMonitor = VideoStreamMonitor;
-    }
-
-    // 备份恢复监控
-    if (typeof BackupRecoveryMonitor !== "undefined") {
-      BackupRecoveryMonitor.init();
-      this.state.modules.backupRecoveryMonitor = BackupRecoveryMonitor;
-    }
-
-    // 子项目监测
-    if (typeof SubProjectMonitor !== "undefined") {
-      SubProjectMonitor.init();
-      this.state.modules.subProjectMonitor = SubProjectMonitor;
-    }
-
-    console.log("功能模块初始化完成");
-  },
-
-  /**
-   * 设置全局事件监听器
-   */
-  setupGlobalEventListeners: function () {
-    console.log("设置全局事件监听器...");
-
-    // 窗口错误处理
-    window.addEventListener("error", (event) => {
-      console.error("全局错误:", event.error);
-      this.handleGlobalError(event.error);
-    });
-
-    // 未处理的Promise拒绝
-    window.addEventListener("unhandledrejection", (event) => {
-      console.error("未处理的Promise拒绝:", event.reason);
-      this.handleGlobalError(event.reason);
-    });
-
-    // 页面可见性变化
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        console.log("页面变为不可见");
-        this.pauseAutoRefresh();
-      } else {
-        console.log("页面变为可见");
-        this.resumeAutoRefresh();
-      }
-    });
-
-    // 键盘快捷键
-    document.addEventListener("keydown", (event) => {
-      this.handleKeyboardShortcut(event);
-    });
-
-    // 网络状态变化
-    window.addEventListener("online", () => {
-      console.log("网络连接恢复");
-      Notifications.show("网络状态", "网络连接已恢复", "success");
-      this.resumeAutoRefresh();
-    });
-
-    window.addEventListener("offline", () => {
-      console.log("网络连接断开");
-      Notifications.show("网络状态", "网络连接已断开", "warning");
-      this.pauseAutoRefresh();
-    });
-  },
-
-  /**
-   * 处理全局错误
-   */
-  handleGlobalError: function (error) {
-    const errorMessage = error.message || "未知错误";
-    console.error("全局错误处理:", error);
-
-    // 显示错误通知
-    Notifications.show("应用错误", errorMessage, "error");
-
-    // 如果是严重错误，显示模态框
-    if (error.name === "TypeError" || error.name === "ReferenceError") {
-      ModalManager.alert({
-        title: "应用错误",
-        content: `发生严重错误: ${errorMessage}<br><br>建议刷新页面重新加载应用。`,
-        size: "lg",
-      });
-    }
-  },
-
-  /**
-   * 处理键盘快捷键
-   */
-  handleKeyboardShortcut: function (event) {
-    // Ctrl+R: 刷新所有
-    if (event.ctrlKey && event.key === "r") {
-      event.preventDefault();
-      GlobalActions.refreshAll();
-    }
-
-    // Ctrl+H: 健康检查
-    if (event.ctrlKey && event.key === "h") {
-      event.preventDefault();
-      GlobalActions.runHealthCheck();
-    }
-
-    // Ctrl+S: 保存配置
-    if (event.ctrlKey && event.key === "s") {
-      event.preventDefault();
-      if (typeof ConfigManagement !== "undefined") {
-        ConfigManagement.save();
-      }
-    }
-  },
-
-  /**
-   * 显示全局加载器
-   */
-  showGlobalLoader: function (message = "加载中...") {
-    const loader = document.getElementById("globalLoader");
-    if (loader) {
-      const messageElement = loader.querySelector("h5");
-      if (messageElement) {
-        messageElement.textContent = message;
-      }
-      loader.style.display = "flex";
-    }
-  },
-
-  /**
-   * 隐藏全局加载器
-   */
-  hideGlobalLoader: function () {
-    const loader = document.getElementById("globalLoader");
-    if (loader) {
-      loader.style.display = "none";
-    }
-  },
-
-  /**
-   * 显示初始化错误
-   */
-  showInitError: function (error) {
-    this.hideGlobalLoader();
-
-    const errorHtml = `
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <h4 class="alert-heading">
-                    <i class="fas fa-exclamation-triangle me-2"></i>应用初始化失败
-                </h4>
-                <p>抱歉，应用初始化过程中发生错误。</p>
-                <hr>
-                <p class="mb-0">
-                    <strong>错误信息:</strong> ${error.message || "未知错误"}
-                </p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="关闭"></button>
-            </div>
-            <div class="text-center mt-3">
-                <button class="btn btn-primary" onclick="location.reload()">
-                    <i class="fas fa-redo me-2"></i>刷新页面重试
-                </button>
-            </div>
-        `;
-
-    const container = document.querySelector(".container-fluid");
-    if (container) {
-      container.insertAdjacentHTML("afterbegin", errorHtml);
-    }
-  },
-
-  /**
-   * 启动心跳
-   */
-  startHeartbeat: function () {
-    this.heartbeatTimer = setInterval(() => {
-      this.checkHealth();
-    }, this.config.heartbeatInterval);
-  },
-
-  /**
-   * 健康检查
-   */
-  checkHealth: async function () {
-    try {
-      const response = await fetch("/api/health");
-      if (response.ok) {
-        // 健康检查通过
-        this.updateHealthStatus(true);
-      } else {
-        throw new Error("Health check failed");
-      }
-    } catch (error) {
-      console.warn("健康检查失败:", error);
-      this.updateHealthStatus(false);
-    }
-  },
-
-  /**
-   * 更新健康状态
-   */
-  updateHealthStatus: function (healthy) {
-    const statusElement = document.getElementById("globalStatus");
-    if (statusElement) {
-      const icon = statusElement.querySelector("i");
-      const text = statusElement.querySelector("small");
-
-      if (healthy) {
-        statusElement.className = "badge bg-success";
-        if (icon) icon.className = "fas fa-circle me-1";
-        if (text) text.textContent = "系统正常";
-      } else {
-        statusElement.className = "badge bg-danger";
-        if (icon) icon.className = "fas fa-circle me-1";
-        if (text) text.textContent = "系统异常";
-      }
-    }
-  },
-
-  /**
-   * 暂停自动刷新
-   */
-  pauseAutoRefresh: function () {
-    Object.values(this.state.modules).forEach((module) => {
-      if (module.stopAutoRefresh) {
-        module.stopAutoRefresh();
-      }
-    });
-  },
-
-  /**
-   * 恢复自动刷新
-   */
-  resumeAutoRefresh: function () {
-    Object.values(this.state.modules).forEach((module) => {
-      if (module.startAutoRefresh) {
-        module.startAutoRefresh();
-      }
-    });
-  },
-
-  /**
-   * 注册事件处理器
-   */
-  on: function (event, handler) {
-    if (!this.eventHandlers) {
-      this.eventHandlers = {};
-    }
-    if (!this.eventHandlers[event]) {
-      this.eventHandlers[event] = [];
-    }
-    this.eventHandlers[event].push(handler);
-  },
-
-  /**
-   * 触发事件
-   */
-  emit: function (event, data) {
-    if (this.eventHandlers && this.eventHandlers[event]) {
-      this.eventHandlers[event].forEach((handler) => {
-        try {
-          handler(data);
-        } catch (error) {
-          console.error(`Error in ${event} handler:`, error);
-        }
-      });
-    }
-  },
-
-  /**
-   * 获取应用状态
-   */
-  getStatus: function () {
-    return {
-      initialized: this.state.initialized,
-      startTime: this.state.startTime,
-      uptime: this.state.startTime ? Date.now() - this.state.startTime : 0,
-      modules: Object.keys(this.state.modules),
-      components: Object.keys(this.state.components),
-      utils: Object.keys(this.state.utils),
-    };
-  },
-
-  /**
-   * 获取组件
-   */
-  getComponent: function (name) {
-    return this.state.components[name] || null;
-  },
-
-  /**
-   * 获取工具
-   */
-  getUtil: function (name) {
-    return this.state.utils[name] || null;
-  },
-
-  /**
-   * 销毁应用
-   */
-  destroy: function () {
-    console.log("应用销毁...");
-
-    // 停止心跳
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-    }
-
-    // 销毁所有模块
-    Object.values(this.state.modules).forEach((module) => {
-      if (module.destroy) {
-        module.destroy();
-      }
-    });
-
-    // 清除事件处理器
-    this.eventHandlers = {};
-
-    this.state.initialized = false;
-    console.log("应用已销毁");
-  },
 };
 
-// 页面加载完成后初始化应用
-document.addEventListener("DOMContentLoaded", function () {
-  // 设置初始化超时
-  const initTimeout = setTimeout(() => {
-    console.error("应用初始化超时");
-    App.showInitError(new Error("初始化超时"));
-  }, App.config.initTimeout);
+/**
+ * 初始化应用
+ */
+AIPopupApp.init = async function() {
+    console.log('🚀 AI弹窗项目监控中心启动中...');
+    
+    try {
+        // 1. 初始化基础模块
+        this.initUtils();
+        
+        // 2. 加载配置
+        await this.loadConfig();
+        
+        // 3. 初始化事件系统
+        this.initEventSystem();
+        
+        // 4. 初始化API接口
+        this.initAPI();
+        
+        // 5. 初始化UI组件
+        this.initUI();
+        
+        // 6. 加载模板组件
+        await this.loadTemplates();
+        
+        // 7. 初始化功能模块
+        this.initModules();
+        
+        // 8. 建立WebSocket连接
+        this.initWebSocket();
+        
+        // 9. 加载初始数据
+        await this.loadInitialData();
+        
+        // 10. 启动定时任务
+        this.startTimers();
+        
+        this.state.initialized = true;
+        console.log('✅ 应用初始化完成');
+        
+    } catch (error) {
+        console.error('❌ 应用初始化失败:', error);
+        this.showError('应用初始化失败: ' + error.message);
+    }
+};
 
-  try {
-    App.init();
-    clearTimeout(initTimeout);
-  } catch (error) {
-    clearTimeout(initTimeout);
-    App.showInitError(error);
-  }
+/**
+ * 初始化工具模块
+ */
+AIPopupApp.initUtils = function() {
+    console.log('初始化工具模块...');
+    
+    // 事件总线
+    if (typeof EventBus !== 'undefined') {
+        EventBus.init();
+    }
+    
+    // 错误处理
+    if (typeof ErrorHandler !== 'undefined') {
+        ErrorHandler.init();
+    }
+    
+    // API工具
+    if (typeof API !== 'undefined') {
+        API.init();
+    }
+    
+    console.log('工具模块初始化完成');
+};
+
+/**
+ * 加载配置
+ */
+AIPopupApp.loadConfig = async function() {
+    console.log('加载配置...');
+    
+    try {
+        // 加载本地配置
+        const response = await fetch('/api/config/project');
+        if (response.ok) {
+            const config = await response.json();
+            this.state.settings = config;
+        }
+    } catch (error) {
+        console.warn('加载配置失败，使用默认配置:', error.message);
+    }
+    
+    console.log('配置加载完成');
+};
+
+/**
+ * 初始化事件系统
+ */
+AIPopupApp.initEventSystem = function() {
+    console.log('初始化事件系统...');
+    
+    // 全局事件监听
+    window.addEventListener('error', (event) => {
+        console.error('全局错误:', event.error);
+        this.showError('发生错误: ' + event.error.message);
+    });
+    
+    // 窗口关闭前提示
+    window.addEventListener('beforeunload', (event) => {
+        if (this.state.connected) {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+    });
+    
+    console.log('事件系统初始化完成');
+};
+
+/**
+ * 初始化API接口
+ */
+AIPopupApp.initAPI = function() {
+    console.log('初始化API接口...');
+    
+    if (typeof APIInterface !== 'undefined') {
+        APIInterface.init();
+        this.modules.api = APIInterface;
+    }
+    
+    console.log('API接口初始化完成');
+};
+
+/**
+ * 初始化UI组件
+ */
+AIPopupApp.initUI = function() {
+    console.log('初始化UI组件...');
+    
+    // 初始化主题
+    if (typeof ThemeManager !== 'undefined') {
+        ThemeManager.init();
+    }
+    
+    // 初始化通知
+    if (typeof NotificationsManager !== 'undefined') {
+        NotificationsManager.init();
+    }
+    
+    // 初始化模态框
+    if (typeof ModalsModule !== 'undefined') {
+        ModalsModule.init();
+    }
+    
+    console.log('UI组件初始化完成');
+};
+
+/**
+ * 加载模板组件
+ */
+AIPopupApp.loadTemplates = async function() {
+    console.log('加载模板组件...');
+    
+    const templates = [
+        { id: 'navigation-container', path: '/static/templates/components/navigation.html' },
+        { id: 'main-tabs', path: '/static/templates/components/main-tabs.html' },
+        { id: 'dashboard-panel', path: '/static/templates/components/dashboard.html' },
+        { id: 'scripts-panel', path: '/static/templates/components/scripts.html' },
+        { id: 'config-panel', path: '/static/templates/components/config.html' },
+        { id: 'modals-container', path: '/static/templates/components/modals.html' }
+    ];
+    
+    for (const template of templates) {
+        try {
+            const response = await fetch(template.path);
+            if (response.ok) {
+                const html = await response.text();
+                const container = document.getElementById(template.id);
+                if (container) {
+                    container.innerHTML = html;
+                }
+            }
+        } catch (error) {
+            console.warn(`加载模板 ${template.path} 失败:`, error.message);
+        }
+    }
+    
+    console.log('模板组件加载完成');
+};
+
+/**
+ * 初始化功能模块
+ */
+AIPopupApp.initModules = function() {
+    console.log('初始化功能模块...');
+    
+    // 仪表板模块
+    if (typeof DashboardModule !== 'undefined') {
+        this.modules.dashboard = new DashboardModule({
+            autoRefresh: this.config.autoRefresh,
+            refreshInterval: this.config.refreshInterval
+        });
+    }
+    
+    // 脚本控制模块
+    if (typeof ScriptControl !== 'undefined') {
+        this.modules.scriptControl = ScriptControl;
+        ScriptControl.init();
+    }
+    
+    // 配置管理模块
+    if (typeof ConfigManagement !== 'undefined') {
+        this.modules.config = ConfigManagement;
+        ConfigManagement.init();
+    }
+    
+    // 日志查看模块
+    if (typeof LogsModule !== 'undefined') {
+        this.modules.logs = LogsModule;
+        LogsModule.init();
+    }
+    
+    // 全局监控模块
+    if (typeof GlobalMonitor !== 'undefined') {
+        this.modules.monitor = GlobalMonitor;
+        GlobalMonitor.init();
+    }
+    
+    // 部署进度模块
+    if (typeof DeploymentProgress !== 'undefined') {
+        this.modules.deployment = DeploymentProgress;
+        DeploymentProgress.init();
+    }
+    
+    // WebSocket管理器
+    if (typeof WebSocketManager !== 'undefined') {
+        this.modules.ws = WebSocketManager;
+        WebSocketManager.init();
+    }
+    
+    console.log('功能模块初始化完成');
+};
+
+/**
+ * 初始化WebSocket连接
+ */
+AIPopupApp.initWebSocket = function() {
+    console.log('初始化WebSocket连接...');
+    
+    if (this.modules.ws) {
+        this.modules.ws.connect();
+        
+        this.modules.ws.on('connect', () => {
+            this.state.connected = true;
+            console.log('WebSocket已连接');
+            this.showNotification('已连接到服务器', 'success');
+        });
+        
+        this.modules.ws.on('disconnect', () => {
+            this.state.connected = false;
+            console.log('WebSocket已断开');
+            this.showNotification('与服务器断开连接', 'warning');
+        });
+        
+        this.modules.ws.on('status_update', (data) => {
+            if (this.modules.dashboard) {
+                this.modules.dashboard.updateFromSocket(data);
+            }
+        });
+        
+        this.modules.ws.on('script_result', (data) => {
+            this.showNotification(`脚本 ${data.script} 执行完成`, 'info');
+        });
+    }
+    
+    console.log('WebSocket初始化完成');
+};
+
+/**
+ * 加载初始数据
+ */
+AIPopupApp.loadInitialData = async function() {
+    console.log('加载初始数据...');
+    
+    try {
+        // 并行加载多个数据源
+        await Promise.all([
+            this.loadProjectStatus(),
+            this.loadSystemResources(),
+            this.loadScriptsStatus(),
+            this.loadDeploymentProgress()
+        ]);
+        
+        console.log('初始数据加载完成');
+        
+    } catch (error) {
+        console.error('加载初始数据失败:', error);
+    }
+};
+
+/**
+ * 加载项目状态
+ */
+AIPopupApp.loadProjectStatus = async function() {
+    try {
+        if (this.modules.api) {
+            const status = await this.modules.api.getProjectStatus();
+            this.updateProjectStatus(status);
+        }
+    } catch (error) {
+        console.error('加载项目状态失败:', error);
+    }
+};
+
+/**
+ * 加载系统资源
+ */
+AIPopupApp.loadSystemResources = async function() {
+    try {
+        if (this.modules.api) {
+            const resources = await this.modules.api.getSystemResources();
+            this.updateSystemResources(resources);
+        }
+    } catch (error) {
+        console.error('加载系统资源失败:', error);
+    }
+};
+
+/**
+ * 加载脚本状态
+ */
+AIPopupApp.loadScriptsStatus = async function() {
+    try {
+        if (this.modules.api) {
+            const status = await this.modules.api.getScriptsStatus();
+            if (this.modules.scriptControl) {
+                this.modules.scriptControl.updateStatus(status);
+            }
+        }
+    } catch (error) {
+        console.error('加载脚本状态失败:', error);
+    }
+};
+
+/**
+ * 加载部署进度
+ */
+AIPopupApp.loadDeploymentProgress = async function() {
+    try {
+        if (this.modules.api) {
+            const progress = await this.modules.api.getDeploymentProgress();
+            if (this.modules.deployment) {
+                this.modules.deployment.update(progress);
+            }
+        }
+    } catch (error) {
+        console.error('加载部署进度失败:', error);
+    }
+};
+
+/**
+ * 启动定时任务
+ */
+AIPopupApp.startTimers = function() {
+    console.log('启动定时任务...');
+    
+    // 系统资源监控
+    this.resourceTimer = setInterval(() => {
+        if (this.config.autoRefresh) {
+            this.loadSystemResources();
+        }
+    }, this.config.refreshInterval);
+    
+    // 脚本状态监控
+    this.scriptTimer = setInterval(() => {
+        if (this.config.autoRefresh) {
+            this.loadScriptsStatus();
+        }
+    }, this.config.refreshInterval * 2);
+    
+    console.log('定时任务启动完成');
+};
+
+/**
+ * 停止定时任务
+ */
+AIPopupApp.stopTimers = function() {
+    if (this.resourceTimer) clearInterval(this.resourceTimer);
+    if (this.scriptTimer) clearInterval(this.scriptTimer);
+};
+
+/**
+ * 更新项目状态显示
+ */
+AIPopupApp.updateProjectStatus = function(status) {
+    const statusBadge = document.getElementById('systemHealthBadge');
+    const statusBar = document.getElementById('systemHealthBar');
+    
+    if (statusBadge) {
+        statusBadge.textContent = status.status === 'running' ? '运行中' : status.status;
+        statusBadge.className = `badge bg-${status.status === 'running' ? 'success' : 'warning'}`;
+    }
+    
+    if (statusBar) {
+        const healthScore = status.healthScore || 100;
+        statusBar.style.width = `${healthScore}%`;
+        statusBar.className = `progress-bar bg-${healthScore > 80 ? 'success' : healthScore > 60 ? 'warning' : 'danger'}`;
+    }
+};
+
+/**
+ * 更新系统资源显示
+ */
+AIPopupApp.updateSystemResources = function(resources) {
+    // CPU
+    const cpuUsage = document.getElementById('cpuUsage');
+    const cpuBar = document.getElementById('cpuBar');
+    if (cpuUsage) cpuUsage.textContent = `${resources.cpu_percent}%`;
+    if (cpuBar) cpuBar.style.width = `${resources.cpu_percent}%`;
+    
+    // 内存
+    const memoryUsage = document.getElementById('memoryUsage');
+    const memoryBar = document.getElementById('memoryBar');
+    if (memoryUsage) memoryUsage.textContent = `${resources.memory.percent}%`;
+    if (memoryBar) memoryBar.style.width = `${resources.memory.percent}%`;
+    
+    // 磁盘
+    const diskUsage = document.getElementById('diskUsage');
+    const diskBar = document.getElementById('diskBar');
+    if (diskUsage) diskUsage.textContent = `${resources.disk.percent}%`;
+    if (diskBar) diskBar.style.width = `${resources.disk.percent}%`;
+};
+
+/**
+ * 显示通知
+ */
+AIPopupApp.showNotification = function(message, type = 'info') {
+    if (typeof NotificationsManager !== 'undefined') {
+        NotificationsManager[type]?.(message) || NotificationsManager.info(message);
+    }
+};
+
+/**
+ * 显示错误
+ */
+AIPopupApp.showError = function(message) {
+    this.showNotification(message, 'error');
+    
+    // 尝试显示模态框错误
+    if (typeof ModalManager !== 'undefined') {
+        ModalManager.showError(message);
+    }
+};
+
+/**
+ * 刷新所有数据
+ */
+AIPopupApp.refreshAll = async function() {
+    this.showNotification('正在刷新数据...', 'info');
+    await this.loadInitialData();
+    this.showNotification('数据已刷新', 'success');
+};
+
+/**
+ * 导出报告
+ */
+AIPopupApp.exportReport = function() {
+    const report = {
+        timestamp: new Date().toISOString(),
+        project: this.state.settings,
+        resources: {
+            cpu: document.getElementById('cpuUsage')?.textContent,
+            memory: document.getElementById('memoryUsage')?.textContent,
+            disk: document.getElementById('diskUsage')?.textContent
+        }
+    };
+    
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `report-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    this.showNotification('报告已导出', 'success');
+};
+
+/**
+ * 运行健康检查
+ */
+AIPopupApp.runHealthCheck = async function() {
+    this.showNotification('正在运行健康检查...', 'info');
+    
+    try {
+        if (this.modules.api) {
+            await this.modules.api.healthCheck();
+            this.showNotification('健康检查完成', 'success');
+        }
+    } catch (error) {
+        this.showError('健康检查失败: ' + error.message);
+    }
+};
+
+/**
+ * 切换页面
+ */
+AIPopupApp.navigateTo = function(page) {
+    this.state.currentPage = page;
+    
+    // 隐藏所有面板
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // 显示目标面板
+    const targetPanel = document.getElementById(`${page}-section`);
+    if (targetPanel) {
+        targetPanel.style.display = 'block';
+    }
+    
+    // 更新导航状态
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    const activeLink = document.querySelector(`[data-page="${page}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+};
+
+/**
+ * 获取当前状态
+ */
+AIPopupApp.getState = function() {
+    return { ...this.state };
+};
+
+/**
+ * 更新设置
+ */
+AIPopupApp.updateSettings = function(newSettings) {
+    this.state.settings = { ...this.state.settings, ...newSettings };
+};
+
+/**
+ * 销毁应用
+ */
+AIPopupApp.destroy = function() {
+    console.log('销毁应用...');
+    
+    // 停止定时任务
+    this.stopTimers();
+    
+    // 断开WebSocket
+    if (this.modules.ws) {
+        this.modules.ws.disconnect();
+    }
+    
+    // 销毁模块
+    Object.values(this.modules).forEach(module => {
+        if (module.destroy) {
+            module.destroy();
+        }
+    });
+    
+    this.state.initialized = false;
+    console.log('应用已销毁');
+};
+
+// 全局快捷方法
+window.globalActions = {
+    refreshAll: () => AIPopupApp.refreshAll(),
+    exportReport: () => AIPopupApp.exportReport(),
+    runHealthCheck: () => AIPopupApp.runHealthCheck()
+};
+
+// DOM加载完成后初始化应用
+document.addEventListener('DOMContentLoaded', () => {
+    AIPopupApp.init();
 });
 
-// 页面卸载时销毁应用
-window.addEventListener("beforeunload", function () {
-  App.destroy();
-});
-
-// 导出到全局
-window.App = App;

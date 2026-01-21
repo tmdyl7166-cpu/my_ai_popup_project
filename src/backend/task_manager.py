@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from src.config.app_config import get_config
 from src.utils.logger import get_logger
+from src.integrations.unified_engine_manager import get_engine_manager
 
 logger = get_logger(__name__)
 config = get_config()
@@ -138,6 +139,7 @@ class TaskManager:
         self.active_tasks: Dict[str, asyncio.Task] = {}
         self.executor = ThreadPoolExecutor(max_workers=config.max_workers)
         self.task_queue = asyncio.Queue()
+        self.engine_manager = get_engine_manager()
         self.stats = {
             "total_tasks": 0,
             "completed_tasks": 0,
@@ -369,23 +371,64 @@ class TaskManager:
             total_time = sum(t.completed_at - t.started_at for t in completed_tasks)
             self.stats["average_completion_time"] = total_time / len(completed_tasks)
 
-    # 任务执行方法（Mock实现）
+    # 任务执行方法（真实引擎集成）
     async def _execute_image_to_camera(self, task: Task):
         """执行图片到摄像头任务"""
+        if not task.source_path or not task.target_path:
+            raise ValueError("图片到摄像头任务需要源路径和目标路径")
+
         task.status = TaskStatus.AI_PROCESSING
-        task.update_progress(20.0, "AI分析图片")
+        task.update_progress(10.0, "初始化引擎")
 
-        await asyncio.sleep(1.0)  # 模拟AI处理
+        # 选择合适的引擎（优先使用Deep-Live-Cam）
+        available_engines = self.engine_manager.get_available_engines()
+        engine_name = None
 
+        for engine in available_engines:
+            if engine['type'] == 'deep_live_cam':
+                engine_name = engine['id']
+                break
+        if not engine_name and available_engines:
+            engine_name = available_engines[0]['id']
+
+        if not engine_name:
+            raise ValueError("没有可用的换脸引擎")
+
+        task.update_progress(20.0, f"使用引擎 {engine_name} 处理")
+
+        # 初始化引擎
+        init_result = self.engine_manager.initialize_engine(engine_name)
+        if not init_result['success']:
+            raise ValueError(f"引擎初始化失败: {init_result['error']}")
+
+        task.update_progress(30.0, "引擎初始化完成")
+
+        # 执行换脸处理
         task.status = TaskStatus.SYNTHESIZING
-        task.update_progress(60.0, "实时合成")
+        task.update_progress(50.0, "开始AI换脸处理")
 
-        await asyncio.sleep(2.0)  # 模拟合成
+        result = await asyncio.get_event_loop().run_in_executor(
+            self.executor,
+            lambda: self.engine_manager.process_with_engine(
+                engine_name, task.source_path, task.target_path, task.parameters
+            )
+        )
+
+        if not result['success']:
+            raise ValueError(f"换脸处理失败: {result.get('error', '未知错误')}")
 
         task.status = TaskStatus.OUTPUT_GENERATING
         task.update_progress(90.0, "输出到虚拟摄像头")
 
-        await asyncio.sleep(0.5)  # 模拟输出
+        # 这里应该有虚拟摄像头输出逻辑
+        # 暂时模拟输出
+        await asyncio.sleep(0.5)
+
+        task.result = {
+            'output_path': result.get('output_path'),
+            'processing_time': result.get('processing_time'),
+            'engine': engine_name
+        }
 
     async def _execute_image_to_video(self, task: Task):
         """执行图片到视频任务"""

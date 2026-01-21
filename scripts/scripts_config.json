@@ -1,409 +1,389 @@
 {
-    "meta": {
-        "name": "脚本系统配置",
-        "description": "定义scripts目录下所有自动化脚本的配置、执行规则和监控机制",
-        "version": "1.1.0",
-        "createdAt": "2026-01-16T00:00:00Z",
-        "lastModified": "2026-01-17T00:00:00Z",
-        "rulesReference": {
-            "source": ".blackboxrules",
-            "version": "1.0.0",
-            "appliedAt": "2026-01-16T08:30:00Z"
-        }
-    },
-    "structure": {
-        "scripts/": {
-            "purpose": "自动化脚本根目录",
-            "content": "包含健康监控、配置验证、部署等自动化脚本",
-            "autoUpdate": true,
-            "syncWithProject": true
-        },
-        "scripts/scripts_config.json": {
-            "purpose": "脚本配置定义文件",
-            "content": "定义所有脚本的执行规则、依赖关系和监控配置",
-            "autoUpdate": false,
-            "syncWithProject": false
-        },
-        "scripts/scripts_config_refactor.json": {
-            "purpose": "脚本配置重构版",
-            "content": "重构后的模块化配置，包含更详细的组件说明",
-            "autoUpdate": true,
-            "syncWithProject": true
-        },
-        "scripts/scripts_README.md": {
-            "purpose": "脚本目录说明文档",
-            "content": "脚本的使用指南、执行说明和维护规则",
-            "autoUpdate": true,
-            "syncWithProject": true
-        },
-        "scripts/core/": {
-            "purpose": "核心脚本模块",
-            "content": "包含脚本注册管理器、路径配置等核心功能",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": {
-                "script_registry.py": {
-                    "description": "脚本注册管理器",
-                    "responsibility": "负责脚本模块的注册、发现和元数据管理"
-                }
-            }
-        },
-        "scripts/health/": {
-            "purpose": "健康检查模块",
-            "content": "包含各类健康检查器",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "structure_checker.py",
-                "config_consistency_checker.py",
-                "rules_validator.py",
-                "docs_sync_checker.py",
-                "dependency_checker.py",
-                "task_docs_unifier.py",
-                "file_cleanup_util.py",
-                "health_monitor_orchestrator.py",
-                "menu_interactivity_monitor.py"
-            ]
-        },
-        "scripts/health_monitor/": {
-            "purpose": "健康监控脚本目录",
-            "content": "项目健康检查、配置验证、文档同步等监控脚本",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subScripts": {
-                "health_monitor.py": {
-                    "name": "主健康监控脚本",
-                    "description": "执行全面的项目健康检查",
-                    "execution": {
-                        "command": "python scripts/health_monitor/health_monitor.py",
-                        "frequency": "daily",
-                        "timeout": 300,
-                        "required": true
-                    },
-                    "dependencies": [
-                        "config_monitor.py"
-                    ],
-                    "outputs": [
-                        "health_report.json",
-                        "logs/health_check.log"
-                    ]
-                },
-                "config_monitor.py": {
-                    "name": "配置监控脚本",
-                    "description": "监控项目配置变化",
-                    "execution": {
-                        "command": "python scripts/health_monitor/config_monitor.py",
-                        "frequency": "on-demand",
-                        "timeout": 60,
-                        "required": false
-                    },
-                    "dependencies": [],
-                    "outputs": [
-                        "config_monitor_report.json"
-                    ]
-                },
-                "config_validator.py": {
-                    "name": "配置一致性验证脚本",
-                    "description": "验证项目配置的一致性和完整性",
-                    "execution": {
-                        "command": "python scripts/health_monitor/config_validator.py",
-                        "frequency": "daily",
-                        "timeout": 60,
-                        "required": true
-                    },
-                    "dependencies": [],
-                    "outputs": [
-                        "config_validation_report.json",
-                        "logs/config_validator.log"
-                    ]
-                },
-                "docs_sync_monitor.py": {
-                    "name": "文档同步监控脚本",
-                    "description": "监控文档更新状态和同步情况",
-                    "execution": {
-                        "command": "python scripts/health_monitor/docs_sync_monitor.py",
-                        "frequency": "daily",
-                        "timeout": 90,
-                        "required": true
-                    },
-                    "dependencies": [],
-                    "outputs": [
-                        "docs_sync_report.json",
-                        "logs/docs_sync_monitor.log"
-                    ]
-                },
-                "ui_interaction_monitor.py": {
-                    "name": "UI交互健康检测脚本",
-                    "description": "检测前端交互、弹窗管理、数据传递、缓存清理等UI相关问题",
-                    "execution": {
-                        "command": "python scripts/health_monitor/ui_interaction_monitor.py",
-                        "frequency": "daily",
-                        "timeout": 120,
-                        "required": true
-                    },
-                    "dependencies": [
-                        "health_monitor.py"
-                    ],
-                    "outputs": [
-                        "ui",
-                        "logs/ui_interaction_report.json_interaction_monitor.log"
-                    ]
-                }
-            }
-        },
-        "scripts/deploy/": {
-            "purpose": "部署模块",
-            "content": "提供项目部署功能",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "deploy_entry.py",
-                "shell_wrapper.py",
-                "deploy_core/",
-                "deploy_modules/",
-                "deploy_utils/"
-            ]
-        },
-        "scripts/test/": {
-            "purpose": "测试模块",
-            "content": "提供项目测试功能",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "test_runner.py",
-                "test_launch_config.py",
-                "test_frontend_backend.py",
-                "test_error_handling.py",
-                "test_dependencies.py"
-            ]
-        },
-        "scripts/web/": {
-            "purpose": "Web相关脚本",
-            "content": "提供Web功能和API管理",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "api_manager.py",
-                "entry.py",
-                "menu_manager.py",
-                "security_validator.py",
-                "web_orchestrator.py"
-            ]
-        },
-        "scripts/utils/": {
-            "purpose": "工具模块",
-            "content": "提供通用工具函数",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "logging_utils.py",
-                "file_utils.py"
-            ]
-        },
-        "scripts/config/": {
-            "purpose": "配置模块",
-            "content": "提供配置加载和管理功能",
-            "autoUpdate": true,
-            "syncWithProject": true,
-            "subModules": [
-                "config_loader.py"
-            ]
-        }
-    },
-    "executionRules": {
-        "scheduling": {
-            "daily": {
-                "time": "02:00",
-                "scripts": [
-                    "health_monitor.py"
-                ],
-                "enabled": true
-            },
-            "weekly": {
-                "day": "sunday",
-                "time": "03:00",
-                "scripts": [
-                    "config_monitor.py"
-                ],
-                "enabled": true
-            },
-            "onDemand": {
-                "scripts": [
-                    "all"
-                ],
-                "enabled": true
-            }
-        },
-        "permissions": {
-            "execution": {
-                "user": "system",
-                "group": "automation",
-                "fileMode": "755"
-            },
-            "logging": {
-                "directory": "./logs/scripts",
-                "maxSize": "100MB",
-                "retention": "30d"
-            }
-        },
-        "errorHandling": {
-            "retryPolicy": {
-                "maxRetries": 3,
-                "backoff": "exponential",
-                "maxDelay": 300
-            },
-            "failureNotification": {
-                "enabled": true,
-                "channels": [
-                    "log"
-                ],
-                "recipients": [
-                    "admin@project.local"
-                ]
-            },
-            "fallbackActions": {
-                "health_check_failed": "send_alert",
-                "config_validation_failed": "rollback_changes"
-            }
-        }
-    },
-    "monitoring": {
-        "metrics": {
-            "executionTime": {
-                "enabled": true,
-                "threshold": 300,
-                "unit": "seconds"
-            },
-            "successRate": {
-                "enabled": true,
-                "threshold": 95,
-                "unit": "percent"
-            },
-            "resourceUsage": {
-                "enabled": true,
-                "cpuThreshold": 80,
-                "memoryThreshold": 512,
-                "unit": "MB"
-            }
-        },
-        "alerts": {
-            "executionTimeout": {
-                "enabled": true,
-                "severity": "warning",
-                "message": "脚本执行超时"
-            },
-            "executionFailure": {
-                "enabled": true,
-                "severity": "error",
-                "message": "脚本执行失败"
-            },
-            "resourceExhaustion": {
-                "enabled": true,
-                "severity": "critical",
-                "message": "系统资源耗尽"
-            }
-        },
-        "reporting": {
-            "dailyReport": {
-                "enabled": true,
-                "format": "json",
-                "location": "./logs/daily_script_report.json"
-            },
-            "weeklySummary": {
-                "enabled": true,
-                "format": "html",
-                "location": "./reports/weekly_script_summary.html"
-            }
-        }
-    },
-    "maintenance": {
-        "cleanup": {
-            "enabled": true,
-            "rules": [
-                {
-                    "pattern": "*.log",
-                    "maxAge": 30,
-                    "maxSize": "1GB",
-                    "action": "compress"
-                },
-                {
-                    "pattern": "*.tmp",
-                    "maxAge": 7,
-                    "action": "delete"
-                },
-                {
-                    "pattern": "*.bak",
-                    "maxAge": 90,
-                    "action": "archive"
-                }
-            ]
-        },
-        "backup": {
-            "enabled": true,
-            "frequency": "weekly",
-            "location": "../backup/scripts",
-            "include": [
-                "*.py",
-                "*.json",
-                "*.md"
-            ],
-            "exclude": [
-                "*.log",
-                "*.tmp"
-            ]
-        },
-        "update": {
-            "autoUpdate": true,
-            "checkFrequency": "daily",
-            "updateSource": "git",
-            "rollbackOnFailure": true
-        }
-    },
-    "integration": {
-        "withProject": {
-            "syncFields": [
-                "script_status",
-                "health_metrics",
-                "configuration_changes"
-            ],
-            "updateHooks": [
-                "post-commit",
-                "post-merge",
-                "pre-deploy"
-            ]
-        },
-        "withCI": {
-            "enabled": true,
-            "pipeline": "automation-scripts",
-            "triggers": [
-                "push",
-                "schedule"
-            ],
-            "artifacts": [
-                "reports/",
-                "logs/"
-            ]
-        }
-    },
-    "rulesCompliance": {
-        "enabled": true,
-        "rulesFile": ".blackboxrules",
-        "validation": {
-            "moduleIsolation": true,
-            "singleResponsibility": true,
-            "noDirectModuleCalls": true,
-            "noGlobalState": true,
-            "clearInterfaces": true
-        }
-    },
-    "scriptAliases": {
-        "entry": "python scripts/entry.py",
-        "health-check": "python scripts/entry.py --task health-check",
-        "config-check": "python scripts/validate_configs.py",
-        "verify-paths": "python scripts/verify_paths.py",
-        "start-health-monitor": "python scripts/start_health_monitor.py --verbose",
-        "start-backend": "python scripts/start_backend_simple.py",
-        "start-gui": "python scripts/start_gui_py.py",
-        "test": "python -m scripts.test.test_runner"
+  "meta": {
+    "name": "脚本系统配置",
+    "description": "定义scripts目录下所有自动化脚本的配置、执行规则和监控机制",
+    "version": "2.2.0",
+    "createdAt": "2026-01-16T00:00:00Z",
+    "lastModified": "2026-01-19T00:00:00Z",
+    "rulesReference": {
+      "source": ".blackboxrules",
+      "version": "1.0.0",
+      "appliedAt": "2026-01-16T08:30:00Z"
     }
+  },
+  "structure": {
+    "scripts/": {
+      "purpose": "自动化脚本根目录",
+      "content": "包含健康监控、配置验证、部署等自动化脚本",
+      "autoUpdate": true,
+      "syncWithProject": true
+    },
+    "scripts/scripts_config.json": {
+      "purpose": "脚本配置定义文件",
+      "content": "定义所有脚本的执行规则、依赖关系和监控配置",
+      "autoUpdate": false,
+      "syncWithProject": false
+    },
+    "scripts/scripts_README.md": {
+      "purpose": "脚本目录说明文档",
+      "content": "脚本的使用指南、执行说明和维护规则",
+      "autoUpdate": true,
+      "syncWithProject": true
+    },
+    "scripts/core/": {
+      "purpose": "核心脚本模块",
+      "content": "包含脚本注册管理器、路径配置等核心功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": {
+        "script_registry.py": {
+          "description": "脚本注册管理器",
+          "responsibility": "负责脚本模块的注册、发现和元数据管理"
+        },
+        "path_config.py": {
+          "description": "统一路径配置模块",
+          "responsibility": "提供项目路径的动态检测和统一管理"
+        }
+      }
+    },
+    "scripts/health/": {
+      "purpose": "健康检查模块",
+      "content": "包含各类健康检查器和验证器",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "structure_checker.py - 项目结构检查器",
+        "config_consistency_checker.py - 配置一致性检查器",
+        "rules_validator.py - 规则验证器",
+        "docs_sync_checker.py - 文档同步检查器",
+        "dependency_checker.py - 依赖检查器",
+        "task_docs_unifier.py - 任务文档统一器",
+        "file_cleanup_util.py - 文件清理工具",
+        "health_monitor_orchestrator.py - 健康监控编排器",
+        "menu_interactivity_monitor.py - 菜单交互监控器",
+        "global_context_monitor.py - 全局上下文监控器",
+        "cross_domain_api_monitor.py - 跨域API监控器",
+        "ui_popup_monitor.py - UI弹窗监控器"
+      ]
+    },
+    "scripts/health_monitor/": {
+      "purpose": "健康监控脚本目录",
+      "content": "项目健康检查、配置验证、文档同步等监控脚本",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "subScripts": {
+        "health_monitor.py": {
+          "name": "主健康监控脚本",
+          "description": "执行全面的项目健康检查",
+          "execution": {
+            "command": "python scripts/health_monitor/health_monitor.py",
+            "frequency": "daily",
+            "timeout": 300,
+            "required": true
+          },
+          "dependencies": ["config_monitor.py"],
+          "outputs": ["health_report.json", "logs/health_check.log"]
+        },
+        "config_monitor.py": {
+          "name": "配置监控脚本",
+          "description": "监控项目配置变化",
+          "execution": {
+            "command": "python scripts/health_monitor/config_monitor.py",
+            "frequency": "on-demand",
+            "timeout": 60,
+            "required": false
+          },
+          "dependencies": [],
+          "outputs": ["config_monitor_report.json"]
+        },
+        "config_validator.py": {
+          "name": "配置一致性验证脚本",
+          "description": "验证项目配置的一致性和完整性",
+          "execution": {
+            "command": "python scripts/health_monitor/config_validator.py",
+            "frequency": "daily",
+            "timeout": 60,
+            "required": true
+          },
+          "dependencies": [],
+          "outputs": [
+            "config_validation_report.json",
+            "logs/config_validator.log"
+          ]
+        },
+        "docs_sync_monitor.py": {
+          "name": "文档同步监控脚本",
+          "description": "监控文档更新状态和同步情况",
+          "execution": {
+            "command": "python scripts/health_monitor/docs_sync_monitor.py",
+            "frequency": "daily",
+            "timeout": 90,
+            "required": true
+          },
+          "dependencies": [],
+          "outputs": ["docs_sync_report.json", "logs/docs_sync_monitor.log"]
+        },
+        "ui_interaction_monitor.py": {
+          "name": "UI交互健康检测脚本",
+          "description": "检测前端交互、弹窗管理、数据传递等UI相关问题",
+          "execution": {
+            "command": "python scripts/health_monitor/ui_interaction_monitor.py",
+            "frequency": "daily",
+            "timeout": 120,
+            "required": true
+          },
+          "dependencies": ["health_monitor.py"],
+          "outputs": [
+            "ui",
+            "logs/ui_interaction_report.json_interaction_monitor.log"
+          ]
+        }
+      }
+    },
+    "scripts/deploy/": {
+      "purpose": "部署模块",
+      "content": "提供项目部署功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "deploy_entry.py - 部署入口",
+        "shell_wrapper.py - Shell包装器",
+        "deploy_core/ - 部署核心逻辑",
+        "deploy_modules/ - 部署模块",
+        "deploy_utils/ - 部署工具"
+      ]
+    },
+    "scripts/test/": {
+      "purpose": "测试模块",
+      "content": "提供项目测试功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "test_runner.py - 测试运行器",
+        "test_launch_config.py - 启动配置测试",
+        "test_frontend_backend.py - 前后端测试",
+        "test_error_handling.py - 错误处理测试",
+        "test_dependencies.py - 依赖测试"
+      ]
+    },
+    "scripts/web/": {
+      "purpose": "Web相关脚本",
+      "content": "提供Web功能和API管理",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "api_manager.py - API管理器",
+        "entry.py - Web脚本入口",
+        "menu_manager.py - 菜单管理器",
+        "security_validator.py - 安全验证器",
+        "web_orchestrator.py - Web编排器"
+      ]
+    },
+    "scripts/utils/": {
+      "purpose": "工具模块",
+      "content": "提供通用工具函数",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": ["logging_utils.py - 日志工具", "file_utils.py - 文件工具"]
+    },
+    "scripts/config/": {
+      "purpose": "配置模块",
+      "content": "提供配置加载和管理功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": ["config_loader.py - 配置加载器"]
+    },
+    "scripts/start/": {
+      "purpose": "启动脚本目录",
+      "content": "提供项目启动功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "main_launcher.py - 主启动器",
+        "start_backend_simple.py - 后端启动脚本",
+        "start_gui_py.py - GUI启动脚本",
+        "start_hot_window.sh - 热窗口启动脚本",
+        "unified_launcher.py - 统一启动器"
+      ]
+    },
+    "scripts/verify/": {
+      "purpose": "验证脚本目录",
+      "content": "提供项目验证功能",
+      "autoUpdate": true,
+      "syncWithProject": true,
+      "components": [
+        "verify_venv.py - 虚拟环境验证",
+        "verify_paths.py - 路径验证"
+      ]
+    }
+  },
+  "executionRules": {
+    "scheduling": {
+      "daily": {
+        "time": "02:00",
+        "scripts": ["health_monitor.py"],
+        "enabled": true
+      },
+      "weekly": {
+        "day": "sunday",
+        "time": "03:00",
+        "scripts": ["config_monitor.py"],
+        "enabled": true
+      },
+      "onDemand": {
+        "scripts": ["all"],
+        "enabled": true
+      }
+    },
+    "permissions": {
+      "execution": {
+        "user": "system",
+        "group": "automation",
+        "fileMode": "755"
+      },
+      "logging": {
+        "directory": "./logs/scripts",
+        "maxSize": "100MB",
+        "retention": "30d"
+      }
+    },
+    "errorHandling": {
+      "retryPolicy": {
+        "maxRetries": 3,
+        "backoff": "exponential",
+        "maxDelay": 300
+      },
+      "failureNotification": {
+        "enabled": true,
+        "channels": ["log"],
+        "recipients": ["admin@project.local"]
+      },
+      "fallbackActions": {
+        "health_check_failed": "send_alert",
+        "config_validation_failed": "rollback_changes"
+      }
+    }
+  },
+  "monitoring": {
+    "metrics": {
+      "executionTime": {
+        "enabled": true,
+        "threshold": 300,
+        "unit": "seconds"
+      },
+      "successRate": {
+        "enabled": true,
+        "threshold": 95,
+        "unit": "percent"
+      },
+      "resourceUsage": {
+        "enabled": true,
+        "cpuThreshold": 80,
+        "memoryThreshold": 512,
+        "unit": "MB"
+      }
+    },
+    "alerts": {
+      "executionTimeout": {
+        "enabled": true,
+        "severity": "warning",
+        "message": "脚本执行超时"
+      },
+      "executionFailure": {
+        "enabled": true,
+        "severity": "error",
+        "message": "脚本执行失败"
+      },
+      "resourceExhaustion": {
+        "enabled": true,
+        "severity": "critical",
+        "message": "系统资源耗尽"
+      }
+    },
+    "reporting": {
+      "dailyReport": {
+        "enabled": true,
+        "format": "json",
+        "location": "./logs/daily_script_report.json"
+      },
+      "weeklySummary": {
+        "enabled": true,
+        "format": "html",
+        "location": "./reports/weekly_script_summary.html"
+      }
+    }
+  },
+  "maintenance": {
+    "cleanup": {
+      "enabled": true,
+      "rules": [
+        {
+          "pattern": "*.log",
+          "maxAge": 30,
+          "maxSize": "1GB",
+          "action": "compress"
+        },
+        {
+          "pattern": "*.tmp",
+          "maxAge": 7,
+          "action": "delete"
+        },
+        {
+          "pattern": "*.bak",
+          "maxAge": 90,
+          "action": "archive"
+        }
+      ]
+    },
+    "backup": {
+      "enabled": true,
+      "frequency": "weekly",
+      "location": "../backup/scripts",
+      "include": ["*.py", "*.json", "*.md"],
+      "exclude": ["*.log", "*.tmp"]
+    },
+    "update": {
+      "autoUpdate": true,
+      "checkFrequency": "daily",
+      "updateSource": "git",
+      "rollbackOnFailure": true
+    }
+  },
+  "integration": {
+    "withProject": {
+      "syncFields": [
+        "script_status",
+        "health_metrics",
+        "configuration_changes"
+      ],
+      "updateHooks": ["post-commit", "post-merge", "pre-deploy"]
+    },
+    "withCI": {
+      "enabled": true,
+      "pipeline": "automation-scripts",
+      "triggers": ["push", "schedule"],
+      "artifacts": ["reports/", "logs/"]
+    }
+  },
+  "rulesCompliance": {
+    "enabled": true,
+    "rulesFile": ".blackboxrules",
+    "validation": {
+      "moduleIsolation": true,
+      "singleResponsibility": true,
+      "noDirectModuleCalls": true,
+      "noGlobalState": true,
+      "clearInterfaces": true
+    }
+  },
+  "scriptAliases": {
+    "entry": "python scripts/entry.py",
+    "health-check": "python scripts/entry.py --task health-check",
+    "config-check": "python scripts/validate_configs.py",
+    "verify-paths": "python scripts/verify_paths.py",
+    "start-health-monitor": "python scripts/start_health_monitor.py --verbose",
+    "start-backend": "python scripts/start_backend_simple.py",
+    "start-gui": "python scripts/start_gui_py.py",
+    "test": "python -m scripts.test.test_runner"
+  }
 }

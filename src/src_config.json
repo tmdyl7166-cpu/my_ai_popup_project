@@ -2,9 +2,9 @@
     "meta": {
         "name": "源码模块配置",
         "description": "定义src目录下所有子模块的配置、依赖关系和启动顺序",
-        "version": "1.0.0",
+        "version": "2.1.0",
         "createdAt": "2026-01-16T00:00:00Z",
-        "lastModified": "2026-01-16T00:00:00Z"
+        "lastModified": "2026-01-18T00:00:00Z"
     },
     "modules": {
         "frontend": {
