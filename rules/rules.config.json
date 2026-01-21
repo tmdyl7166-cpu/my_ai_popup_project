@@ -2,9 +2,9 @@
     "meta": {
         "name": "规则系统配置",
         "description": "定义rules目录下所有规则文件的配置、验证规则和执行参数",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "createdAt": "2026-01-19T00:00:00Z",
-        "lastModified": "2026-01-19T00:00:00Z"
+        "lastModified": "2026-01-21T00:00:00Z"
     },
     "layers": {
         "L1-meta-goal": {
@@ -48,6 +48,13 @@
                 "check_architecture_style",
                 "check_modules_completeness",
                 "check_dependencies_no_cycle"
+            ],
+            "updatedAt": "2026-01-21T00:00:00Z",
+            "changes": [
+                "新增web/模块定义",
+                "新增api/模块定义",
+                "更新架构风格为Web监控模式",
+                "更新数据流路径"
             ]
         },
         "L3-constraints": {
@@ -106,6 +113,16 @@
             "validations": [
                 "check_workflow_completeness",
                 "check_error_handling"
+            ],
+            "updatedAt": "2026-01-21T00:00:00Z",
+            "changes": [
+                "新增frontendRendering规则",
+                "新增functionCardSpecification规范",
+                "新增realtimeCommunication配置",
+                "新增apiMappingMechanism机制",
+                "新增bubbleDetection规则",
+                "新增scriptToApiMapping规则",
+                "新增rulesIntegration配置"
             ]
         }
     },
@@ -161,12 +178,36 @@
             "configPath": "../project_config.json",
             "syncFields": [
                 "rules",
-                "validation"
+                "validation",
+                "frontendRendering",
+                "apiMapping",
+                "realtime"
             ]
         },
         "withScripts": {
             "healthCheckScript": "../scripts/health/rules_validator.py",
             "configValidatorScript": "../scripts/health_monitor/config_validator.py"
+        },
+        "withApi": {
+            "mappingConfig": "../api/mapping/api_mapping.json",
+            "apiConfig": "../api/config/api_config.json"
+        },
+        "withWeb": {
+            "webConfig": "../web/web_config.json",
+            "staticPath": "../web/static"
         }
+    },
+    "rulesCompliance": {
+        "enabled": true,
+        "checks": [
+            "moduleIsolation",
+            "singleResponsibility",
+            "noDirectModuleCalls",
+            "noGlobalState",
+            "clearInterfaces",
+            "dataDrivenUI",
+            "apiMappingCompliance",
+            "realtimeCommunicationCompliance"
+        ]
     }
 }

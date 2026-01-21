@@ -3,54 +3,220 @@
         "layer": "L2",
         "name": "全局理解层",
         "description": "描述项目的架构、模块关系和数据流",
-        "dependsOn": ["L1"],
+        "dependsOn": [
+            "L1"
+        ],
         "createdAt": "2024-01-01T00:00:00Z",
-        "lastModified": "2026-01-16T00:00:00Z",
-        "version": "1.0.0"
+        "lastModified": "2026-01-21T00:00:00Z",
+        "version": "1.1.0"
     },
     "architecture": {
-        "style": "Layered Architecture with Plugin Pattern",
-        "description": "采用分层架构+插件模式，确保模块间低耦合高内聚",
+        "style": "Layered Architecture with Web Monitoring Pattern",
+        "description": "采用分层架构+Web监控模式，确保模块间低耦合高内聚，通过api/统一接口实现前后端分离",
         "layers": [
             {
-                "name": "Presentation Layer",
-                "role": "用户界面层",
-                "responsibilities": ["UI展示", "用户交互", "进度展示"],
-                "technologies": ["PyQt5", "QSS样式"]
+                "name": "Presentation Layer (Web Frontend)",
+                "role": "Web前端展示层",
+                "responsibilities": [
+                    "UI展示",
+                    "用户交互",
+                    "进度展示",
+                    "实时监控"
+                ],
+                "technologies": [
+                    "Bootstrap 5",
+                    "Vanilla JS",
+                    "Chart.js",
+                    "WebSocket"
+                ],
+                "path": "web/"
+            },
+            {
+                "name": "API Gateway Layer",
+                "role": "API网关层",
+                "responsibilities": [
+                    "统一接口映射",
+                    "请求路由",
+                    "认证鉴权",
+                    "速率限制"
+                ],
+                "technologies": [
+                    "FastAPI",
+                    "REST API",
+                    "WebSocket"
+                ],
+                "path": "api/"
             },
             {
                 "name": "Application Layer",
                 "role": "应用层",
-                "responsibilities": ["任务调度", "状态管理", "API网关"],
-                "technologies": ["FastAPI", "Task Scheduler"]
+                "responsibilities": [
+                    "任务调度",
+                    "状态管理",
+                    "业务逻辑"
+                ],
+                "technologies": [
+                    "Python",
+                    "Task Scheduler"
+                ],
+                "path": "api/backend/"
             },
             {
                 "name": "AI Processing Layer",
                 "role": "AI处理层",
-                "responsibilities": ["AI推理", "命令理解", "参数优化"],
-                "technologies": ["Ollama", "PyTorch", "InsightFace"]
+                "responsibilities": [
+                    "AI推理",
+                    "命令理解",
+                    "参数优化"
+                ],
+                "technologies": [
+                    "Ollama",
+                    "PyTorch",
+                    "InsightFace"
+                ],
+                "path": "src/ai/"
             },
             {
                 "name": "Processing Layer",
                 "role": "处理层",
-                "responsibilities": ["图像处理", "视频处理", "实时处理"],
-                "technologies": ["OpenCV", "MoviePy", "Pillow"]
+                "responsibilities": [
+                    "图像处理",
+                    "视频处理",
+                    "实时处理"
+                ],
+                "technologies": [
+                    "OpenCV",
+                    "MoviePy",
+                    "Pillow"
+                ],
+                "path": "src/processing/"
             },
             {
                 "name": "Integration Layer",
                 "role": "集成层",
-                "responsibilities": ["第三方引擎集成", "硬件抽象"],
-                "technologies": ["Deep-Live-Cam", "FaceFusion", "iRoop"]
+                "responsibilities": [
+                    "第三方引擎集成",
+                    "硬件抽象"
+                ],
+                "technologies": [
+                    "Deep-Live-Cam",
+                    "FaceFusion",
+                    "iRoop"
+                ],
+                "path": "src/integrations/"
             },
             {
                 "name": "Infrastructure Layer",
                 "role": "基础设施层",
-                "responsibilities": ["文件操作", "日志记录", "配置管理"],
-                "technologies": ["Python Standard Library", "Logging"]
+                "responsibilities": [
+                    "文件操作",
+                    "日志记录",
+                    "配置管理",
+                    "脚本执行"
+                ],
+                "technologies": [
+                    "Python Standard Library",
+                    "Logging",
+                    "Scripts"
+                ],
+                "path": "scripts/"
             }
         ]
     },
     "modules": {
+        "web": {
+            "description": "Web监控前端模块",
+            "path": "web/",
+            "components": [
+                "start_monitor.py - Web服务启动入口",
+                "templates/ - HTML模板",
+                "static/js/ - JavaScript模块",
+                "static/css/ - 样式文件",
+                "static/images/ - 图片资源"
+            ],
+            "responsibilities": [
+                "提供Web监控界面",
+                "实时数据可视化",
+                "用户交互处理",
+                "WebSocket实时通信"
+            ],
+            "outputs": [
+                "user_requests",
+                "display_data"
+            ],
+            "inputs": [
+                "api_responses",
+                "ws_messages"
+            ],
+            "dependencies": [
+                "api"
+            ],
+            "path_reference": "project_config.json#deployment#entryPoints#web"
+        },
+        "api": {
+            "description": "API网关与后端服务模块",
+            "path": "api/",
+            "components": [
+                "backend/app.py - FastAPI应用主程序",
+                "backend/routes.py - 路由定义",
+                "backend/script_manager.py - 脚本管理",
+                "backend/system_monitor.py - 系统监控",
+                "backend/socket_events.py - WebSocket事件",
+                "frontend/api.js - 前端API封装",
+                "mapping/api_mapping.json - API映射配置"
+            ],
+            "responsibilities": [
+                "统一接口映射",
+                "请求路由与分发",
+                "脚本执行控制",
+                "系统状态监控",
+                "实时数据推送"
+            ],
+            "outputs": [
+                "api_responses",
+                "ws_messages",
+                "execution_results"
+            ],
+            "inputs": [
+                "user_requests",
+                "web_requests",
+                "script_outputs"
+            ],
+            "dependencies": [
+                "scripts",
+                "src"
+            ],
+            "path_reference": "project_config.json#deployment#entryPoints#api"
+        },
+        "scripts": {
+            "description": "自动化脚本模块",
+            "path": "scripts/",
+            "components": [
+                "entry.py - 统一入口脚本",
+                "health_monitor/ - 健康监控脚本",
+                "start/ - 启动脚本",
+                "deploy/ - 部署脚本",
+                "verify/ - 验证脚本",
+                "scripts_config.json - 脚本配置"
+            ],
+            "responsibilities": [
+                "自动化任务执行",
+                "健康检查与监控",
+                "环境验证",
+                "部署管理"
+            ],
+            "outputs": [
+                "execution_results",
+                "health_status",
+                "logs"
+            ],
+            "inputs": [
+                "api_commands",
+                "scheduler_events"
+            ],
+            "dependencies": [],
+            "path_reference": "project_config.json#subprojects#scripts"
+        },
         "frontend": {
             "description": "前端UI模块",
             "path": "src/frontend/",
@@ -68,8 +234,14 @@
                 "显示处理进度",
                 "管理弹窗状态"
             ],
-            "outputs": ["user_events", "progress_updates"],
-            "dependencies": ["backend", "config"]
+            "outputs": [
+                "user_events",
+                "progress_updates"
+            ],
+            "dependencies": [
+                "backend",
+                "config"
+            ]
         },
         "backend": {
             "description": "后端服务模块",
@@ -86,9 +258,18 @@
                 "处理认证和日志",
                 "速率限制"
             ],
-            "outputs": ["api_responses", "task_status"],
-            "inputs": ["user_requests", "task_commands"],
-            "dependencies": ["ai", "processing"]
+            "outputs": [
+                "api_responses",
+                "task_status"
+            ],
+            "inputs": [
+                "user_requests",
+                "task_commands"
+            ],
+            "dependencies": [
+                "ai",
+                "processing"
+            ]
         },
         "ai": {
             "description": "AI模块",
@@ -105,9 +286,19 @@
                 "图像质量分析",
                 "命令理解与解析"
             ],
-            "outputs": ["ai_decisions", "analysis_results", "suggested_parameters"],
-            "inputs": ["media_data", "user_commands"],
-            "dependencies": ["config", "integrations"]
+            "outputs": [
+                "ai_decisions",
+                "analysis_results",
+                "suggested_parameters"
+            ],
+            "inputs": [
+                "media_data",
+                "user_commands"
+            ],
+            "dependencies": [
+                "config",
+                "integrations"
+            ]
         },
         "processing": {
             "description": "媒体处理模块",
@@ -124,9 +315,18 @@
                 "实时流处理",
                 "批量任务处理"
             ],
-            "outputs": ["processed_media", "progress_events"],
-            "inputs": ["source_media", "processing_parameters"],
-            "dependencies": ["utils", "ai"]
+            "outputs": [
+                "processed_media",
+                "progress_events"
+            ],
+            "inputs": [
+                "source_media",
+                "processing_parameters"
+            ],
+            "dependencies": [
+                "utils",
+                "ai"
+            ]
         },
         "integrations": {
             "description": "第三方引擎集成模块",
@@ -141,9 +341,15 @@
                 "统一调用接口",
                 "处理引擎差异"
             ],
-            "outputs": ["engine_results"],
-            "inputs": ["engine_commands"],
-            "dependencies": ["ai"]
+            "outputs": [
+                "engine_results"
+            ],
+            "inputs": [
+                "engine_commands"
+            ],
+            "dependencies": [
+                "ai"
+            ]
         },
         "utils": {
             "description": "工具模块",
@@ -160,7 +366,9 @@
                 "文件操作封装",
                 "日志记录"
             ],
-            "outputs": ["utilities"],
+            "outputs": [
+                "utilities"
+            ],
             "inputs": [],
             "dependencies": []
         },
@@ -175,70 +383,154 @@
                 "管理应用配置",
                 "环境变量加载"
             ],
-            "outputs": ["config_data"],
+            "outputs": [
+                "config_data"
+            ],
             "dependencies": []
         }
     },
     "relationships": {
         "dataFlow": {
-            "description": "主要数据流路径",
+            "description": "主要数据流路径（Web监控模式）",
             "paths": [
+                {
+                    "from": "web",
+                    "to": "api",
+                    "data": "用户请求、API调用",
+                    "direction": "downstream",
+                    "protocol": "HTTP/HTTPS + WebSocket"
+                },
+                {
+                    "from": "api",
+                    "to": "scripts",
+                    "data": "脚本执行命令、参数传递",
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
+                },
+                {
+                    "from": "api",
+                    "to": "src/backend",
+                    "data": "处理命令、媒体数据",
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
+                },
+                {
+                    "from": "api",
+                    "to": "src/ai",
+                    "data": "AI推理请求",
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
+                },
+                {
+                    "from": "scripts",
+                    "to": "api",
+                    "data": "执行结果、健康状态、日志",
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
+                },
+                {
+                    "from": "src",
+                    "to": "api",
+                    "data": "处理结果、状态更新",
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
+                },
+                {
+                    "from": "api",
+                    "to": "web",
+                    "data": "API响应、WebSocket实时消息",
+                    "direction": "upstream",
+                    "protocol": "HTTP/HTTPS + WebSocket"
+                },
                 {
                     "from": "frontend",
                     "to": "backend",
                     "data": "用户请求、任务配置",
-                    "direction": "downstream"
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "backend",
                     "to": "ai",
                     "data": "处理命令、媒体数据",
-                    "direction": "downstream"
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "ai",
                     "to": "processing",
                     "data": "AI决策、处理参数",
-                    "direction": "downstream"
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "processing",
                     "to": "integrations",
                     "data": "处理指令",
-                    "direction": "downstream"
+                    "direction": "downstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "integrations",
                     "to": "processing",
                     "data": "处理结果",
-                    "direction": "upstream"
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "processing",
                     "to": "ai",
                     "data": "质量反馈",
-                    "direction": "upstream"
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "ai",
                     "to": "backend",
                     "data": "分析结果、参数建议",
-                    "direction": "upstream"
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
                 },
                 {
                     "from": "backend",
                     "to": "frontend",
                     "data": "任务状态、进度更新",
-                    "direction": "upstream"
+                    "direction": "upstream",
+                    "protocol": "Internal Python Call"
                 }
             ]
         },
         "dependencies": {
-            "frontend": ["backend", "config"],
-            "backend": ["ai", "processing", "utils"],
-            "ai": ["config", "integrations", "utils"],
-            "processing": ["ai", "utils", "integrations"],
-            "integrations": ["utils"],
+            "web": [
+                "api"
+            ],
+            "api": [
+                "scripts",
+                "src"
+            ],
+            "scripts": [],
+            "frontend": [
+                "backend",
+                "config"
+            ],
+            "backend": [
+                "ai",
+                "processing",
+                "utils"
+            ],
+            "ai": [
+                "config",
+                "integrations",
+                "utils"
+            ],
+            "processing": [
+                "ai",
+                "utils",
+                "integrations"
+            ],
+            "integrations": [
+                "utils"
+            ],
             "utils": [],
             "config": []
         },
@@ -246,22 +538,30 @@
             "patterns": [
                 {
                     "pattern": "Synchronous Request-Response",
-                    "modules": ["frontend <-> backend"],
+                    "modules": [
+                        "frontend <-> backend"
+                    ],
                     "useCase": "API调用"
                 },
                 {
                     "pattern": "Asynchronous Event-Driven",
-                    "modules": ["processing <-> frontend"],
+                    "modules": [
+                        "processing <-> frontend"
+                    ],
                     "useCase": "进度更新"
                 },
                 {
                     "pattern": "Callback",
-                    "modules": ["ai -> processing"],
+                    "modules": [
+                        "ai -> processing"
+                    ],
                     "useCase": "AI分析完成回调"
                 },
                 {
                     "pattern": "Streaming",
-                    "modules": ["realtime -> frontend"],
+                    "modules": [
+                        "realtime -> frontend"
+                    ],
                     "useCase": "实时视频流"
                 }
             ]
@@ -341,32 +641,52 @@
             {
                 "name": "IDLE",
                 "description": "空闲状态，等待用户操作",
-                "transitions": ["SELECT_SOURCE", "START_TASK"]
+                "transitions": [
+                    "SELECT_SOURCE",
+                    "START_TASK"
+                ]
             },
             {
                 "name": "SOURCE_SELECTED",
                 "description": "已选择源文件，等待目标选择",
-                "transitions": ["SELECT_TARGET", "START_TASK"]
+                "transitions": [
+                    "SELECT_TARGET",
+                    "START_TASK"
+                ]
             },
             {
                 "name": "PROCESSING",
                 "description": "处理中状态",
-                "transitions": ["PAUSE", "CANCEL", "COMPLETE", "ERROR"]
+                "transitions": [
+                    "PAUSE",
+                    "CANCEL",
+                    "COMPLETE",
+                    "ERROR"
+                ]
             },
             {
                 "name": "PAUSED",
                 "description": "暂停状态",
-                "transitions": ["RESUME", "CANCEL"]
+                "transitions": [
+                    "RESUME",
+                    "CANCEL"
+                ]
             },
             {
                 "name": "COMPLETED",
                 "description": "完成状态",
-                "transitions": ["NEW_TASK", "EXPORT"]
+                "transitions": [
+                    "NEW_TASK",
+                    "EXPORT"
+                ]
             },
             {
                 "name": "ERROR",
                 "description": "错误状态",
-                "transitions": ["RETRY", "CANCEL"]
+                "transitions": [
+                    "RETRY",
+                    "CANCEL"
+                ]
             }
         ]
     },
@@ -385,4 +705,3 @@
         }
     }
 }
-

@@ -202,11 +202,11 @@ config_files = ProjectPaths.get_config_files()
 
 ### 部署阶段 vs 运行阶段
 
-| 阶段 | 环境 | 说明 |
-|------|------|------|
-| 验证 | 本地 | 检查 Python、pip、目录结构 |
-| 安装 | 本地 | 使用本地 pip 安装依赖 |
-| 设置 | 本地 | 创建目录、配置文件 |
+| 阶段 | 环境     | 说明                          |
+| ---- | -------- | ----------------------------- |
+| 验证 | 本地     | 检查 Python、pip、目录结构    |
+| 安装 | 本地     | 使用本地 pip 安装依赖         |
+| 设置 | 本地     | 创建目录、配置文件            |
 | 启动 | 虚拟环境 | 使用 ai_popup_env 中的 Python |
 
 ### 虚拟环境位置
@@ -217,50 +217,57 @@ config_files = ProjectPaths.get_config_files()
 ## 脚本说明
 
 ### 入口脚本
-| 脚本 | 说明 |
-|------|------|
-| `entry.py` | 统一入口脚本，负责调度和执行所有自动化脚本 |
-| `main_controller.py` | 主控制器，协调各模块执行 |
+
+| 脚本                 | 说明                                       |
+| -------------------- | ------------------------------------------ |
+| `entry.py`           | 统一入口脚本，负责调度和执行所有自动化脚本 |
+| `main_controller.py` | 主控制器，协调各模块执行                   |
 
 ### 健康检查脚本
-| 脚本 | 说明 |
-|------|------|
-| `health_check.py` | 健康检查脚本，验证项目各组件状态 |
+
+| 脚本                      | 说明                                    |
+| ------------------------- | --------------------------------------- |
+| `health_check.py`         | 健康检查脚本，验证项目各组件状态        |
 | `start_health_monitor.py` | 健康监控启动脚本，支持 `--verbose` 参数 |
-| `health/` | 健康检查模块目录，包含各类检查器 |
-| `health_monitor/` | 健康监控脚本目录，包含监控脚本 |
+| `health/`                 | 健康检查模块目录，包含各类检查器        |
+| `health_monitor/`         | 健康监控脚本目录，包含监控脚本          |
 
 ### 启动脚本
-| 脚本 | 说明 |
-|------|------|
-| `start_backend_simple.py` | 启动后端服务 |
-| `start_gui_py.py` | 启动 GUI 界面 |
+
+| 脚本                      | 说明          |
+| ------------------------- | ------------- |
+| `start_backend_simple.py` | 启动后端服务  |
+| `start_gui_py.py`         | 启动 GUI 界面 |
 
 ### 验证脚本
-| 脚本 | 说明 |
-|------|------|
-| `verify_paths.py` | 验证项目路径配置 |
-| `validate_configs.py` | 验证配置文件 |
+
+| 脚本                       | 说明              |
+| -------------------------- | ----------------- |
+| `verify_paths.py`          | 验证项目路径配置  |
+| `validate_configs.py`      | 验证配置文件      |
 | `check_pylance_version.py` | 检查 Pylance 版本 |
 
 ### 部署脚本
-| 脚本 | 说明 |
-|------|------|
-| `deploy.sh` | Shell 部署脚本 |
-| `emergency_recovery.sh` | 紧急恢复脚本 |
-| `deploy/` | 部署模块目录 |
+
+| 脚本                    | 说明           |
+| ----------------------- | -------------- |
+| `deploy.sh`             | Shell 部署脚本 |
+| `emergency_recovery.sh` | 紧急恢复脚本   |
+| `deploy/`               | 部署模块目录   |
 
 ### Web 相关脚本
-| 脚本 | 说明 |
-|------|------|
-| `web/` | Web 相关脚本目录 |
-| `sync_web_config.sh` | 同步 Web 配置 |
+
+| 脚本                 | 说明             |
+| -------------------- | ---------------- |
+| `web/`               | Web 相关脚本目录 |
+| `sync_web_config.sh` | 同步 Web 配置    |
 
 ### 测试脚本
-| 脚本 | 说明 |
-|------|------|
-| `test/` | 测试模块目录 |
-| `test_runner.py` | 测试运行器 |
+
+| 脚本             | 说明         |
+| ---------------- | ------------ |
+| `test/`          | 测试模块目录 |
+| `test_runner.py` | 测试运行器   |
 
 ## 输出路径
 
@@ -289,21 +296,23 @@ python3 scripts/validate_configs.py
 ## 常见问题
 
 ### Q: 如何添加新脚本？
+
 1. 在相应目录创建 Python 脚本
 2. 在 `scripts_config.json` 中注册脚本信息
 3. 更新 `scripts_README.md` 文档
 
 ### Q: 如何运行特定模块的健康检查？
+
 ```bash
 python3 scripts/entry.py --module health --method run
 ```
 
 ### Q: 如何查看所有可用模块？
+
 ```bash
 python3 scripts/entry.py --list-modules
 ```
 
 ---
 
-最后更新: 2026-01-17
-
+最后更新: 2026-01-21

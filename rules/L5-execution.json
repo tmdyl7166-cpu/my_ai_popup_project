@@ -918,5 +918,399 @@
                 "设置API健康检查"
             ]
         }
+    },
+    "frontendRendering": {
+        "description": "前端动态渲染规则 - 实现数据驱动UI",
+        "corePrinciples": [
+            "前端不写死，所有UI由后端API数据驱动",
+            "页面结构 = 后端返回的数据结构",
+            "HTML仅负责容器结构、主题框架、插槽和挂载点"
+        ],
+        "dataDrivenUI": {
+            "enabled": true,
+            "source": "api/mapping/api_mapping.json",
+            "rendering": {
+                "modules": {
+                    "source": "api_mapping.json#mappings",
+                    "method": "动态遍历生成模块卡片"
+                },
+                "parameters": {
+                    "source": "api_mapping.json#mappings#*#parameters",
+                    "method": "动态生成表单输入区域"
+                },
+                "status": {
+                    "source": "api_mapping.json#mappings#*#handler",
+                    "method": "实时状态映射"
+                }
+            }
+        },
+        "componentLifecycle": {
+            "mount": [
+                "从API获取模块列表",
+                "初始化WebSocket连接",
+                "订阅实时数据流"
+            ],
+            "update": [
+                "接收WebSocket消息",
+                "更新组件状态",
+                "重新渲染变更部分"
+            ],
+            "unmount": [
+                "取消WebSocket订阅",
+                "清理定时器",
+                "释放资源"
+            ]
+        }
+    },
+    "functionCardSpecification": {
+        "description": "功能模块卡片规范 - 前端UI呈现标准",
+        "requiredFields": [
+            {
+                "field": "bubbleDetection",
+                "name": "冒泡检测",
+                "type": "boolean",
+                "required": true,
+                "default": true,
+                "description": "是否启用冒泡事件检测"
+            },
+            {
+                "field": "frontendName",
+                "name": "前端功能名称",
+                "type": "string",
+                "required": true,
+                "description": "前端显示的功能名称"
+            },
+            {
+                "field": "description",
+                "name": "功能说明",
+                "type": "string",
+                "required": true,
+                "description": "一句话自然语言功能说明"
+            },
+            {
+                "field": "inputParameters",
+                "name": "输入参数区域",
+                "type": "object",
+                "required": true,
+                "dynamic": true,
+                "description": "动态生成的参数输入区域"
+            },
+            {
+                "field": "backendEndpoint",
+                "name": "后端预留节点",
+                "type": "string",
+                "required": true,
+                "description": "API端点路径"
+            },
+            {
+                "field": "optimization",
+                "name": "优化建议",
+                "type": "string",
+                "required": false,
+                "description": "功能优化建议"
+            },
+            {
+                "field": "tags",
+                "name": "功能标签",
+                "type": "array",
+                "required": true,
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "功能具体说明",
+                        "API接口",
+                        "脚本运行逻辑",
+                        "DAG"
+                    ]
+                },
+                "description": "功能分类标签"
+            },
+            {
+                "field": "status",
+                "name": "状态标识",
+                "type": "string",
+                "required": true,
+                "enum": [
+                    "available",
+                    "partial",
+                    "unavailable"
+                ],
+                "enumValues": {
+                    "available": "🟢 可用",
+                    "partial": "🟡 部分完成",
+                    "unavailable": "🔴 未部署"
+                },
+                "description": "功能部署状态"
+            }
+        ],
+        "cardTemplate": {
+            "structure": [
+                "header: frontendName + status",
+                "body: description + tags",
+                "params: inputParameters (dynamic)",
+                "actions: runButton + configButton",
+                "footer: backendEndpoint + optimization"
+            ],
+            "events": {
+                "click": "打开详情/执行操作",
+                "submit": "提交参数到后端",
+                "statusChange": "更新状态显示"
+            }
+        }
+    },
+    "realtimeCommunication": {
+        "description": "实时通信约束 - WebSocket/SSE配置",
+        "websocket": {
+            "enabled": true,
+            "path": "/ws",
+            "channels": [
+                {
+                    "name": "progress",
+                    "description": "任务进度更新",
+                    "events": [
+                        "task_progress",
+                        "task_status"
+                    ]
+                },
+                {
+                    "name": "log",
+                    "description": "日志实时推送",
+                    "events": [
+                        "script_log",
+                        "system_log"
+                    ]
+                },
+                {
+                    "name": "data",
+                    "description": "数据更新",
+                    "events": [
+                        "metrics_update",
+                        "status_update"
+                    ]
+                },
+                {
+                    "name": "heartbeat",
+                    "description": "心跳检测",
+                    "events": [
+                        "ping",
+                        "pong"
+                    ]
+                }
+            ],
+            "reconnect": {
+                "enabled": true,
+                "maxAttempts": 5,
+                "delay": 3000,
+                "strategy": "exponentialBackoff"
+            },
+            "heartbeat": {
+                "interval": 30000,
+                "timeout": 10000
+            }
+        },
+        "sse": {
+            "enabled": false,
+            "path": "/sse",
+            "useCase": "备用实时通信方案"
+        },
+        "fallback": {
+            "polling": {
+                "enabled": true,
+                "interval": 5000,
+                "backoff": "exponential",
+                "maxDelay": 30000
+            },
+            "trigger": "WebSocket不可用时自动降级"
+        }
+    },
+    "apiMappingMechanism": {
+        "description": "API映射机制 - 前后端统一调用规范",
+        "mappingSource": {
+            "primary": "api/mapping/api_mapping.json",
+            "reference": "api/config/api_config.json"
+        },
+        "mappingRules": [
+            {
+                "rule": "前端不直接调用后端模块",
+                "enforcement": "所有调用必须通过api_mapping.json映射"
+            },
+            {
+                "rule": "接口契约驱动",
+                "enforcement": "前端根据api_mapping.json生成调用代码"
+            },
+            {
+                "rule": "统一鉴权",
+                "enforcement": "所有API调用使用统一Authorization头"
+            },
+            {
+                "rule": "权限控制",
+                "enforcement": "通过'data-feature'属性控制UI权限"
+            }
+        ],
+        "frontendIntegration": {
+            "wsConnect": {
+                "script": "web/static/js/ws.js 或 web/static/js/monitor.js",
+                "method": "WS.connectPipelineWS(taskId)",
+                "purpose": "订阅任务进度或日志流"
+            },
+            "rendering": {
+                "charts": "web/static/js/components/charting.js",
+                "progress": "web/static/js/components/progress.js",
+                "spinner": "web/static/js/components/spinner.js",
+                "toast": "web/static/js/components/toast.js"
+            },
+            "formSubmission": {
+                "listener": "#runForm",
+                "extraction": "name与params(JSON)",
+                "action": "POST /api/run",
+                "output": "写入#result"
+            },
+            "modulesList": {
+                "source": "modules.js 或 api_mapping.json",
+                "display": "接口路径、示例请求/响应"
+            }
+        }
+    },
+    "bubbleDetection": {
+        "description": "冒泡检测规则 - 事件监控与上报",
+        "enabled": true,
+        "events": [
+            {
+                "type": "click",
+                "description": "点击事件",
+                "bubbles": true,
+                "capturable": true
+            },
+            {
+                "type": "submit",
+                "description": "表单提交事件",
+                "bubbles": true,
+                "capturable": true
+            },
+            {
+                "type": "change",
+                "description": "值变更事件",
+                "bubbles": true,
+                "capturable": true
+            }
+        ],
+        "tracking": {
+            "elements": [
+                {
+                    "selector": "[data-bubble]",
+                    "description": "标记需要冒泡检测的元素"
+                },
+                {
+                    "selector": "[data-module]",
+                    "description": "模块卡片元素"
+                },
+                {
+                    "selector": "[data-action]",
+                    "description": "可执行操作元素"
+                }
+            ],
+            "data": [
+                "elementId",
+                "elementType",
+                "eventType",
+                "timestamp",
+                "moduleName",
+                "action"
+            ]
+        },
+        "reporting": {
+            "endpoint": "/api/bubbles",
+            "method": "POST",
+            "batch": {
+                "enabled": true,
+                "maxSize": 100,
+                "interval": 5000
+            }
+        }
+    },
+    "scriptToApiMapping": {
+        "description": "脚本到API映射规则 - 自动化脚本调用规范",
+        "mappingSource": "scripts/scripts_config.json",
+        "rules": [
+            {
+                "rule": "脚本不直接暴露给前端",
+                "implementation": "通过api_mapping.json#mappings#scripts映射"
+            },
+            {
+                "rule": "统一调用入口",
+                "implementation": "POST /api/scripts/{name}/run"
+            },
+            {
+                "rule": "状态查询",
+                "implementation": "GET /api/scripts/{name}/status"
+            },
+            {
+                "rule": "停止执行",
+                "implementation": "POST /api/scripts/{name}/stop"
+            }
+        ],
+        "responseContract": {
+            "run": {
+                "job_id": "string",
+                "status": "string",
+                "message": "string",
+                "timestamp": "string"
+            },
+            "status": {
+                "name": "string",
+                "status": "string",
+                "job_id": "string",
+                "start_time": "string",
+                "duration": "number",
+                "progress": "number"
+            }
+        }
+    },
+    "rulesIntegration": {
+        "description": "规则系统联动配置 - 与project_config.json联动",
+        "linkedFiles": [
+            {
+                "path": "project_config.json",
+                "fields": [
+                    "rules.metaGoal",
+                    "rules.understanding",
+                    "rules.constraints",
+                    "rules.decisions",
+                    "rules.execution",
+                    "rules.config"
+                ]
+            },
+            {
+                "path": "api/mapping/api_mapping.json",
+                "fields": [
+                    "mappings",
+                    "middleware"
+                ]
+            },
+            {
+                "path": "web/web_config.json",
+                "fields": [
+                    "integration.apis",
+                    "integration.websocket"
+                ]
+            }
+        ],
+        "syncRules": [
+            {
+                "trigger": "规则文件修改",
+                "action": "验证JSON格式",
+                "check": "与project_config.json引用一致"
+            },
+            {
+                "trigger": "project_config.json修改",
+                "action": "检查路径引用有效性",
+                "check": "更新rules联动配置"
+            }
+        ],
+        "validation": {
+            "jsonSchema": true,
+            "crossReference": true,
+            "versionAlignment": true
+        }
     }
 }

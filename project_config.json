@@ -198,7 +198,29 @@
     "decisions": "./rules/L4-decisions.json",
     "execution": "./rules/L5-execution.json",
     "config": "./rules/rules.config.js",
-    "blackboxRules": "./.blackboxrules"
+    "blackboxRules": "./.blackboxrules",
+    "integration": {
+      "enabled": true,
+      "autoSync": true,
+      "validation": {
+        "onStartup": true,
+        "onModify": true
+      },
+      "linkedConfigs": [
+        {
+          "config": "api/mapping/api_mapping.json",
+          "rulesField": "L5-execution.json#apiMappingMechanism#mappingSource#primary"
+        },
+        {
+          "config": "web/web_config.json",
+          "rulesField": "L5-execution.json#frontendRendering#dataDrivenUI#source"
+        },
+        {
+          "config": "scripts/scripts_config.json",
+          "rulesField": "L5-execution.json#scriptToApiMapping#mappingSource"
+        }
+      ]
+    }
   },
   "validation": {
     "requiredPaths": [
@@ -268,6 +290,86 @@
         "path": "./logs/app.log",
         "maxSize": "100MB",
         "backupCount": 5
+      }
+    }
+  },
+  "frontendRendering": {
+    "enabled": true,
+    "dataSource": "api/mapping/api_mapping.json",
+    "rendering": {
+      "mode": "dynamic",
+      "templateSource": "api_mapping.json#mappings",
+      "components": {
+        "charts": "web/static/js/components/charting.js",
+        "progress": "web/static/js/components/progress.js",
+        "spinner": "web/static/js/components/spinner.js",
+        "toast": "web/static/js/components/toast.js",
+        "ws": "web/static/js/ws.js"
+      }
+    },
+    "lifecycle": {
+      "mount": {
+        "actions": [
+          "fetchModules",
+          "initWS",
+          "subscribeStreams"
+        ]
+      },
+      "update": {
+        "actions": [
+          "handleWSMessage",
+          "updateState",
+          "reRender"
+        ]
+      },
+      "unmount": {
+        "actions": [
+          "unsubscribeWS",
+          "clearTimers",
+          "releaseResources"
+        ]
+      }
+    }
+  },
+  "apiMapping": {
+    "enabled": true,
+    "source": "api/mapping/api_mapping.json",
+    "reference": "api/config/api_config.json",
+    "frontend": {
+      "entry": "api/frontend/api.js",
+      "authHeader": "Authorization"
+    },
+    "permissions": {
+      "control": "data-feature",
+      "attribute": "Permission.applyGuards()"
+    }
+  },
+  "realtime": {
+    "websocket": {
+      "enabled": true,
+      "path": "/ws",
+      "channels": [
+        "progress",
+        "log",
+        "data",
+        "heartbeat"
+      ],
+      "reconnect": {
+        "enabled": true,
+        "maxAttempts": 5,
+        "delay": 3000,
+        "strategy": "exponentialBackoff"
+      },
+      "heartbeat": {
+        "interval": 30000,
+        "timeout": 10000
+      }
+    },
+    "fallback": {
+      "polling": {
+        "enabled": true,
+        "interval": 5000,
+        "maxDelay": 30000
       }
     }
   }

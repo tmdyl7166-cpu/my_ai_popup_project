@@ -120,12 +120,12 @@ frontend → backend → ai → processing → integrations
 
 ## 入口点
 
-| 入口 | 文件 | 说明 |
-|------|------|------|
-| 主入口 | `main.py` | 程序主入口 |
-| GUI入口 | `frontend/main_window.py` | GUI启动入口 |
-| API入口 | `backend/api_server.py` | API服务启动入口 |
-| CLI入口 | `cli.py` | 命令行接口入口 |
+| 入口    | 文件                      | 说明            |
+| ------- | ------------------------- | --------------- |
+| 主入口  | `main.py`                 | 程序主入口      |
+| GUI入口 | `frontend/main_window.py` | GUI启动入口     |
+| API入口 | `backend/api_server.py`   | API服务启动入口 |
+| CLI入口 | `cli.py`                  | 命令行接口入口  |
 
 ## 运行方式
 
@@ -176,5 +176,5 @@ python scripts/start/unified_launcher.py --mode all
 ---
 
 _创建时间: 2026-01-16_
-_最后更新: 2026-01-19_
+_最后更新: 2026-01-21_
 _版本: 2.0.0_

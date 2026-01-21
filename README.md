@@ -5,7 +5,7 @@
 **🎉 虚拟环境修复完成 - 生产就绪状态**
 
 ✅ **虚拟环境已重建** - Python 3.10.12 + 68个依赖包  
-**部署进度**: 75% | **版本**: 1.0.0 | **最后更新**: 2026-01-18
+**部署进度**: 75% | **版本**: 1.0.0 | **最后更新**: 2026-01-21
 
 ---
 
@@ -47,12 +47,14 @@ python scripts/verify_venv.py
 ## 核心目录结构
 
 ### 1. my_ai_popup_project/web - 全局统一入口 ⭐
+
 作为管理员整体项目部署的全局统一入口，实现对全局的实时健康监控以及所有子目录子项目功能脚本和自动化脚本的映射。
 
 - **功能**: 实时健康监控、脚本状态映射、系统资源可视化
 - **访问地址**: `http://localhost:8080`
 
 ### 2. src - AI弹窗项目核心 ⭐
+
 包含AI弹窗项目的各配置功能核心源码，按照分层架构组织为多个功能模块。
 
 ```
@@ -67,23 +69,26 @@ src/
 ```
 
 ### 3. rules - 规则配置系统 ⭐
+
 所有JSON配置内容代表整个项目运行的逻辑和执行规则，采用五层架构：
 
-| 层级 | 文件 | 作用 |
-|------|------|------|
-| L1 | meta-goal.json | 元目标层 - 项目愿景和价值观 |
-| L2 | understanding.json | 全局理解层 - 架构设计和数据流 |
-| L3 | constraints.json | 约束层 - 技术规范和依赖关系 |
-| L4 | decisions.json | 决策层 - 设计决策和技术选型 |
-| L5 | execution.json | 执行层 - 具体操作和任务分配 |
+| 层级 | 文件               | 作用                          |
+| ---- | ------------------ | ----------------------------- |
+| L1   | meta-goal.json     | 元目标层 - 项目愿景和价值观   |
+| L2   | understanding.json | 全局理解层 - 架构设计和数据流 |
+| L3   | constraints.json   | 约束层 - 技术规范和依赖关系   |
+| L4   | decisions.json     | 决策层 - 设计决策和技术选型   |
+| L5   | execution.json     | 执行层 - 具体操作和任务分配   |
 
 ### 4. docs - 项目文档 ⭐
+
 包含整个项目的详细说明以及任务部署的详细说明情况。
 
 - **project_docs/**: 项目架构文档、运行时逻辑、依赖配置
 - **deployment_progress/**: 部署进度跟踪、任务清单、优化机会
 
 ### 5. assets - 资源文件 ⭐
+
 项目所需的所有资源文件、第三方开源项目和媒体数据。
 
 ```
@@ -102,6 +107,7 @@ assets/
 ```
 
 ### 6. scripts - 自动化脚本 ⭐
+
 对全局项目的自动化脚本，用于环境验证、依赖安装、健康检查、部署等任务。
 
 ```
@@ -140,6 +146,7 @@ AI命令理解（Ollama）
 ## 任务部署模式
 
 ### 简单模式
+
 用户选择次要合成文件类型，AI简单的调度处理引擎直接进行合成。
 
 - 图片 ↔ 图片合成
@@ -147,9 +154,11 @@ AI命令理解（Ollama）
 - 图片 → 实时摄像头合成
 
 ### 高级模式
+
 用户仅选择主要文件后与AI产生自然语言的交流，让AI深度理解分析识别输入的任务内容，根据主要参数与任务要求，结合所有引擎和学习库创造出合成内容。
 
 **示例命令**:
+
 ```
 "把这张照片的脸换到视频里"
 "开始实时摄像头换脸"
@@ -170,14 +179,34 @@ AI命令理解（Ollama）
 
 ## 技术栈概览
 
-| 领域 | 技术 |
-|------|------|
-| 前端 | PyQt5, Bootstrap 5 + Vanilla JS |
-| 后端 | FastAPI, Uvicorn, WebSocket |
-| AI | Ollama (LLaMA 3.2:3b), InsightFace, face_recognition |
-| 处理 | OpenCV, MoviePy, Pillow, NumPy |
-| 第三方 | Deep-Live-Cam, FaceFusion, iRoop |
-| 监控 | 6个独立健康监控脚本, Web实时监控 |
+| 领域   | 技术                                                 |
+| ------ | ---------------------------------------------------- |
+| 前端   | PyQt5, Bootstrap 5 + Vanilla JS                      |
+| 后端   | FastAPI, Uvicorn, WebSocket                          |
+| AI     | Ollama (LLaMA 3.2:3b), InsightFace, face_recognition |
+| 处理   | OpenCV, MoviePy, Pillow, NumPy                       |
+| 第三方 | Deep-Live-Cam, FaceFusion, iRoop                     |
+| 监控   | 6个独立健康监控脚本, Web实时监控                     |
+
+---
+
+## 子目录独立仓库
+
+项目已为所有子目录创建独立的 Git 仓库，便于模块化开发和管理：
+
+| 子目录     | 描述                 | 仓库状态          |
+| ---------- | -------------------- | ----------------- |
+| `api/`     | API 接口和后端服务   | ✅ 独立仓库已创建 |
+| `scripts/` | 自动化脚本和工具     | ✅ 独立仓库已创建 |
+| `web/`     | Web 监控中心         | ✅ 独立仓库已创建 |
+| `rules/`   | 规则配置系统 (L1-L5) | ✅ 独立仓库已创建 |
+| `assets/`  | 资源文件和第三方引擎 | ✅ 独立仓库已创建 |
+| `docs/`    | 项目文档             | ✅ 独立仓库已创建 |
+| `logs/`    | 日志文件             | ✅ 独立仓库已创建 |
+| `src/`     | 核心源码             | ✅ 独立仓库已创建 |
+| `tests/`   | 测试模块             | ✅ 独立仓库已创建 |
+
+**注意**: 每个子目录现在都是独立的 Git 仓库，可以单独推送至 GitHub 或其他远程仓库。
 
 ---
 
@@ -261,6 +290,7 @@ my_ai_popup_project/
 4. 等待容器构建完成
 
 **预装扩展**:
+
 - AI 开发工具 (Copilot, Blackbox)
 - Python 开发 (Pylance, Ruff, 测试工具)
 - Web 开发 (ESLint, Prettier, Vue)
@@ -278,12 +308,12 @@ my_ai_popup_project/
 
 ## 文档资源
 
-| 文档 | 位置 |
-|------|------|
-| 项目架构 | `docs/project_docs/01-project-architecture.md` |
-| 运行时逻辑 | `docs/project_docs/02-runtime-logic.md` |
-| 部署进度 | `docs/deployment_progress/01-整体进度.md` |
-| API文档 | `docs/project_docs/04-frontend-backend-api.md` |
+| 文档         | 位置                                                |
+| ------------ | --------------------------------------------------- |
+| 项目架构     | `docs/project_docs/01-project-architecture.md`      |
+| 运行时逻辑   | `docs/project_docs/02-runtime-logic.md`             |
+| 部署进度     | `docs/deployment_progress/01-整体进度.md`           |
+| API文档      | `docs/project_docs/04-frontend-backend-api.md`      |
 | 虚拟环境修复 | `docs/deployment_progress/虚拟环境修复-20260118.md` |
 
 ---
@@ -291,15 +321,19 @@ my_ai_popup_project/
 ## 重要提醒
 
 ### ⚖️ 规则遵循
+
 本项目严格遵循**五层规则配置系统**，所有开发和部署活动必须符合规则约束。
 
 ### 🚀 快速启动
+
 ```bash
 python web/start_monitor.py --auto-install
 ```
 
 ### 🔧 虚拟环境问题修复
+
 如遇 `FileNotFoundError` 虚拟环境问题：
+
 ```bash
 # 运行验证脚本
 python scripts/verify_venv.py
@@ -319,4 +353,3 @@ python3 -m venv .venv
 - ✅ **监控体系**: 自动化脚本完善，Web监控可用
 - ✅ **系统稳定性**: 异常处理完善，容错机制健全
 - ✅ **开发环境**: Dev Container 配置完善，依赖自动更新
-

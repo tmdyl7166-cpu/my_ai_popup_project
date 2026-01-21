@@ -97,90 +97,90 @@ ws.onmessage = (event) => {
 
 ### 系统管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/health` | GET | 系统健康检查 |
-| `/api/project/status` | GET | 项目整体状态 |
-| `/api/ports` | GET | 端口状态列表 |
+| 端点                  | 方法 | 说明         |
+| --------------------- | ---- | ------------ |
+| `/api/health`         | GET  | 系统健康检查 |
+| `/api/project/status` | GET  | 项目整体状态 |
+| `/api/ports`          | GET  | 端口状态列表 |
 
 ### 脚本管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/scripts/list` | GET | 获取脚本列表 |
-| `/api/scripts/status` | GET | 获取脚本运行状态 |
-| `/api/scripts/run/{script_name}` | POST | 执行指定脚本 |
+| 端点                              | 方法 | 说明               |
+| --------------------------------- | ---- | ------------------ |
+| `/api/scripts/list`               | GET  | 获取脚本列表       |
+| `/api/scripts/status`             | GET  | 获取脚本运行状态   |
+| `/api/scripts/run/{script_name}`  | POST | 执行指定脚本       |
 | `/api/scripts/stop/{script_name}` | POST | 停止正在运行的脚本 |
 
 ### 日志管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/logs/{script_name}` | GET | 获取指定脚本的执行日志 |
-| `/api/audit/logs` | GET | 审计日志查询 |
-| `/api/audit/export` | GET | 审计日志导出 |
+| 端点                      | 方法 | 说明                   |
+| ------------------------- | ---- | ---------------------- |
+| `/api/logs/{script_name}` | GET  | 获取指定脚本的执行日志 |
+| `/api/audit/logs`         | GET  | 审计日志查询           |
+| `/api/audit/export`       | GET  | 审计日志导出           |
 
 ### 配置管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/config/{component}` | GET | 获取组件配置 |
+| 端点                      | 方法 | 说明         |
+| ------------------------- | ---- | ------------ |
+| `/api/config/{component}` | GET  | 获取组件配置 |
 | `/api/config/{component}` | POST | 更新组件配置 |
 
 ### 系统资源
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/system/resources` | GET | 系统资源使用情况 |
-| `/api/system/gpu` | GET | GPU资源使用情况 |
+| 端点                    | 方法 | 说明             |
+| ----------------------- | ---- | ---------------- |
+| `/api/system/resources` | GET  | 系统资源使用情况 |
+| `/api/system/gpu`       | GET  | GPU资源使用情况  |
 
 ### 子项目
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/subprojects` | GET | 子项目状态 |
-| `/api/deployment/progress` | GET | 项目部署进度 |
+| 端点                       | 方法 | 说明         |
+| -------------------------- | ---- | ------------ |
+| `/api/subprojects`         | GET  | 子项目状态   |
+| `/api/deployment/progress` | GET  | 项目部署进度 |
 
 ### 数据监控
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/bubbles` | GET | 实时冒泡数据 |
-| `/api/bubbles/history` | GET | 获取历史冒泡记录 |
+| 端点                   | 方法 | 说明             |
+| ---------------------- | ---- | ---------------- |
+| `/api/bubbles`         | GET  | 实时冒泡数据     |
+| `/api/bubbles/history` | GET  | 获取历史冒泡记录 |
 
 ### 性能监控
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/performance` | GET | 性能监控概览 |
-| `/api/performance/metrics` | GET | 性能指标数据 |
+| 端点                        | 方法 | 说明         |
+| --------------------------- | ---- | ------------ |
+| `/api/performance`          | GET  | 性能监控概览 |
+| `/api/performance/metrics`  | GET  | 性能指标数据 |
 | `/api/performance/optimize` | POST | 性能优化执行 |
 
 ### 视频处理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/video` | GET | 视频流概览 |
-| `/api/video/cameras` | GET | 摄像头设备 |
-| `/api/video/streams` | GET | 视频流数据 |
-| `/api/video/engines` | GET | 引擎状态 |
+| 端点                 | 方法 | 说明       |
+| -------------------- | ---- | ---------- |
+| `/api/video`         | GET  | 视频流概览 |
+| `/api/video/cameras` | GET  | 摄像头设备 |
+| `/api/video/streams` | GET  | 视频流数据 |
+| `/api/video/engines` | GET  | 引擎状态   |
 
 ### 引擎管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/engines` | GET | 引擎列表 |
-| `/api/engines/{name}/status` | GET | 引擎状态 |
-| `/api/engines/{name}/start` | POST | 启动引擎 |
-| `/api/engines/{name}/stop` | POST | 停止引擎 |
+| 端点                         | 方法 | 说明     |
+| ---------------------------- | ---- | -------- |
+| `/api/engines`               | GET  | 引擎列表 |
+| `/api/engines/{name}/status` | GET  | 引擎状态 |
+| `/api/engines/{name}/start`  | POST | 启动引擎 |
+| `/api/engines/{name}/stop`   | POST | 停止引擎 |
 
 ### 备份管理
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/backup` | GET | 获取备份列表 |
-| `/api/backup/create` | POST | 创建新备份 |
-| `/api/backup/restore/{backup_id}` | POST | 从备份恢复 |
+| 端点                              | 方法 | 说明         |
+| --------------------------------- | ---- | ------------ |
+| `/api/backup`                     | GET  | 获取备份列表 |
+| `/api/backup/create`              | POST | 创建新备份   |
+| `/api/backup/restore/{backup_id}` | POST | 从备份恢复   |
 
 ## WebSocket API
 
@@ -192,12 +192,12 @@ ws://localhost:8080/ws
 
 ### 订阅频道
 
-| 频道 | 说明 |
-|------|------|
-| `progress` | 进度更新 |
-| `log` | 日志消息 |
-| `data` | 数据更新 |
-| `heartbeat` | 心跳检测 |
+| 频道            | 说明     |
+| --------------- | -------- |
+| `progress`      | 进度更新 |
+| `log`           | 日志消息 |
+| `data`          | 数据更新 |
+| `heartbeat`     | 心跳检测 |
 | `status_update` | 状态更新 |
 
 ## 与其他模块的关系
@@ -242,5 +242,5 @@ python -m api.backend.app --host 0.0.0.0 --port 8080
 ---
 
 _创建时间: 2026-01-19_
-_最后更新: 2026-01-19_
+_最后更新: 2026-01-21_
 _版本: 2.0.0_

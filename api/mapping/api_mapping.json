@@ -1,10 +1,78 @@
 {
     "meta": {
         "name": "AI弹窗项目API映射配置",
-        "version": "1.0.0",
-        "description": "统一API接口映射，将前端请求映射到后端处理逻辑",
+        "version": "2.0.0",
+        "description": "统一API接口映射，将前端请求映射到后端处理逻辑，包含功能卡片规范和实时通信配置",
         "created": "2026-01-21",
-        "updated": "2026-01-21"
+        "updated": "2026-01-21",
+        "rulesReference": {
+            "L5-execution": "frontendRendering, functionCardSpecification, realtimeCommunication, apiMappingMechanism, bubbleDetection, scriptToApiMapping"
+        }
+    },
+    "functionCardSpecification": {
+        "requiredFields": {
+            "bubbleDetection": {
+                "type": "boolean",
+                "required": true,
+                "default": true,
+                "description": "是否启用冒泡事件检测"
+            },
+            "frontendName": {
+                "type": "string",
+                "required": true,
+                "description": "前端显示的功能名称"
+            },
+            "description": {
+                "type": "string",
+                "required": true,
+                "description": "一句话自然语言功能说明"
+            },
+            "inputParameters": {
+                "type": "object",
+                "required": true,
+                "dynamic": true,
+                "description": "动态生成的参数输入区域"
+            },
+            "backendEndpoint": {
+                "type": "string",
+                "required": true,
+                "description": "API端点路径"
+            },
+            "optimization": {
+                "type": "string",
+                "required": false,
+                "description": "功能优化建议"
+            },
+            "tags": {
+                "type": "array",
+                "required": true,
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "功能具体说明",
+                        "API接口",
+                        "脚本运行逻辑",
+                        "DAG"
+                    ]
+                },
+                "description": "功能分类标签"
+            },
+            "status": {
+                "type": "string",
+                "required": true,
+                "enum": [
+                    "available",
+                    "partial",
+                    "unavailable"
+                ],
+                "enumValues": {
+                    "available": "🟢 可用",
+                    "partial": "🟡 部分完成",
+                    "unavailable": "🔴 未部署"
+                },
+                "description": "功能部署状态"
+            }
+        }
     },
     "mappings": {
         "system": {
@@ -13,6 +81,28 @@
                 "method": "GET",
                 "handler": "system_monitor.get_status",
                 "description": "获取系统整体状态",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "系统状态监控",
+                    "description": "实时显示CPU、内存、磁盘和网络资源使用情况",
+                    "tags": [
+                        "功能具体说明",
+                        "API接口"
+                    ],
+                    "status": "available"
+                },
+                "state": {
+                    "cpu_percent": "number",
+                    "memory_percent": "number",
+                    "disk_percent": "number",
+                    "network_io": "object"
+                },
+                "metrics": {
+                    "cpu_usage": "percent",
+                    "memory_usage": "percent",
+                    "disk_usage": "percent",
+                    "network_traffic": "bytes/sec"
+                },
                 "response_format": {
                     "cpu_percent": "number",
                     "memory_percent": "number",
@@ -26,6 +116,33 @@
                 "method": "GET",
                 "handler": "health_monitor.check_health",
                 "description": "系统健康检查",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "健康检查",
+                    "description": "检查所有服务运行状态和依赖组件",
+                    "tags": [
+                        "功能具体说明",
+                        "API接口"
+                    ],
+                    "status": "available",
+                    "inputParameters": {
+                        "check_type": {
+                            "type": "select",
+                            "options": [
+                                "full",
+                                "quick",
+                                "custom"
+                            ],
+                            "default": "full"
+                        }
+                    }
+                },
+                "actions": {
+                    "run": {
+                        "endpoint": "/api/health",
+                        "method": "POST"
+                    }
+                },
                 "response_format": {
                     "status": "string",
                     "timestamp": "string",
@@ -38,6 +155,16 @@
                 "method": "GET",
                 "handler": "system_monitor.get_resources",
                 "description": "获取系统资源使用情况",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "资源详情",
+                    "description": "查看详细的系统资源使用指标和趋势",
+                    "tags": [
+                        "功能具体说明",
+                        "API接口"
+                    ],
+                    "status": "available"
+                },
                 "response_format": {
                     "cpu": "object",
                     "memory": "object",
@@ -183,7 +310,22 @@
                 "endpoint": "/api/scripts",
                 "method": "GET",
                 "handler": "script_manager.list_scripts",
-                "description": "获取脚本列表",
+                "description": "获取所有自动化脚本列表",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "脚本列表",
+                    "description": "查看所有可用的自动化脚本及其状态",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑"
+                    ],
+                    "status": "available"
+                },
+                "state": {
+                    "total": "number",
+                    "running": "number",
+                    "idle": "number"
+                },
                 "response_format": {
                     "scripts": "array",
                     "total": "number",
@@ -195,16 +337,41 @@
                 "method": "POST",
                 "handler": "script_manager.run_script",
                 "description": "运行指定脚本",
-                "parameters": {
-                    "name": {
-                        "type": "string",
-                        "required": true,
-                        "description": "脚本名称"
-                    }
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "运行脚本",
+                    "description": "执行选定的自动化脚本",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑",
+                        "API接口"
+                    ],
+                    "status": "available",
+                    "inputParameters": {
+                        "name": {
+                            "type": "string",
+                            "required": true,
+                            "description": "脚本名称"
+                        },
+                        "parameters": {
+                            "type": "object",
+                            "required": false,
+                            "description": "脚本执行参数"
+                        },
+                        "async": {
+                            "type": "boolean",
+                            "required": false,
+                            "default": true,
+                            "description": "是否异步执行"
+                        }
+                    },
+                    "optimization": "建议使用异步执行，避免阻塞页面响应"
                 },
-                "request_body": {
-                    "parameters": "object",
-                    "async": "boolean"
+                "actions": {
+                    "start": {
+                        "endpoint": "/api/scripts/{name}/run",
+                        "method": "POST"
+                    }
                 },
                 "response_format": {
                     "job_id": "string",
@@ -218,16 +385,26 @@
                 "method": "GET",
                 "handler": "script_manager.get_script_status",
                 "description": "获取脚本运行状态",
-                "parameters": {
-                    "name": {
-                        "type": "string",
-                        "required": true,
-                        "description": "脚本名称"
-                    },
-                    "job_id": {
-                        "type": "string",
-                        "description": "任务ID"
-                    }
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "脚本状态",
+                    "description": "查看脚本的执行状态和进度",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑",
+                        "API接口"
+                    ],
+                    "status": "available"
+                },
+                "state": {
+                    "status": "string",
+                    "progress": "number",
+                    "start_time": "string",
+                    "duration": "number"
+                },
+                "metrics": {
+                    "execution_time": "seconds",
+                    "progress_percent": "percent"
                 },
                 "response_format": {
                     "name": "string",
@@ -243,20 +420,109 @@
                 "method": "POST",
                 "handler": "script_manager.stop_script",
                 "description": "停止脚本运行",
-                "parameters": {
-                    "name": {
-                        "type": "string",
-                        "required": true,
-                        "description": "脚本名称"
-                    }
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "停止脚本",
+                    "description": "停止正在运行的脚本",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑",
+                        "API接口"
+                    ],
+                    "status": "available",
+                    "inputParameters": {
+                        "job_id": {
+                            "type": "string",
+                            "required": false,
+                            "description": "任务ID"
+                        },
+                        "force": {
+                            "type": "boolean",
+                            "required": false,
+                            "default": false,
+                            "description": "是否强制停止"
+                        }
+                    },
+                    "optimization": "强制停止可能导致数据丢失，建议先尝试正常停止"
                 },
-                "request_body": {
-                    "job_id": "string",
-                    "force": "boolean"
+                "actions": {
+                    "stop": {
+                        "endpoint": "/api/scripts/{name}/stop",
+                        "method": "POST"
+                    }
                 },
                 "response_format": {
                     "success": "boolean",
                     "message": "string",
+                    "timestamp": "string"
+                }
+            },
+            "health": {
+                "endpoint": "/api/scripts/health",
+                "method": "GET",
+                "handler": "script_manager.health_check",
+                "description": "获取所有脚本的健康状态",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "脚本健康检查",
+                    "description": "批量检查所有脚本的可用性和配置状态",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑",
+                        "DAG"
+                    ],
+                    "status": "available"
+                },
+                "response_format": {
+                    "scripts": "array",
+                    "healthy": "number",
+                    "unhealthy": "number",
+                    "timestamp": "string"
+                }
+            },
+            "logs": {
+                "endpoint": "/api/scripts/{name}/logs",
+                "method": "GET",
+                "handler": "script_manager.get_logs",
+                "description": "获取脚本执行日志",
+                "cardSpec": {
+                    "bubbleDetection": true,
+                    "frontendName": "脚本日志",
+                    "description": "查看脚本的执行日志和输出",
+                    "tags": [
+                        "功能具体说明",
+                        "脚本运行逻辑",
+                        "日志"
+                    ],
+                    "status": "available",
+                    "inputParameters": {
+                        "lines": {
+                            "type": "number",
+                            "required": false,
+                            "default": 100,
+                            "description": "日志行数"
+                        },
+                        "level": {
+                            "type": "select",
+                            "required": false,
+                            "options": [
+                                "DEBUG",
+                                "INFO",
+                                "WARNING",
+                                "ERROR"
+                            ],
+                            "default": "INFO",
+                            "description": "日志级别"
+                        }
+                    }
+                },
+                "logs": {
+                    "endpoint": "/api/scripts/{name}/logs",
+                    "method": "GET"
+                },
+                "response_format": {
+                    "logs": "array",
+                    "total_lines": "number",
                     "timestamp": "string"
                 }
             }
