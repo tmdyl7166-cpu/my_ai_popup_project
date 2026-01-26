@@ -69,7 +69,7 @@ diffusers>=0.31.0
 opencv-python>=4.10.0
 opencv-python-headless>=4.10.0
 Pillow>=11.0.0
-numpy>=1.24.0,<2.0.0
+numpy>=1.24.0,<3.0.0
 scipy>=1.14.0
 imageio>=2.36.0
 
